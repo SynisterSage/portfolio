@@ -1,7 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 # Spatial Portfolio
 
 This is my personal spatial OS portfolio built with Vite + React. It anchors every project inside a draggable, filterable node so the work can be explored like a curated desktop. Assets and contact functionality are already wired in—you just need to drop in the visuals and deploy.

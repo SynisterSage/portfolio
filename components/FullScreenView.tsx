@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { NodeData } from '../types';
-import { X, Minimize2, ExternalLink, Calendar, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { NodeData, Media, ProjectItem } from '../types';
+import { X, Minimize2, ExternalLink, Calendar, Tag, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { PROJECTS_LIST, NODES } from '../constants';
 import ContactForm from './ContactForm';
 import ProjectActions from './ProjectActions';
 import ExperienceList from './ExperienceList';
@@ -15,7 +16,29 @@ interface FullScreenViewProps {
   onMaximize?: (id: string, rect: DOMRect) => void;
 }
 
-const isVideoSource = (value: string) => /\.(mp4|mov|webm|ogg)$/i.test(value);
+const isVideoSource = (value?: string) => !!value && /\.(mp4|mov|webm|ogg)$/i.test(value);
+
+const toMediaItem = (url: string): Media => ({
+  type: isVideoSource(url) ? 'video' : 'image',
+  url
+});
+
+const getMediaHeightClass = () => 'h-[clamp(280px,40vw,460px)]';
+
+const isImageAsset = (value?: string) => /\.(png|jpe?g|gif|svg|webp)$/i.test(value || '');
+
+const resolveProjectThumbnail = (project: ProjectItem) => {
+  const node = NODES.find(n => n.id === project.linkedNodeId);
+  if (node?.media?.type === 'image' && node.media.url) {
+    return node.media.url;
+  }
+  const galleryImage = node?.gallery?.find(isImageAsset);
+  if (galleryImage) return galleryImage;
+  if (project.thumbnail && isImageAsset(project.thumbnail)) return project.thumbnail;
+  const assetImage = project.images?.find(isImageAsset);
+  if (assetImage) return assetImage;
+  return project.images?.[0] || null;
+};
 
 const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRestore, onClose, onMaximize }) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -35,6 +58,8 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const contentRef = useRef<HTMLDivElement>(null);
+  const mediaContainerRef = useRef<HTMLDivElement>(null);
+  const [lightboxItem, setLightboxItem] = useState<Media | null>(null);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -56,6 +81,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   }, []);
 
   const handleRestore = () => {
+    setLightboxItem(null);
     setIsClosing(true);
     setStyle({
       position: 'fixed',
@@ -67,7 +93,6 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       opacity: 1,
       zIndex: 100,
     });
-    // Faster animation (300ms)
     setTimeout(onRestore, 300);
   };
 
@@ -90,27 +115,30 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   }
 
   // Carousel Logic
-  const carouselImages = useMemo(() => {
-    const images: string[] = [];
+  const carouselItems = useMemo<Media[]>(() => {
+    const items: Media[] = [];
     if (data.media?.url) {
-        images.push(data.media.url);
+      items.push(data.media);
     }
     if (data.gallery && data.gallery.length > 0) {
-        images.push(...data.gallery);
+      items.push(...data.gallery.map(toMediaItem));
     }
-    return images;
+    if (data.figmaEmbed) {
+      items.push({ type: 'iframe', url: data.figmaEmbed });
+    }
+    return items;
   }, [data]);
 
   const nextImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (carouselImages.length <= 1) return;
-    setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+    if (carouselItems.length <= 1) return;
+    setCurrentImageIndex((prev) => (prev + 1) % carouselItems.length);
   };
 
   const prevImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (carouselImages.length <= 1) return;
-    setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+    if (carouselItems.length <= 1) return;
+    setCurrentImageIndex((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
   };
 
   // Keyboard navigation for carousel
@@ -122,7 +150,17 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [carouselImages]);
+  }, [carouselItems]);
+
+  useEffect(() => {
+    if (!carouselItems.length) {
+      setCurrentImageIndex(0);
+      return;
+    }
+    if (currentImageIndex >= carouselItems.length) {
+      setCurrentImageIndex(0);
+    }
+  }, [carouselItems.length, currentImageIndex]);
 
 
   const renderContent = (content: string) => {
@@ -137,94 +175,160 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     });
   };
 
-  const renderMedia = () => {
-    if (carouselImages.length > 0) {
-        const currentUrl = carouselImages[currentImageIndex];
-        const isVideo = isVideoSource(currentUrl);
-        const { caption, aspectRatio = 'video' } = data.media || {};
-        const aspectClass = aspectRatio === 'square' ? 'aspect-square' : 
-                   aspectRatio === 'portrait' ? 'aspect-[3/4]' : 
-                   aspectRatio === 'wide' ? 'aspect-[21/9]' : 'aspect-video';
-        return (
-            <div className="w-full mb-6 md:mb-8 rounded-xl overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none">
-                <div className={`relative w-full bg-black ${aspectClass}`}>
-                    {isVideo ? (
-                        <video
-                            src={currentUrl}
-                            controls
-                            preload="metadata"
-                            className="w-full h-full object-contain bg-black"
-                        />
-                    ) : (
-                        <img 
-                            src={currentUrl} 
-                            alt={`${data.title} slide ${currentImageIndex + 1}`} 
-                            className="w-full h-full object-contain transition-opacity duration-300"
-                        />
-                    )}
-                    {carouselImages.length > 1 && (
-                        <>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                            
-                            <button 
-                                onClick={prevImage}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform -translate-x-4 group-hover:translate-x-0"
-                            >
-                                <ChevronLeft size={24} />
-                            </button>
-                            <button 
-                                onClick={nextImage}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0"
-                            >
-                                <ChevronRight size={24} />
-                            </button>
+  const handleMediaFullscreen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    const item = carouselItems[currentImageIndex];
+    if (!item) return;
+    setLightboxItem(item);
+  };
 
-                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                                {carouselImages.map((_, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
-                                        className={`w-2 h-2 rounded-full transition-all ${
-                                            idx === currentImageIndex 
-                                            ? 'bg-white w-4' 
-                                            : 'bg-white/40 hover:bg-white/80'
-                                        }`}
-                                    />
-                                ))}
-                            </div>
-                        </>
-                     )}
-                </div>
-                {caption && currentImageIndex === 0 && (
-                     <div className="p-3 bg-node-header text-center text-secondary font-mono text-sm border-t border-node-border">
-                        {caption}
-                     </div>
-                )}
-            </div>
-        );
+  useEffect(() => {
+    if (!lightboxItem) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setLightboxItem(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxItem]);
+
+  const renderPlayer = (item: Media, altSuffix?: string) => {
+    if (item.type === 'video') {
+      return (
+        <video
+          controls
+          preload="metadata"
+          className="w-full h-full object-cover"
+        >
+          <source src={item.url} />
+        </video>
+      );
     }
-
-    if (!data.media) return null;
-    const { type, url, caption, aspectRatio = 'video' } = data.media;
-    const aspectClass = aspectRatio === 'square' ? 'aspect-square' : 
-                        aspectRatio === 'portrait' ? 'aspect-[3/4]' : 
-                        aspectRatio === 'wide' ? 'aspect-[21/9]' : 'aspect-video';
-
+    if (item.type === 'iframe') {
+      return (
+        <iframe
+          src={item.url}
+          className="w-full h-full border-0"
+          title={`${data.title} prototype`}
+          allowFullScreen
+        />
+      );
+    }
     return (
-      <div className="w-full mb-8 rounded-xl overflow-hidden shadow-2xl bg-node-bg border border-node-border">
-         <div className={`relative w-full ${aspectClass}`}>
-            {type === 'iframe' && <iframe src={url} className="w-full h-full border-0" allowFullScreen />}
-            {type === 'video' && (
-              <video
-                controls
-                preload="metadata"
-                className="w-full h-full object-contain bg-black"
+      <img
+        src={item.url}
+        alt={`${data.title} ${altSuffix || ''}`}
+        className="w-full h-full object-cover transition-opacity duration-300"
+      />
+    );
+  };
+
+  const renderMedia = () => {
+    if (!carouselItems.length) return null;
+    const currentItem = carouselItems[currentImageIndex];
+    if (!currentItem) return null;
+    const heightClass = getMediaHeightClass();
+    const renderCurrent = () => renderPlayer(currentItem, `slide ${currentImageIndex + 1}`);
+    return (
+      <div
+        ref={mediaContainerRef}
+        className="w-full mb-6 md:mb-8 rounded-[1.5rem] overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none max-w-[min(1100px,90vw)] mx-auto"
+      >
+        <div className={`relative w-full ${heightClass}`}>
+          {renderCurrent()}
+          <button
+            onClick={handleMediaFullscreen}
+            className="absolute top-4 left-4 p-2 rounded-full bg-black/30 text-white hover:bg-white hover:text-black transition-all shadow-lg backdrop-blur z-20"
+            title="Open lightbox"
+            aria-label="Open lightbox"
+          >
+            <Maximize2 size={18} />
+          </button>
+          {carouselItems.length > 1 && (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              
+              <button 
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform -translate-x-4 group-hover:translate-x-0"
               >
-                <source src={url} />
-              </video>
-            )}
-         </div>
-         {caption && <div className="p-3 bg-node-header text-center text-secondary font-mono text-sm border-t border-node-border">{caption}</div>}
+                  <ChevronLeft size={24} />
+              </button>
+              <button 
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0"
+              >
+                  <ChevronRight size={24} />
+              </button>
+
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                  {carouselItems.map((_, idx) => (
+                      <button
+                          key={idx}
+                          onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                              idx === currentImageIndex 
+                              ? 'bg-white w-4' 
+                              : 'bg-white/40 hover:bg-white/80'
+                          }`}
+                      />
+                  ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const seededIndex = (id: string) => [...id].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+  const relatedProjects = useMemo<ProjectItem[]>(() => {
+    if (data.type !== 'project') return [];
+    const eligible = PROJECTS_LIST.filter(project => project.id !== data.id);
+    if (!eligible.length) return [];
+    const start = seededIndex(data.id) % eligible.length;
+    const picks: ProjectItem[] = [];
+    for (let i = 0; i < 3; i += 1) {
+      const project = eligible[(start + i) % eligible.length];
+      picks.push(project);
+    }
+    return picks;
+  }, [data.id, data.type]);
+
+  const getRelatedThumbnail = (project: ProjectItem) => resolveProjectThumbnail(project);
+
+  const handleRelatedClick = (project: ProjectItem) => {
+    if (!onMaximize) {
+      if (project.link) window.open(project.link, '_blank');
+      return;
+    }
+    if (project.linkedNodeId) {
+      const rect = mediaContainerRef.current?.getBoundingClientRect() || initialRect;
+      onMaximize(project.linkedNodeId, rect);
+    } else if (project.link) {
+      window.open(project.link, '_blank');
+    }
+  };
+
+
+  const renderLightbox = () => {
+    if (!lightboxItem) return null;
+    return (
+      <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-6">
+        <div className="relative w-full max-w-[min(1100px,calc(100%_-_48px))] h-[clamp(320px,80vh,720px)]">
+          <button
+            onClick={() => setLightboxItem(null)}
+            className="absolute top-4 right-4 z-20 rounded-full bg-black/60 text-white p-2 hover:bg-white hover:text-black transition-all shadow-lg"
+            aria-label="Close lightbox"
+          >
+            <X size={18} />
+          </button>
+          <div className="w-full h-full rounded-[1.5rem] overflow-hidden bg-node-bg border border-node-border shadow-2xl">
+            {renderPlayer(lightboxItem)}
+          </div>
+        </div>
       </div>
     );
   };
@@ -271,42 +375,114 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
 
             {/* Render Standard Content if NOT a hub */}
             {!isHub && (
-                <div className="max-w-3xl mx-auto pb-20">
+            <div className="max-w-[1200px] w-full mx-auto pb-20">
                     {/* Meta Header */}
-                    <div className="mb-6 md:mb-8 flex flex-wrap items-center justify-between gap-4 text-sm font-mono text-secondary">
-                        <div className="flex flex-wrap items-center gap-4">
-                            <div className="flex items-center gap-1.5">
+                    <div className="mb-6 md:mb-8 flex flex-col gap-3 text-sm font-mono text-secondary">
+                        <div className="flex items-center justify-between gap-3 flex-wrap">
+                            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-secondary/70">
                                 <Calendar size={14} />
                                 <span>Updated recently</span>
                             </div>
-                            {data.tags && (
-                                <div className="flex gap-2">
+                            {data.type === 'project' && (
+                                <div className="flex-shrink-0">
+                                    <ProjectActions projectId={data.id} className="text-xs" />
+                                </div>
+                            )}
+                        </div>
+                        {data.tags && data.tags.length > 0 && (
+                            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 py-1">
+                                <div className="flex gap-2 whitespace-nowrap min-w-0">
                                     {data.tags.map(tag => {
                                         const isActive = tag.includes('●');
                                         return (
-                                            <div key={tag} className={`flex items-center gap-1 px-2 py-0.5 rounded border transition-colors ${
-                                                isActive 
-                                                ? 'text-accent bg-accent/5 border-accent/20' 
-                                                : 'text-secondary bg-black/5 dark:bg-white/5 border-transparent'
-                                            }`}>
+                                            <div
+                                                key={tag}
+                                                className={`flex items-center gap-1 px-3 py-1 rounded-2xl text-[11px] ${
+                                                    isActive
+                                                        ? 'text-accent bg-accent/10 border border-accent/20'
+                                                        : 'text-secondary bg-black/5 dark:bg-white/5 border border-node-border/40'
+                                                }`}
+                                            >
                                                 <Tag size={12} />
                                                 <span>{isActive ? tag.replace('●', '● ') : tag}</span>
                                             </div>
                                         );
                                     })}
                                 </div>
-                            )}
-                        </div>
-                        {/* Project Actions for FullScreen View */}
-                        {data.type === 'project' && <ProjectActions projectId={data.id} />}
+                            </div>
+                        )}
                     </div>
 
                     {renderMedia()}
-                    
+
                     {/* Prose Content */}
-                    <article className="prose prose-invert prose-lg max-w-none">
+                    <div className="mt-6 space-y-4 text-base leading-relaxed text-secondary">
                         {renderContent(data.content)}
-                    </article>
+                    </div>
+
+                    {/* Links (Figma / external) */}
+                    {data.links && data.links.length > 0 && (
+                        <div className="mt-6 flex flex-wrap gap-3">
+                            {data.links.map(link => (
+                                <a
+                                    key={link.label}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex w-full md:w-auto items-center gap-2 rounded-full border border-node-border px-5 py-2 text-sm font-semibold text-primary transition-all bg-node-bg shadow-sm hover:-translate-y-0.5 hover:shadow-xl justify-center"
+                                >
+                                    {link.label}
+                                    <ExternalLink size={14} />
+                                </a>
+                            ))}
+                        </div>
+                    )}
+
+                    {data.type === 'project' && relatedProjects.length > 0 && (
+                        <section className="mt-10">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-xs uppercase tracking-[0.4em] text-secondary/80 font-semibold">More Projects</h4>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                {relatedProjects.map(project => (
+                                    <button
+                                        key={project.id}
+                                        type="button"
+                                        onClick={() => handleRelatedClick(project)}
+                                        className="group flex flex-col overflow-hidden rounded-2xl border border-node-border bg-node-bg transition-all hover:-translate-y-0.5 hover:shadow-xl text-left"
+                                    >
+                                        <div className="relative h-32 overflow-hidden bg-black/5">
+                                            {getRelatedThumbnail(project) ? (
+                                                <img
+                                                    src={getRelatedThumbnail(project)}
+                                                    alt={project.title}
+                                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center text-secondary">
+                                                    <Tag size={28} />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="p-4 space-y-1">
+                                            <p className="text-sm font-semibold text-primary line-clamp-1 text-left">{project.title}</p>
+                                            <p className="text-xs text-secondary/70 leading-snug line-clamp-2 text-left">{project.description}</p>
+                                            <div className="flex flex-wrap gap-1 mt-2">
+                                                {project.tags.slice(0, 2).map(tag => (
+                                                    <span
+                                                        key={tag}
+                                                        className="text-[10px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 border border-node-border/50 text-secondary"
+                                                    >
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </section>
+                    )}
 
                     {/* Contact Form Injection */}
                     {data.type === 'contact' && (
@@ -315,26 +491,10 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                         </div>
                     )}
 
-                    {/* Footer Links */}
-                    {data.links && (
-                        <div className="mt-12 md:mt-16 pt-8 border-t border-node-border flex flex-wrap gap-4">
-                            {data.links.map(link => (
-                                <a 
-                                    key={link.label}
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex items-center gap-2 px-6 py-3 bg-node-header border border-node-border text-primary font-bold rounded-lg hover:bg-node-bg hover:scale-105 transition-all"
-                                >
-                                    {link.label}
-                                    <ExternalLink size={16} />
-                                </a>
-                            ))}
-                        </div>
-                    )}
                 </div>
             )}
         </div>
+        {renderLightbox()}
     </div>
   );
 };

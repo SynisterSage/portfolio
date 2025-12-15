@@ -10,14 +10,15 @@ import ProjectList from './ProjectList';
 interface DocumentViewProps {
   nodes: NodeData[];
   targetId: string | null;
+  viewMode: 'spatial' | 'document';
   isReady?: boolean; // New prop to coordinate with Preloader
 }
 
 // Reusable FadeIn Component for Scroll Animations
-const FadeIn: React.FC<{ 
-    children: React.ReactNode; 
+const FadeIn: React.FC<{
+    children: React.ReactNode;
     id?: string;
-    className?: string; 
+    className?: string;
     delay?: number;
     threshold?: number;
     setRef?: (el: HTMLElement | null) => void;
@@ -47,37 +48,51 @@ const FadeIn: React.FC<{
     return () => observer.disconnect();
   }, [threshold]);
 
-  return (
-    <section
-      id={id}
-      ref={(el) => {
-          internalRef.current = el;
-          if (setRef) setRef(el);
-      }}
-      className={`${className} transition-all duration-1000 ease-out ${
-        isVisible 
-            ? 'opacity-100 translate-y-0 blur-0' 
-            : 'opacity-0 translate-y-16 blur-sm'
-      }`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </section>
-  );
+    return (
+        <section
+            id={id}
+            ref={(el) => {
+                    internalRef.current = el;
+                    if (setRef) setRef(el);
+            }}
+            className={`${className} transition-all duration-1000 ease-out ${
+                isVisible
+                        ? 'opacity-100 translate-y-0 blur-0'
+                        : 'opacity-0 translate-y-12 blur-sm'
+            }`}
+            style={{ transitionDelay: `${delay}ms` }}
+        >
+            {children}
+        </section>
+    );
 };
 
-const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, isReady = true }) => {
+const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, isReady = true }) => {
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const [heroVisible, setHeroVisible] = useState(false);
-  
+  const [viewReady, setViewReady] = useState(false);
+
   const [selectedProject, setSelectedProject] = useState<{ id: string; rect: DOMRect } | null>(null);
 
-  // Trigger Hero animation only when the app is ready (preloader finished)
+    // Trigger Hero animation only when the document view itself is ready
+    // (this ensures the hero animates in sync with the view fade-in on reload)
+    useEffect(() => {
+        let t: number | undefined;
+        if (viewReady) {
+            // small stagger so the root fade has started
+            t = window.setTimeout(() => setHeroVisible(true), 120);
+        } else {
+            setHeroVisible(false);
+        }
+        return () => { if (t) clearTimeout(t); };
+    }, [viewReady]);
+
   useEffect(() => {
-    if (isReady) {
-        setHeroVisible(true);
-    }
-  }, [isReady]);
+    setViewReady(false);
+    if (!isReady) return;
+    const timer = setTimeout(() => setViewReady(true), 80);
+    return () => clearTimeout(timer);
+  }, [isReady, viewMode]);
 
   // Scroll to target section when targetId changes
   useEffect(() => {
@@ -142,8 +157,12 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, isReady = 
     );
   };
 
-  return (
-    <div className="w-full h-full overflow-y-auto bg-canvas-bg custom-scroll scroll-smooth relative">
+    return (
+        <div
+            className={`w-full h-full overflow-y-auto bg-canvas-bg custom-scroll scroll-smooth relative transition-opacity duration-800 ease-out ${
+                viewReady ? 'opacity-100' : 'opacity-0'
+            }`}
+        >
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-16 md:py-24 flex flex-col gap-20 md:gap-32">
         
         {/* HERO SECTION - Uses special animation internal to renderHeroContent for immediate impact */}
@@ -351,7 +370,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, isReady = 
                 </div>
             </FadeIn>
         )}
-      </div>
+    </div>
 
       {/* FULL SCREEN OVERLAY */}
       {selectedProject && selectedNodeData && (

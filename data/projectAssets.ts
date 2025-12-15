@@ -183,7 +183,7 @@ export const PROJECT_ASSETS = {
   },
   "velkro": {
     "folder": "velkro",
-    "thumbnail": "/images/projects/velkro/thumbnail.jpg",
+    "thumbnail": "/images/projects/velkro/main.jpg",
     "media": [
       "/images/projects/velkro/main.jpg",
       "/images/projects/velkro/gallery-2.jpg",

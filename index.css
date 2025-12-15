@@ -1,0 +1,20 @@
+/* Global guard: disable entrance animations/transitions until JS signals the app is ready.
+   This prevents inconsistent entrance directions on full page reloads (dock, hero text, etc.).
+   We re-enable animations by adding `.app-ready` to the <html> element when the preloader completes.
+*/
+
+html:not(.app-ready) * {
+  transition: none !important;
+  animation: none !important;
+}
+
+ .no-scrollbar {
+   scrollbar-width: none;
+   -ms-overflow-style: none;
+ }
+ .no-scrollbar::-webkit-scrollbar {
+   display: none;
+ }
+
+/* Keep the preloader visible transitions intact by scoping animations in components to run
+   after the `.app-ready` class is present. */

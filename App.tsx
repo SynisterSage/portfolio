@@ -3,20 +3,43 @@ import React, { useState, useEffect } from 'react';
 import Canvas from './components/Canvas';
 import DocumentView from './components/DocumentView';
 import Dock from './components/Dock';
-import Preloader from './components/Preloader';
+import Preloader, { shouldShowPreloader } from './components/Preloader';
 import PolicyOverlay from './components/PolicyOverlay'; // Import PolicyOverlay
 import { NODES } from './constants';
 import { Shield } from 'lucide-react'; // Import Icon
 
+const VIEW_MODE_KEY = 'portfolio.viewMode';
+
+const dispatchStorageEvent = (key: string, newValue: string | null, oldValue: string | null) => {
+  if (typeof window === 'undefined' || typeof StorageEvent === 'undefined') return;
+  try {
+    const event = new StorageEvent('storage', {
+      key,
+      newValue,
+      oldValue,
+      storageArea: window.localStorage
+    });
+    window.dispatchEvent(event);
+  } catch (error) {
+    console.warn('[App] failed to dispatch storage event', error);
+  }
+};
+
+const readViewMode = (): 'spatial' | 'document' => {
+  if (typeof window === 'undefined') return 'document';
+  const stored = window.localStorage.getItem(VIEW_MODE_KEY);
+  return stored === 'spatial' ? 'spatial' : 'document';
+};
+
 const App: React.FC = () => {
   const [activeNodeId, setActiveNodeId] = useState<string | null>('hero');
-  const [viewMode, setViewMode] = useState<'spatial' | 'document'>('document');
+  const [viewMode, setViewMode] = useState<'spatial' | 'document'>(readViewMode);
   const [hasIntroPlayed, setHasIntroPlayed] = useState(false);
   const [currentDate, setCurrentDate] = useState('');
   const [showPolicy, setShowPolicy] = useState(false); // New state for policy view
   
   // Loading state
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => shouldShowPreloader());
 
   // Set formatted date on mount
   useEffect(() => {
@@ -55,6 +78,24 @@ const App: React.FC = () => {
   const handlePreloaderComplete = () => {
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const oldValue = window.localStorage.getItem(VIEW_MODE_KEY);
+    window.localStorage.setItem(VIEW_MODE_KEY, viewMode);
+    dispatchStorageEvent(VIEW_MODE_KEY, viewMode, oldValue);
+  }, [viewMode]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== VIEW_MODE_KEY || !event.newValue) return;
+      if (event.newValue === viewMode) return;
+      setViewMode(event.newValue === 'spatial' ? 'spatial' : 'document');
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [viewMode]);
 
   return (
     <div className="w-full h-screen bg-canvas-bg text-primary overflow-hidden relative selection:bg-accent selection:text-white transition-colors duration-300">
@@ -99,6 +140,7 @@ const App: React.FC = () => {
             <DocumentView 
                 nodes={NODES}
                 targetId={activeNodeId}
+                viewMode={viewMode}
                 isReady={!isLoading}
             />
         )}

@@ -14,6 +14,7 @@ export interface Project {
   tools?: string[];
   fullDescription?: string;
   figmaEmbed?: string;
+  figmaEmbedLabel?: string;
 }
 
 const baseProjects: Omit<Project, 'images' | 'thumbnail'>[] = [
@@ -50,7 +51,9 @@ It's a complete end-to-end Figma prototype that feels modern, efficient, and coh
     fullDescription: `Deployed as Overtone, this mobile-first drum-tuning companion was prototyped and designed in Figma, then coded in TypeScript/JavaScript, HTML, and CSS and hosted on Vercel. The interface supports light and dark modes for studio and stage, and the app runs as a fast single-page experience so it feels instant on phones.
 
 At its core is a Hz mic pickup written in JavaScript using the Web Audio API that listens through the device mic and detects the fundamental in real time. A locking system holds the reading once the pitch stabilizes so fine adjustments are easy and the value does not jump around. Settings let you dial in detection behavior and create kits with named drums, sizes, and saved values. The main tuner view keeps focus with a large frequency readout, note mapping, peak hold, and clear Live/Locked states. Continuous deploys keep the embedded demo current while iterating on workflows and presets.`,
-    link: 'https://testapp-rust.vercel.app/login'
+    link: 'https://testapp-rust.vercel.app/login',
+    figmaEmbed: 'https://testapp-rust.vercel.app/login',
+    figmaEmbedLabel: 'Open Prototype'
   },
   {
     id: 'velkro',
@@ -89,7 +92,9 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
     year: '2025',
     service: 'Web Development',
     tools: ['Figma', 'HTML', 'CSS'],
-    link: 'https://www.packanackgolfclub.com/'
+    link: 'https://www.packanackgolfclub.com/',
+    figmaEmbed: 'https://www.packanackgolfclub.com/',
+    figmaEmbedLabel: 'Live Site'
   },
   {
     id: 'halfway',

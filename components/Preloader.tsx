@@ -3,15 +3,31 @@ import React, { useState, useEffect } from 'react';
 import { Cpu, Zap } from 'lucide-react';
 import { PRELOAD_ASSETS } from '../constants';
 
+export const PRELOADER_KEY = 'portfolio.preloader.lastSeen';
+export const PRELOADER_HIDE_DURATION = 1000 * 60 * 60 * 24; // 24 hours
+const PRELOAD_TIMEOUT = 15000;
+const imageCache = new Map<string, HTMLImageElement>();
+
+export const shouldShowPreloader = () => {
+  if (typeof window === 'undefined') return true;
+  const stored = window.localStorage.getItem(PRELOADER_KEY);
+  if (!stored) return true;
+  const timestamp = Number(stored);
+  if (Number.isNaN(timestamp)) return true;
+  return Date.now() - timestamp > PRELOADER_HIDE_DURATION;
+};
+
 interface PreloaderProps {
   onComplete: () => void;
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+  const [shouldDisplayPreloader] = useState(shouldShowPreloader);
+  const [isVisible, setIsVisible] = useState(shouldDisplayPreloader);
   const [status, setStatus] = useState('INITIALIZING_CORE');
   const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [hasLoggedEvent, setHasLoggedEvent] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -48,32 +64,108 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
     }
 
     let cancelled = false;
+    let settled = false;
+    const settleAssets = () => {
+      if (settled) return;
+      settled = true;
+      if (!cancelled) setAssetsLoaded(true);
+    };
+
+    const timeout = setTimeout(() => {
+      console.warn('[Preloader] asset preload timed out.');
+      settleAssets();
+    }, PRELOAD_TIMEOUT);
+
     const loaders = PRELOAD_ASSETS.map(src => {
+      if (imageCache.has(src)) {
+        return Promise.resolve();
+      }
       return new Promise<void>(resolve => {
         const img = new Image();
+        imageCache.set(src, img);
         img.onload = img.onerror = () => resolve();
         img.src = src;
       });
     });
 
     Promise.all(loaders).then(() => {
-      if (!cancelled) setAssetsLoaded(true);
+      clearTimeout(timeout);
+      settleAssets();
     });
 
     return () => {
       cancelled = true;
+      clearTimeout(timeout);
     };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldDisplayPreloader || hasLoggedEvent) return;
+    if (typeof window === 'undefined') return;
+    const now = Date.now();
+    const oldValue = window.localStorage.getItem(PRELOADER_KEY);
+    try {
+      window.localStorage.setItem(PRELOADER_KEY, now.toString());
+      if (typeof StorageEvent !== 'undefined') {
+        const storageEvent = new StorageEvent('storage', {
+          key: PRELOADER_KEY,
+          newValue: now.toString(),
+          oldValue,
+          storageArea: window.localStorage
+        });
+        window.dispatchEvent(storageEvent);
+      }
+      console.info('[Preloader] shown', { timestamp: now });
+    } catch (error) {
+      console.warn('[Preloader] unable to log display', error);
+    }
+    setHasLoggedEvent(true);
+  }, [shouldDisplayPreloader, hasLoggedEvent]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== PRELOADER_KEY) return;
+      console.info('[Preloader] storage update', event.newValue);
+      setIsVisible(false);
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
   useEffect(() => {
     if (progress === 100 && assetsLoaded) {
       const timer = setTimeout(() => {
+        // Mark the app as ready so entrance animations are allowed consistently
+        if (typeof window !== 'undefined' && document?.documentElement) {
+          try {
+            document.documentElement.classList.add('app-ready');
+          } catch (err) {
+            // ignore
+          }
+        }
+
         setIsVisible(false);
         setTimeout(onComplete, 500);
       }, 500);
       return () => clearTimeout(timer);
     }
   }, [progress, assetsLoaded, onComplete]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (shouldDisplayPreloader) return;
+    // If preloader is skipped, mark app-ready immediately so animations behave consistently
+    if (document?.documentElement) {
+      try {
+        document.documentElement.classList.add('app-ready');
+      } catch (err) {}
+    }
+    const timer = window.setTimeout(onComplete, 0);
+    return () => window.clearTimeout(timer);
+  }, [shouldDisplayPreloader, onComplete]);
+
+  if (!shouldDisplayPreloader) return null;
 
   return (
     <div 

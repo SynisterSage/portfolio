@@ -215,9 +215,12 @@ const projectNodes: NodeData[] = projects.map(project => {
     gallery: galleryAssets,
     content: project.fullDescription || project.description,
     tags: [...(project.categories || []), project.service || '', ...(project.tools || [])].filter(Boolean),
+    figmaEmbed: project.figmaEmbed,
     links: [
       ...(project.link ? [{ label: 'Visit Project', url: project.link }] : []),
-      ...(project.figmaEmbed ? [{ label: 'View Figma', url: project.figmaEmbed }] : [])
+      ...(project.figmaEmbed
+        ? [{ label: project.figmaEmbedLabel || 'View Figma', url: project.figmaEmbed }]
+        : [])
     ]
   };
 });

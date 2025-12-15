@@ -23,6 +23,7 @@ export interface NodeData {
   tags?: string[];
   links?: { label: string; url: string }[];
   hidden?: boolean; // If true, node is not rendered until opened
+  figmaEmbed?: string;
 }
 
 export interface CanvasState {
@@ -62,6 +63,7 @@ export interface ProjectItem {
   tools?: string[];
   fullDescription?: string;
   figmaEmbed?: string;
+  figmaEmbedLabel?: string;
 }
 
 export interface ExperienceItem {

@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { User, Layers, Terminal, Cpu, Hash, Sun, Moon, LayoutGrid, FileText } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -18,17 +19,58 @@ const DockIconButton: React.FC<{
   onClick: () => void;
 }> = ({ icon, label, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!isHovered) return;
+    const update = () => {
+      // Anchor tooltip to the hovered button center (viewport coords)
+      const rect = btnRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const left = rect.left + rect.width / 2;
+      // place tooltip just above the button; we'll offset via transform for crisp arrow placement
+      const top = rect.top;
+      setPos({ left, top });
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [isHovered]);
+
+  // Render tooltip into body so it's not clipped by overflow
+  const Tooltip = () => {
+    if (!isHovered || !pos || typeof document === 'undefined') return null;
+    const leftPx = `${Math.round(pos.left)}px`;
+    const topPx = `${Math.round(pos.top)}px`;
+    return createPortal(
+      <div
+        className="hidden md:inline-flex items-center px-2 py-1 bg-node-bg border border-node-border text-primary text-[11px] font-sans font-medium rounded-sm whitespace-nowrap z-[9999] pointer-events-none shadow-sm"
+        style={{
+          position: 'fixed',
+          left: leftPx,
+          top: topPx,
+          transform: 'translate(-50%, -110%)',
+          transition: 'opacity 120ms ease, transform 160ms cubic-bezier(.2,.9,.2,1)',
+          opacity: 1,
+        }}
+        aria-hidden
+      >
+        <span className="relative z-10">{label}</span>
+      </div>,
+      document.body
+    );
+  };
 
   return (
     <div className="relative flex items-center justify-center">
-      {isHovered && (
-        <div className="hidden md:block absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-2.5 py-1.5 bg-node-bg border border-node-border text-primary text-[10px] font-mono font-bold uppercase tracking-wider rounded-md shadow-xl whitespace-nowrap z-50 animate-in fade-in slide-in-from-bottom-2 duration-200 pointer-events-none">
-          {label}
-          {/* Subtle Arrow */}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[5px] w-2 h-2 bg-node-bg border-r border-b border-node-border rotate-45" />
-        </div>
-      )}
+      <Tooltip />
       <button
+        ref={btnRef}
         onClick={onClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

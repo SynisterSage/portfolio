@@ -385,7 +385,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                             </div>
                             {data.type === 'project' && (
                                 <div className="flex-shrink-0">
-                                    <ProjectActions projectId={data.id} className="text-xs" />
+                                    <ProjectActions projectId={data.id} projectTitle={data.title} className="text-xs" />
                                 </div>
                             )}
                         </div>

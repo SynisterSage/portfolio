@@ -24,6 +24,8 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   const cameraRef = useRef(camera);
   const nodePositionsRef = useRef<Record<string, { x: number, y: number }>>({}); 
   
+  const clampScale = (value: number) => Math.min(Math.max(value, 0.1), 6);
+
   const dragRef = useRef({
     isDragging: false,
     isDraggingNode: false,
@@ -35,6 +37,11 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     initialCameraX: 0,
     initialCameraY: 0,
     hasMoved: false
+  });
+  const pinchRef = useRef({
+    isPinching: false,
+    initialDistance: 0,
+    initialScale: 1
   });
   
   // Sync Ref with State
@@ -399,6 +406,52 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     dragRef.current.draggedNodeId = null;
   };
 
+  const getDistanceBetweenTouches = (touches: TouchList) => {
+    if (touches.length < 2) return 0;
+    const touchA = touches[0];
+    const touchB = touches[1];
+    const dx = touchA.clientX - touchB.clientX;
+    const dy = touchA.clientY - touchB.clientY;
+    return Math.hypot(dx, dy);
+  };
+
+  const cancelPinch = () => {
+    pinchRef.current.isPinching = false;
+    pinchRef.current.initialDistance = 0;
+  };
+
+  const handlePinchStart = (touches: TouchList) => {
+    if (touches.length < 2) return;
+    pinchRef.current.isPinching = true;
+    pinchRef.current.initialDistance = getDistanceBetweenTouches(touches);
+    pinchRef.current.initialScale = cameraRef.current.scale;
+  };
+
+  const handlePinchMove = (touches: TouchList) => {
+    if (!pinchRef.current.isPinching || touches.length < 2) return;
+    const distance = getDistanceBetweenTouches(touches);
+    if (pinchRef.current.initialDistance === 0) return;
+
+    const scaleFactor = distance / pinchRef.current.initialDistance;
+    const targetScale = clampScale(pinchRef.current.initialScale * scaleFactor);
+
+    const focusX = (touches[0].clientX + touches[1].clientX) / 2;
+    const focusY = (touches[0].clientY + touches[1].clientY) / 2;
+
+    const currentCam = cameraRef.current;
+    const worldFocusX = (focusX - currentCam.x) / currentCam.scale;
+    const worldFocusY = (focusY - currentCam.y) / currentCam.scale;
+
+    const nextX = focusX - worldFocusX * targetScale;
+    const nextY = focusY - worldFocusY * targetScale;
+
+    setCamera({
+      x: nextX,
+      y: nextY,
+      scale: targetScale
+    });
+  };
+
   const handleWheel = useCallback((e: WheelEvent) => {
     if (maximizedNode || bootState === 'scanning') return;
 
@@ -414,7 +467,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
       }
       
       const delta = -e.deltaY * sensitivity;
-      const newScale = Math.min(Math.max(0.1, currentScale + delta), 6);
+      const newScale = clampScale(currentScale + delta);
       
       const rect = containerRef.current?.getBoundingClientRect();
       if (rect) {
@@ -453,6 +506,50 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     return () => container?.removeEventListener('wheel', handleWheel);
   }, [handleWheel]);
 
+  const handleTouchStartWrapper = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (maximizedNode || bootState === 'scanning') return;
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      handlePinchStart(e.touches);
+      return;
+    }
+    if (e.touches.length === 1) {
+      cancelPinch();
+      const touch = e.touches[0];
+      handleStart(touch.clientX, touch.clientY);
+    }
+  };
+
+  const handleTouchMoveWrapper = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (maximizedNode || bootState === 'scanning') return;
+    if (e.touches.length >= 2) {
+      e.preventDefault();
+      handlePinchMove(e.touches);
+      return;
+    }
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      handleMove(touch.clientX, touch.clientY);
+    }
+  };
+
+  const handleTouchEndWrapper = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (pinchRef.current.isPinching && e.touches.length < 2) {
+      cancelPinch();
+    }
+    if (e.touches.length === 0) {
+      handleEnd();
+    }
+  };
+
+  const handleTouchCancelWrapper = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (pinchRef.current.isPinching) {
+      cancelPinch();
+    }
+    handleEnd();
+  };
+
   const onNodeDragStart = (id: string, e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     let clientX, clientY;
@@ -472,14 +569,15 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   return (
     <div 
       ref={containerRef}
-    className={`relative w-full h-full overflow-hidden bg-canvas-bg cursor-grab active:cursor-grabbing touch-auto transition-colors duration-300`}
+    className={`relative w-full h-full overflow-hidden bg-canvas-bg cursor-grab active:cursor-grabbing touch-none transition-colors duration-300`}
       onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
       onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
       onMouseUp={handleEnd}
       onMouseLeave={handleEnd}
-      onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
-      onTouchMove={(e) => handleMove(e.touches[0].clientX, e.touches[0].clientY)}
-      onTouchEnd={handleEnd}
+      onTouchStart={handleTouchStartWrapper}
+      onTouchMove={handleTouchMoveWrapper}
+      onTouchEnd={handleTouchEndWrapper}
+      onTouchCancel={handleTouchCancelWrapper}
     >
       {/* Background Dot Pattern */}
       <div 

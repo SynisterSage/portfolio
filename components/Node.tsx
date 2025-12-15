@@ -384,7 +384,7 @@ const Node: React.FC<NodeProps> = ({
                                 </div>
                                 
                                 {data.type === 'project' && (
-                                    <ProjectActions projectId={data.id} />
+                                    <ProjectActions projectId={data.id} projectTitle={data.title} />
                                 )}
                             </div>
                         )}

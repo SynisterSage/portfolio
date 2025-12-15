@@ -11,18 +11,18 @@ interface ProjectListProps {
   variant?: 'list' | 'grid';
 }
 
+const isVideoSource = (value?: string) => !!value && /\.(mp4|mov|webm|ogg)$/i.test(value);
+
 const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, variant = 'list' }) => {
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<'all' | 'design' | 'engineering'>('all');
+  const [filter, setFilter] = useState<'all' | 'design' | 'engineering' | 'hybrid'>('all');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>(variant);
 
   const filteredProjects = useMemo(() => {
     return PROJECTS_LIST.filter(p => {
       const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) || 
                             p.tags.some(t => t.toLowerCase().includes(search.toLowerCase()));
-      const matchesFilter = filter === 'all' || 
-                            (filter === 'design' && (p.category === 'design' || p.category === 'hybrid')) ||
-                            (filter === 'engineering' && (p.category === 'engineering' || p.category === 'hybrid'));
+      const matchesFilter = filter === 'all' || p.category === filter;
       return matchesSearch && matchesFilter;
     });
   }, [search, filter]);
@@ -71,9 +71,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
             {/* Filters */}
             <div className="flex gap-2">
             {[
-                { id: 'all', label: 'All', icon: <Layers size={12} /> },
+                { id: 'all', label: 'All', icon: <Box size={12} /> },
                 { id: 'engineering', label: 'Eng', icon: <Cpu size={12} /> },
                 { id: 'design', label: 'Design', icon: <PenTool size={12} /> },
+                { id: 'hybrid', label: 'Hybrid', icon: <LayoutGrid size={12} /> },
             ].map(f => (
                 <button
                 key={f.id}
@@ -120,6 +121,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
             <div className={viewMode === 'grid' ? "grid grid-cols-2 gap-4 pb-4" : "space-y-3 pb-4"}>
                 {filteredProjects.map(project => {
                     const thumb = getProjectThumbnail(project);
+                    const thumbIsVideo = isVideoSource(thumb);
                     
                     if (viewMode === 'grid') {
                         return (
@@ -131,7 +133,18 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                 {/* Large Image */}
                                 <div className="w-full aspect-video relative overflow-hidden bg-black/10 border-b border-node-border/50">
                                     {thumb ? (
-                                        <img src={thumb} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        thumbIsVideo ? (
+                                          <video
+                                            src={thumb}
+                                            loop
+                                            muted
+                                            autoPlay
+                                            playsInline
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                          />
+                                        ) : (
+                                          <img src={thumb} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        )
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-secondary/30">
                                             <Box size={32} />
@@ -183,7 +196,18 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                             {/* Thumbnail */}
                             <div className="w-20 h-14 md:w-24 md:h-16 shrink-0 rounded-lg overflow-hidden bg-black/10 border border-node-border relative">
                                 {thumb ? (
-                                    <img src={thumb} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    thumbIsVideo ? (
+                                      <video
+                                        src={thumb}
+                                        loop
+                                        muted
+                                        autoPlay
+                                        playsInline
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                      />
+                                    ) : (
+                                      <img src={thumb} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    )
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-secondary">
                                         <Box size={20} />

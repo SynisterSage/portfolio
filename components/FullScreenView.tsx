@@ -15,6 +15,8 @@ interface FullScreenViewProps {
   onMaximize?: (id: string, rect: DOMRect) => void;
 }
 
+const isVideoSource = (value: string) => /\.(mp4|mov|webm|ogg)$/i.test(value);
+
 const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRestore, onClose, onMaximize }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [style, setStyle] = useState<React.CSSProperties>({
@@ -90,7 +92,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   // Carousel Logic
   const carouselImages = useMemo(() => {
     const images: string[] = [];
-    if (data.media?.type === 'image' && data.media.url) {
+    if (data.media?.url) {
         images.push(data.media.url);
     }
     if (data.gallery && data.gallery.length > 0) {
@@ -136,19 +138,31 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   };
 
   const renderMedia = () => {
-    // If we have carousel images (Main Image + Gallery), use Carousel
     if (carouselImages.length > 0) {
+        const currentUrl = carouselImages[currentImageIndex];
+        const isVideo = isVideoSource(currentUrl);
+        const { caption, aspectRatio = 'video' } = data.media || {};
+        const aspectClass = aspectRatio === 'square' ? 'aspect-square' : 
+                   aspectRatio === 'portrait' ? 'aspect-[3/4]' : 
+                   aspectRatio === 'wide' ? 'aspect-[21/9]' : 'aspect-video';
         return (
             <div className="w-full mb-6 md:mb-8 rounded-xl overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none">
-                <div className="relative aspect-video w-full bg-black">
-                     <img 
-                        src={carouselImages[currentImageIndex]} 
-                        alt={`${data.title} slide ${currentImageIndex + 1}`} 
-                        className="w-full h-full object-contain transition-opacity duration-300"
-                     />
-                     
-                     {/* Overlay Controls */}
-                     {carouselImages.length > 1 && (
+                <div className={`relative w-full bg-black ${aspectClass}`}>
+                    {isVideo ? (
+                        <video
+                            src={currentUrl}
+                            controls
+                            preload="metadata"
+                            className="w-full h-full object-contain bg-black"
+                        />
+                    ) : (
+                        <img 
+                            src={currentUrl} 
+                            alt={`${data.title} slide ${currentImageIndex + 1}`} 
+                            className="w-full h-full object-contain transition-opacity duration-300"
+                        />
+                    )}
+                    {carouselImages.length > 1 && (
                         <>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                             
@@ -165,7 +179,6 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                 <ChevronRight size={24} />
                             </button>
 
-                            {/* Dots */}
                             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
                                 {carouselImages.map((_, idx) => (
                                     <button
@@ -182,24 +195,24 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                         </>
                      )}
                 </div>
-                {data.media?.caption && currentImageIndex === 0 && (
+                {caption && currentImageIndex === 0 && (
                      <div className="p-3 bg-node-header text-center text-secondary font-mono text-sm border-t border-node-border">
-                        {data.media.caption}
+                        {caption}
                      </div>
                 )}
             </div>
         );
     }
 
-    // Fallback for non-image media types (Video/Iframe) or empty media
     if (!data.media) return null;
-    const { type, url, caption } = data.media;
-
-    if (type === 'image') return null; // Handled by carousel logic above
+    const { type, url, caption, aspectRatio = 'video' } = data.media;
+    const aspectClass = aspectRatio === 'square' ? 'aspect-square' : 
+                        aspectRatio === 'portrait' ? 'aspect-[3/4]' : 
+                        aspectRatio === 'wide' ? 'aspect-[21/9]' : 'aspect-video';
 
     return (
       <div className="w-full mb-8 rounded-xl overflow-hidden shadow-2xl bg-node-bg border border-node-border">
-         <div className="relative aspect-video w-full">
+         <div className={`relative w-full ${aspectClass}`}>
             {type === 'iframe' && <iframe src={url} className="w-full h-full border-0" allowFullScreen />}
             {type === 'video' && (
               <video

@@ -1,9 +1,12 @@
+import { PROJECT_ASSETS } from './data/projectAssets';
+
 export interface Project {
   id: string;
   title: string;
+  folder: string;
   categories: string[];
   description: string;
-  thumbnail: string;
+  thumbnail?: string;
   images: string[];
   link?: string;
   year?: string;
@@ -13,18 +16,14 @@ export interface Project {
   figmaEmbed?: string;
 }
 
-export const projects: Project[] = [
+const baseProjects: Omit<Project, 'images' | 'thumbnail'>[] = [
   {
     id: 'dominos-redesign',
     title: 'Dominos App Redesign',
+    folder: 'dominos',
     categories: ['UI/UX', 'App Design'],
-    description: 'A complete redesign of the Dominos mobile ordering experience, focusing on user-friendly navigation and streamlined checkout process.',
-    thumbnail: '/projects/dominos/thumbnail.jpg',
-    images: [
-      '/projects/dominos/main.jpg',
-      '/projects/dominos/gallery-1.jpg',
-      '/projects/dominos/gallery-2.jpg'
-    ],
+    description:
+      'A complete redesign of the Dominos mobile ordering experience, focusing on user-friendly navigation and streamlined checkout process.',
     year: '2025',
     service: 'UI/UX',
     tools: ['Figma'],
@@ -35,15 +34,16 @@ I rebuilt the entire design system from the ground up with clean, modular compon
 The new flow dramatically reduces the number of steps to browse the menu, build a pizza, and check out. Features like guest checkout and simplified navigation remove friction while keeping the brand's personality intact. I validated improvements through peer feedback and user testing, iterating based on real behavior.
 
 It's a complete end-to-end Figma prototype that feels modern, efficient, and cohesive from screen to screen—a redesign that makes ordering pizza actually enjoyable.`,
-    figmaEmbed: 'https://embed.figma.com/proto/dJgsXGf3LhAJuVZAnJyLqh/Dominos-Redesign-Main-File?node-id=108-916&p=f&scaling=scale-down&content-scaling=fixed&page-id=1%3A2&starting-point-node-id=108%3A914&embed-host=share'
+    figmaEmbed:
+      'https://embed.figma.com/proto/dJgsXGf3LhAJuVZAnJyLqh/Dominos-Redesign-Main-File?node-id=108-916&p=f&scaling=scale-down&content-scaling=fixed&page-id=1%3A2&starting-point-node-id=108%3A914&embed-host=share'
   },
   {
     id: 'overtone-app',
     title: 'Overtone App',
+    folder: 'overtone',
     categories: ['UI/UX', 'Full Stack Development'],
-    description: 'A music learning platform that helps users master their instrument through interactive lessons and real-time feedback.',
-  thumbnail: '/projects/overtone/thumbnail.png',
-  images: ['/projects/overtone/thumbnail.png'],
+    description:
+      'A music learning platform that helps users master their instrument through interactive lessons and real-time feedback.',
     year: '2025',
     service: 'App Development',
     tools: ['TypeScript', 'React'],
@@ -55,10 +55,10 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
   {
     id: 'velkro',
     title: 'Velkro Type Creation',
+    folder: 'velkro',
     categories: ['Typography', 'Posters'],
-    description: 'A custom typeface design project exploring modern geometric forms with a focus on readability and versatility.',
-  thumbnail: '/projects/velkro/thumbnail.jpg',
-  images: ['/projects/velkro/main.jpg', '/projects/velkro/gallery-1.jpg'],
+    description:
+      'A custom typeface design project exploring modern geometric forms with a focus on readability and versatility.',
     year: '2025',
     service: 'Typography',
     tools: ['Illustrator', 'InDesign'],
@@ -69,24 +69,23 @@ The family includes multiple weights from Light to Bold, each crafted to maintai
   {
     id: 'pgc-app',
     title: 'PGC App',
+    folder: 'pgc-app',
     categories: ['UI/UX', 'Full Stack Development'],
     description: 'Member-first mobile experience and staff console for Packanack Golf Course.',
-  thumbnail: '/projects/pgc-app/thumbnail.png',
     year: '2025',
     service: 'App Development',
     tools: ['TypeScript', 'React'],
     fullDescription: `Deployed and in daily use at Packanack Golf Course, this project delivers a member-only mobile experience and a desktop staff console with role-based authorization and real-time syncing.
 
-Highlights include tee-time booking, event registration, turn-aware food ordering, and a live staff dashboard that streams orders and state changes.`,
-  images: ['/projects/pgc-app/gallery-1.mp4','/projects/pgc-app/gallery-2.mp4'],
+Highlights include tee-time booking, event registration, turn-aware food ordering, and a live staff dashboard that streams orders and state changes.`
   },
   {
     id: 'pgc-web',
     title: 'PGC Website',
+    folder: 'pgc-website',
     categories: ['UI/UX', 'Branding', 'Photo'],
-    description: 'A lightweight, accessible redesign for the golf club website with new photography and drone footage.',
-  thumbnail: '/projects/pgc-website/thumbnail.jpg',
-  images: ['/projects/pgc-website/thumbnail.jpg'],
+    description:
+      'A lightweight, accessible redesign for the golf club website with new photography and drone footage.',
     year: '2025',
     service: 'Web Development',
     tools: ['Figma', 'HTML', 'CSS'],
@@ -95,10 +94,9 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'halfway',
     title: 'Halfway Construction',
+    folder: 'halfway',
     categories: ['Identity System', 'Animation'],
     description: 'A playful, anti-corporate identity for a fictional company called Halfway Construction.',
-  thumbnail: '/projects/halfway/main.gif',
-  images: ['/projects/halfway/main.gif','/projects/halfway/gallery-1.jpg','/projects/halfway/gallery-2.mp4'],
     year: '2025',
     service: 'Brand Design',
     tools: ['Illustrator', 'After Effects'],
@@ -107,10 +105,9 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'adelle-study',
     title: 'Adelle Font Study',
+    folder: 'adelle',
     categories: ['Typography', 'Book'],
     description: 'A research-driven publication and two editions showcasing the Adelle type family.',
-  thumbnail: '/projects/adelle/thumbnail.jpg',
-  images: ['/projects/adelle/main.jpg','/projects/adelle/gallery-1.jpg'],
     year: '2025',
     service: 'Typeface',
     tools: ['Illustrator', 'InDesign']
@@ -118,10 +115,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'octone-ink',
     title: 'Octone Ink',
+    folder: 'octone',
     categories: ['Logo Design', 'Identity System'],
-    description: 'A tattoo-ink brand identity inspired by the protective nature of octopus ink with production-ready labels and merch.',
-  thumbnail: '/projects/octone/thumbnail.png',
-  images: ['/projects/octone/main.png'],
+    description:
+      'A tattoo-ink brand identity inspired by the protective nature of octopus ink with production-ready labels and merch.',
     year: '2024',
     service: 'Brand Design',
     tools: ['Illustrator']
@@ -129,10 +126,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'sage',
     title: 'SageAIO',
+    folder: 'sageaio',
     categories: ['UI/UX', 'Branding'],
-    description: 'A private retail-commerce automation app built during COVID, covering product, design, and launch.',
-  thumbnail: '/projects/sageaio/thumbnail.jpg',
-  images: ['/projects/sageaio/main.jpg','/projects/sageaio/gallery-1.jpg','/projects/sageaio/gallery-2.jpg','/projects/sageaio/gallery-3.jpg'],
+    description:
+      'A private retail-commerce automation app built during COVID, covering product, design, and launch.',
     year: '2022',
     service: 'App Development',
     tools: ['Figma', 'Vue', 'React']
@@ -140,23 +137,23 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'squisito',
     title: 'Squisito',
+    folder: 'squisito',
     categories: ['UI/UX', 'App Design'],
-    description: 'A recipe-sharing mobile app with a reusable Figma design system and full prototype.',
-  thumbnail: '/projects/squisito/thumbnail.jpg',
-  images: ['/projects/squisito/main.jpg','/projects/squisito/gallery-1.jpg'],
+    description:
+      'A recipe-sharing mobile app with a reusable Figma design system and full prototype.',
     year: '2023',
     service: 'UI/UX',
-    tools: ['Figma']
-  ,
-  figmaEmbed: 'https://embed.figma.com/proto/2ZRtnCoyDoQAiYCT3hL73i/Untitled?node-id=0-525&p=f&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=0%3A524&embed-host=share'
+    tools: ['Figma'],
+    figmaEmbed:
+      'https://embed.figma.com/proto/2ZRtnCoyDoQAiYCT3hL73i/Untitled?node-id=0-525&p=f&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=0%3A524&embed-host=share'
   },
   {
     id: 'stop-motion',
     title: 'Stop Motion Color Project',
+    folder: 'stopmotion',
     categories: ['Motion Design', 'Color'],
-    description: 'Two companion stop-motion shorts exploring journey and rhythm, made frame-by-frame.',
-  thumbnail: '/projects/stopmotion/thumbnail.jpg',
-  images: ['/projects/stopmotion/gallery-1.mp4','/projects/stopmotion/gallary-2.mp4'],
+    description:
+      'Two companion stop-motion shorts exploring journey and rhythm, made frame-by-frame.',
     year: '2024',
     service: 'Animation',
     tools: ['Stop Motion Studio']
@@ -164,10 +161,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'city-scapes',
     title: 'City Scapes',
+    folder: 'city-scapes',
     categories: ['Branding', 'UI/UX', 'Case Study'],
-    description: 'A city identity system inspired by Tokyo, including a UI kit and icon set.',
-  thumbnail: '/projects/city-scapes/thumbnail.jpg',
-  images: ['/projects/city-scapes/main.jpg','/projects/city-scapes/gallery-1.jpg','/projects/city-scapes/gallery-2.jpg'],
+    description:
+      'A city identity system inspired by Tokyo, including a UI kit and icon set.',
     year: '2024',
     service: 'Brand Design',
     tools: ['Illustrator', 'Figma']
@@ -175,10 +172,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'neon-photo',
     title: 'Neon Photography',
+    folder: 'neon-photo',
     categories: ['Photography'],
-    description: 'A color and mood study using neon setups and reflective materials.',
-  thumbnail: '/projects/neon-photo/thumbnail.jpg',
-  images: ['/projects/neon-photo/main.jpg','/projects/neon-photo/gallery-1.jpg','/projects/neon-photo/gallery-2.jpg'],
+    description:
+      'A color and mood study using neon setups and reflective materials.',
     year: '2024',
     service: 'Photography',
     tools: ['DSLR', 'Lightroom']
@@ -186,10 +183,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'room-illustration',
     title: 'Room Illustration',
+    folder: 'room-illsutration',
     categories: ['Illustration', 'Vector'],
-    description: 'A vector reconstruction of Rechnitz Hall using geometric shapes and gradients.',
-  thumbnail: '/projects/room-illsutration/thumbnail.jpg',
-  images: ['/projects/room-illsutration/main.png'],
+    description:
+      'A vector reconstruction of Rechnitz Hall using geometric shapes and gradients.',
     year: '2024',
     service: 'Illustration',
     tools: ['Illustrator']
@@ -197,10 +194,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'sunscape-poster',
     title: 'Sunscape Poster',
+    folder: 'sunscape-poster',
     categories: ['Posters', 'Illustration', 'Type'],
-    description: 'A concert poster using layered gradients and a psychedelic wordmark.',
-    thumbnail: '/projects/sunscape-poster/thumbnail.png',
-    images: ['/projects/sunscape-poster/thumbnail.png'],
+    description:
+      'A concert poster using layered gradients and a psychedelic wordmark.',
     year: '2024',
     service: 'Graphic Design',
     tools: ['Illustrator', 'Photoshop']
@@ -208,10 +205,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'currency-redesign',
     title: 'Currency Redesign',
+    folder: 'currency-redesign',
     categories: ['Illustration', 'Type'],
-    description: 'A reimagining of U.S. currency through a Fender guitar lens, pairing artists with signature models.',
-    thumbnail: '/projects/currency-redesign/thumbnail.png',
-    images: ['/projects/currency-redesign/thumbnail.png'],
+    description:
+      'A reimagining of U.S. currency through a Fender guitar lens, pairing artists with signature models.',
     year: '2024',
     service: 'Graphic Design',
     tools: ['Illustrator', 'Photoshop']
@@ -219,10 +216,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'selfbranding',
     title: 'Self Branding',
+    folder: 'self-branding',
     categories: ['Logo Design', 'Identity System'],
-    description: 'Personal identity system built around a custom monogram and 8-pt grid.',
-  thumbnail: '/projects/self-branding/thumbnail.svg',
-  images: ['/projects/self-branding/main.jpg','/projects/self-branding/gallery-1.jpg','/projects/self-branding/gallery-2.jpg'],
+    description:
+      'Personal identity system built around a custom monogram and 8-pt grid.',
     year: '2024',
     service: 'Brand Design',
     tools: ['Illustrator']
@@ -230,10 +227,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'space-widgets',
     title: 'Space Themed App Widgets',
+    folder: 'space-themed-widgets',
     categories: ['Graphic Design'],
-    description: 'iOS widgets and icon pack built around a space motif with reusable components.',
-  thumbnail: '/projects/space-themed-widgets/thumbnail.png',
-  images: ['/projects/space-themed-widgets/thumbnail.png'],
+    description:
+      'iOS widgets and icon pack built around a space motif with reusable components.',
     year: '2024',
     service: 'Graphic Design',
     tools: ['Illustrator']
@@ -241,10 +238,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'trackerapp',
     title: 'Tracker App',
+    folder: 'tracker-app',
     categories: ['UI/UX'],
-    description: 'A dark-themed productivity hub that centralizes reminders, tasks, and appointments.',
-  thumbnail: '/projects/tracker-app/thumbnail.svg',
-  images: ['/projects/tracker-app/main.svg','/projects/tracker-app/gallery-1.svg'],
+    description:
+      'A dark-themed productivity hub that centralizes reminders, tasks, and appointments.',
     year: '2022',
     service: 'UI/UX',
     tools: ['Figma']
@@ -252,10 +249,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'color-collages',
     title: 'Color Collages',
+    folder: 'color-collages',
     categories: ['Graphic Design'],
-    description: 'A four-piece collage series blending hand work with digital craft.',
-    thumbnail: '/projects/color-collages/thumbnail.jpg',
-    images: ['/projects/color-collages/main.jpg'],
+    description:
+      'A four-piece collage series blending hand work with digital craft.',
     year: '2023',
     service: 'Graphic Design',
     tools: ['Scanner', 'Photoshop', 'Illustrator']
@@ -263,10 +260,10 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'minimalist-poster',
     title: 'Minimalist Poster',
+    folder: 'minimalist-poster',
     categories: ['Posters', 'Type', 'Illustration'],
-    description: 'A minimalist poster using bold type blocks and controlled grain for print.',
-    thumbnail: '/projects/minimalist-poster/thumbnail.jpg',
-    images: ['/projects/minimalist-poster/main.jpg'],
+    description:
+      'A minimalist poster using bold type blocks and controlled grain for print.',
     year: '2024',
     service: 'Graphic Design',
     tools: ['Illustrator', 'Photoshop']
@@ -274,12 +271,30 @@ Highlights include tee-time booking, event registration, turn-aware food orderin
   {
     id: 'charcole',
     title: 'Charcole',
+    folder: 'charcole',
     categories: ['Drawing'],
-    description: 'Figure, skull, and still-life studies in charcoal and sanguine.',
-  thumbnail: '/projects/charcole/thumbnail.jpg',
-  images: ['/projects/charcole/main.jpg','/projects/charcole/gallery-1.jpg','/projects/charcole/gallery-2.jpg'],
+    description:
+      'Figure, skull, and still-life studies in charcoal and sanguine.',
     year: '2023-24',
     service: 'Illustration',
     tools: ['Charcoal', 'Sanguine']
   }
-]
+];
+
+const getFolderAssets = (folder: string) => {
+  const assets = PROJECT_ASSETS[folder];
+  if (!assets) return { thumbnail: '', images: [] };
+  return {
+    thumbnail: assets.thumbnail,
+    images: assets.media
+  };
+};
+
+export const projects: Project[] = baseProjects.map(project => {
+  const assets = getFolderAssets(project.folder);
+  return {
+    ...project,
+    thumbnail: assets.thumbnail,
+    images: assets.images
+  };
+});

@@ -199,7 +199,6 @@ const projectNodes: NodeData[] = projects.map(project => {
   const normalizedImages = normalizeList(project.images);
   const mainMedia = normalizedImages[0] || normalizedThumbnail || '';
   const galleryAssets = normalizedImages.slice(1);
-  const galleryImages = galleryAssets.filter(isImageAsset);
   return {
     id: project.id,
     title: project.title,
@@ -213,7 +212,7 @@ const projectNodes: NodeData[] = projects.map(project => {
       aspectRatio: 'wide',
       caption: project.title
     },
-    gallery: galleryImages,
+    gallery: galleryAssets,
     content: project.fullDescription || project.description,
     tags: [...(project.categories || []), project.service || '', ...(project.tools || [])].filter(Boolean),
     links: [

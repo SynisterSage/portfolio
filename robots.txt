@@ -1,0 +1,9 @@
+# robots.txt for aferguson.art
+User-agent: *
+Allow: /
+
+Sitemap: https://aferguson.art/sitemap.xml
+# Crawl-delay: 10
+# Disallow sensitive paths below (uncomment and edit if present)
+# Disallow: /admin/
+# Disallow: /api/

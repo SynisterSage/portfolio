@@ -7,40 +7,63 @@ export const INITIAL_POSITION = { x: 0, y: 0 };
 
 export const EXPERIENCE_LIST: ExperienceItem[] = [
   {
-    id: 'exp-1',
-    role: 'Senior UX Engineer',
-    company: 'Tech Giant',
+    id: 'exp-rsp',
+    role: 'Photo Editor & Layout Intern',
+    company: 'RSP Media',
     period: '2022 - Present',
     description: `
-- Spearheaded the new **Design System** architecture used by 20+ teams (React/Figma tokens).
-- Bridged design & engineering: Translated complex motion prototypes into production-ready **WebGL** components.
-- Optimized rendering performance for data-heavy dashboards using **Rust/WASM**.
+- Capture high-end jewelry using various lighting sources and angles to highlight detail.
+- Color-correct and certify image quality to enhance pre-purchase confidence.
+- Coordinate layout work for marketing assets and magazine spreads.
     `,
-    tags: ['Design Systems', 'Performance', 'WASM'],
+    tags: ['Photography', 'Color Grading', 'Layout'],
   },
   {
-    id: 'exp-2',
-    role: 'Creative Developer',
-    company: 'Digital Agency',
-    period: '2018 - 2022',
+    id: 'exp-chc',
+    role: 'Volunteer Golf Instructor',
+    company: 'Christians Health Center',
+    period: '2023 - Present',
     description: `
-- Developed award-winning microsites for fashion & luxury brands.
-- Heavily utilized **Three.js** and **GLSL** for custom shader effects.
-- Built interactive 3D product configurators using **Vue.js**.
+- Teach seniors golf lessons and simulator sessions in 1-2 hour blocks.
+- Foster playful, interactive atmospheres so sessions feel energizing.
+- Provide ongoing support whenever availability permits.
     `,
-    tags: ['WebGL', 'Agency', 'Interaction Design'],
+    tags: ['Coaching', 'Community', 'Wellness'],
   },
   {
-    id: 'exp-3',
-    role: 'Frontend Developer',
-    company: 'Startup Inc',
-    period: '2016 - 2018',
+    id: 'exp-pack',
+    role: 'Club Web Manager & Assistant',
+    company: 'Packanack Golf Club',
+    period: '2022 - Present',
     description: `
-- Built the core MVP using React and Redux.
-- Implemented real-time chat features using Socket.io.
-- Collaborated closely with founders to iterate on product features.
+- Open and close the golf shop, ensuring four+ years of reliable operations.
+- Serve golfers on-site and maintain exceptional hospitality.
+- Manage and improve the club website with Figma/Framer to keep info fresh.
     `,
-    tags: ['React', 'Redux', 'Startup'],
+    tags: ['Operations', 'Web Management', 'Hospitality'],
+  },
+  {
+    id: 'exp-sage',
+    role: 'Founder & Digital Manager',
+    company: 'SageAIO',
+    period: '2021 - 2023',
+    description: `
+- Founded a retail solutions startup; led a distributed team of developers and designers.
+- Designed UI/UX for the brand’s flagship digital experiences.
+- Directed social channels with 10k+ followers, cultivating engagement and brand loyalty.
+    `,
+    tags: ['Leadership', 'UI/UX', 'Community'],
+  },
+  {
+    id: 'exp-mon',
+    role: 'BFA Design & Animation',
+    company: 'Monmouth University',
+    period: '2018 - 2027',
+    description: `
+- Graduated with a 3.6 GPA; concentration in Graphic and Interactive Design.
+- Studied multidisciplinary design, motion, illustration, and story-driven prototyping.
+    `,
+    tags: ['Education', 'Design', 'Animation'],
   }
 ];
 
@@ -155,7 +178,7 @@ Let's discuss how we can solve your problems.
 core:
   - TypeScript / JavaScript
   - Rust / C / C++
-  - Python / Ruby
+  - Python / Ruby / Swift
   - GLSL (Shaders)
 
 frontend_experience:
@@ -171,6 +194,7 @@ backend_data:
 
 design:
   - Figma (Advanced Prototyping)
+  - Adobe Programs (Degree in Design)
   - Motion Design
   - UI/UX Principles
     `,

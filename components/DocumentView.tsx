@@ -355,7 +355,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                                 <div className="p-2 rounded-lg bg-black/5 dark:bg-white/5 group-hover:bg-primary group-hover:text-canvas-bg transition-colors">
                                     <Mail size={16} />
                                 </div>
-                                <span>hello@developer.com</span>
+                                <span>afergyy@gmail.com</span>
                             </a>
                         </div>
                     </div>

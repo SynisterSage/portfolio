@@ -472,7 +472,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   return (
     <div 
       ref={containerRef}
-      className={`relative w-full h-full overflow-hidden bg-canvas-bg cursor-grab active:cursor-grabbing touch-none transition-colors duration-300`}
+    className={`relative w-full h-full overflow-hidden bg-canvas-bg cursor-grab active:cursor-grabbing touch-auto transition-colors duration-300`}
       onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
       onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
       onMouseUp={handleEnd}

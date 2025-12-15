@@ -118,7 +118,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                 No modules found.
             </div>
         ) : (
-            <div className={viewMode === 'grid' ? "grid grid-cols-2 gap-4 pb-4" : "space-y-3 pb-4"}>
+            <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-4 pb-4" : "space-y-3 pb-4"}>
                 {filteredProjects.map(project => {
                     const thumb = getProjectThumbnail(project);
                     const thumbIsVideo = isVideoSource(thumb);
@@ -143,7 +143,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                           />
                                         ) : (
-                                          <img src={thumb} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                          <img src={thumb} alt={project.title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                         )
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-secondary/30">
@@ -174,9 +174,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                     <p className="text-xs text-secondary line-clamp-2 mb-4 leading-relaxed">
                                         {project.description}
                                     </p>
-                                    <div className="mt-auto flex flex-wrap gap-1.5">
-                                    {project.tags.slice(0, 3).map((tag, index) => (
-                                        <span key={`${project.id}-${tag}-${index}`} className="text-[10px] px-1.5 py-0.5 rounded bg-node-bg border border-node-border/50 text-secondary">
+                            <div className="mt-auto flex flex-wrap gap-1.5 items-start justify-start">
+                                {project.tags.slice(0, 3).map((tag, index) => (
+                                            <span key={`${project.id}-${tag}-${index}`} className="text-[10px] px-1.5 py-0.5 rounded bg-node-bg border border-node-border/50 text-secondary text-left">
                                                 {tag}
                                             </span>
                                         ))}
@@ -194,7 +194,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                             className="group flex gap-4 p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 border border-transparent hover:border-node-border cursor-pointer transition-all items-center"
                         >
                             {/* Thumbnail */}
-                            <div className="w-20 h-14 md:w-24 md:h-16 shrink-0 rounded-lg overflow-hidden bg-black/10 border border-node-border relative">
+                                <div className="w-20 h-14 md:w-24 md:h-16 shrink-0 rounded-lg overflow-hidden bg-black/10 border border-node-border relative">
                                 {thumb ? (
                                     thumbIsVideo ? (
                                       <video
@@ -206,7 +206,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                       />
                                     ) : (
-                                      <img src={thumb} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                      <img src={thumb} alt={project.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                     )
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-secondary">
@@ -218,7 +218,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                             </div>
 
                             {/* Content */}
-                            <div className="flex-1 min-w-0">
+                                <div className="flex-1 min-w-0 flex flex-col">
                                 <div className="flex justify-between items-start mb-0.5">
                                     <span className="font-bold text-primary text-sm group-hover:text-accent transition-colors flex items-center gap-2 truncate">
                                         {project.title}
@@ -231,7 +231,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                     {project.description}
                                 </p>
                                 
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-wrap mt-auto">
                                     {project.tags.slice(0, 2).map((tag, index) => (
                                         <span key={`${project.id}-${tag}-${index}`} className="text-[10px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-black/30 text-secondary border border-node-border/50">
                                         {tag}

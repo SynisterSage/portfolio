@@ -390,25 +390,29 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                             )}
                         </div>
                         {data.tags && data.tags.length > 0 && (
-                            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 py-1">
-                                <div className="flex gap-2 whitespace-nowrap min-w-0">
-                                    {data.tags.map(tag => {
-                                        const isActive = tag.includes('●');
-                                        return (
-                                            <div
-                                                key={tag}
-                                                className={`flex items-center gap-1 px-3 py-1 rounded-2xl text-[11px] ${
-                                                    isActive
-                                                        ? 'text-accent bg-accent/10 border border-accent/20'
-                                                        : 'text-secondary bg-black/5 dark:bg-white/5 border border-node-border/40'
-                                                }`}
-                                            >
-                                                <Tag size={12} />
-                                                <span>{isActive ? tag.replace('●', '● ') : tag}</span>
-                                            </div>
-                                        );
-                                    })}
+                            <div className="relative overflow-hidden">
+                                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 py-1">
+                                    <div className="flex gap-2 whitespace-nowrap min-w-0">
+                                        {data.tags.map(tag => {
+                                            const isActive = tag.includes('●');
+                                            return (
+                                                <div
+                                                    key={tag}
+                                                    className={`flex items-center gap-1 px-3 py-1 rounded-2xl text-[11px] ${
+                                                        isActive
+                                                            ? 'text-accent bg-accent/10 border border-accent/20'
+                                                            : 'text-secondary bg-black/5 dark:bg-white/5 border border-node-border/40'
+                                                    }`}
+                                                >
+                                                    <Tag size={12} />
+                                                    <span>{isActive ? tag.replace('●', '● ') : tag}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
+                                <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-canvas-bg to-transparent" />
+                                <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-canvas-bg to-transparent" />
                             </div>
                         )}
                     </div>

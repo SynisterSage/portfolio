@@ -5,8 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lex Ferguson | Web & Visual Designer</title>
     <meta name="description" content="A virtual, infinite-canvas portfolio focusing on frontend mechanics with a markdown aesthetic and AI assistance." />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Lex Ferguson | Spatial Dev Portfolio" />
+    <meta property="og:description" content="A virtual, infinite-canvas portfolio focusing on frontend mechanics with a markdown aesthetic and AI assistance." />
+    <meta property="og:url" content="https://aferguson.art/" />
+    <meta property="og:image" content="https://aferguson.art/images/og/preview.png" />
+    <meta property="og:site_name" content="Spatial Dev Portfolio" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lex Ferguson | Spatial Dev Portfolio" />
+    <meta name="twitter:description" content="A virtual, infinite-canvas portfolio focusing on frontend mechanics with a markdown aesthetic and AI assistance." />
+    <meta name="twitter:image" content="https://aferguson.art/images/og/preview.png" />
+    <meta name="twitter:creator" content="@yourhandle" />
     <link rel="canonical" href="https://aferguson.art/" />
     <meta name="robots" content="index, follow" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX', {
+        anonymize_ip: true,
+        page_path: window.location.pathname
+      });
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
@@ -109,6 +133,21 @@
         "name": "Spatial Dev Portfolio",
         "description": "A virtual, infinite-canvas portfolio focusing on frontend mechanics with a markdown aesthetic and AI assistance.",
         "url": "https://aferguson.art/"
+      }
+    </script>
+    <!-- Structured Data: Website -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://aferguson.art/",
+        "name": "Spatial Dev Portfolio",
+        "description": "A virtual, infinite-canvas portfolio focusing on frontend mechanics with a markdown aesthetic and AI assistance.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://aferguson.art/?s={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
       }
     </script>
 

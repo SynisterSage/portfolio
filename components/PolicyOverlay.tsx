@@ -36,7 +36,7 @@ const PolicyOverlay: React.FC<PolicyOverlayProps> = ({ onClose }) => {
         <div className="h-14 border-b border-node-border bg-node-header flex items-center justify-between px-6 shrink-0">
             <div className="flex items-center gap-2 text-primary font-bold font-mono tracking-tight">
                 <Shield size={16} className="text-accent" />
-                <span>SYSTEM PROTOCOLS // PRIVACY</span>
+                <span>SYSTEM PROTOCOLS</span>
             </div>
             <button 
                 onClick={handleClose}

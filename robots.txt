@@ -1,9 +1,12 @@
 # robots.txt for aferguson.art
 User-agent: *
 Allow: /
-
+Disallow: /api/
+Disallow: /scripts/
+Disallow: /dist/
+Crawl-delay: 5
+Host: https://aferguson.art
 Sitemap: https://aferguson.art/sitemap.xml
-# Crawl-delay: 10
-# Disallow sensitive paths below (uncomment and edit if present)
+#
+# add additional disallows if private assets appear:
 # Disallow: /admin/
-# Disallow: /api/

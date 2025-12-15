@@ -175,8 +175,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                         {project.description}
                                     </p>
                                     <div className="mt-auto flex flex-wrap gap-1.5">
-                                        {project.tags.slice(0, 3).map(tag => (
-                                            <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-node-bg border border-node-border/50 text-secondary">
+                                    {project.tags.slice(0, 3).map((tag, index) => (
+                                        <span key={`${project.id}-${tag}-${index}`} className="text-[10px] px-1.5 py-0.5 rounded bg-node-bg border border-node-border/50 text-secondary">
                                                 {tag}
                                             </span>
                                         ))}
@@ -232,8 +232,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                 </p>
                                 
                                 <div className="flex items-center gap-2">
-                                    {project.tags.slice(0, 2).map(tag => (
-                                        <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-black/30 text-secondary border border-node-border/50">
+                                    {project.tags.slice(0, 2).map((tag, index) => (
+                                        <span key={`${project.id}-${tag}-${index}`} className="text-[10px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-black/30 text-secondary border border-node-border/50">
                                         {tag}
                                         </span>
                                     ))}

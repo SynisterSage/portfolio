@@ -2,25 +2,25 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your spatial portfolio
+# Spatial Portfolio
 
-This repo is a Vite/React prototype of a “spatial OS” portfolio. You can run it locally or deploy it to Vercel (any static host works, but Vercel is already configured for uploads).
+This is my personal spatial OS portfolio built with Vite + React. It anchors every project inside a draggable, filterable node so the work can be explored like a curated desktop. Assets and contact functionality are already wired in—you just need to drop in the visuals and deploy.
 
-View your app in AI Studio: https://ai.studio/apps/drive/16bvVLvlH_f5YZH1AKIK7aSUnyWr5R-lI
+## Highlights
+
+- **Curated Projects**: Add project folders under `public/images/projects/` with the naming convention (`thumbnail`, `main`, `gallery-*`, videos, etc.) and the UI automatically surfaces everything in the hub plus fullscreen view.
+- **Contact Flow**: The embedded form posts to FormSubmit at `afergyy@gmail.com`, rate-limited to one submission per minute for basic spam protection.
+- **Filters & Media**: The archive supports `all`, `design`, `engineering`, and `hybrid` filters, and both the list/grid cards and fullscreen carousel support mixed media (images, GIFs, MP4s).
 
 ## Assets
 
-- Drop project screenshots or renders (.jpg/.png) under `public/images/projects/`. The default nodes expect filenames like `fluid-brand.jpg`, `poly-dashboard.jpg`, or `fluid-brand-gallery-1.jpg`—use the accompanying README for more detail.
-- To offer new visuals, update `constants.ts` so each project’s `media.url`/`gallery` points at the correct relative path (e.g., `/images/projects/my-case-study.jpg`).
-
-## Contact form
-
-- The embedded form sends data via [FormSubmit](https://formsubmit.co/) to `afergyy@gmail.com`; no extra API key is needed.
-- Submissions are rate-limited to one message per minute to keep spam at bay.
-- If you want to change the recipient, update `components/ContactForm.tsx` to target a different FormSubmit endpoint.
+1. Drop all thumbnails, mains, galleries, and videos into `public/images/projects/<project-folder>/`.
+2. Keep each folder aligned with the corresponding entry in `data/projectAssets.ts` so the app knows which files belong to which project.
 
 ## Run Locally
 
-1. Install dependencies: `npm install`
-2. Start the dev server: `npm run dev`
-3. Build for production (verify before deployment): `npm run build`
+1. `npm install`
+2. `npm run dev`
+3. `npm run build` (for production preview or deployment)
+
+Deployment can be done on any static host—Vercel, Netlify, Cloudflare Pages, etc.

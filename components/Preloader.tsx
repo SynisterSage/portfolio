@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Cpu, Zap } from 'lucide-react';
+import { PRELOAD_ASSETS } from '../constants';
 
 interface PreloaderProps {
   onComplete: () => void;
@@ -10,6 +11,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [status, setStatus] = useState('INITIALIZING_CORE');
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,15 +36,44 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
     else if (progress < 90) setStatus('ESTABLISHING_LINK');
     else setStatus('SYSTEM_READY');
 
-    if (progress === 100) {
-      // Small delay at 100% before fading out
-      setTimeout(() => {
-        setIsVisible(false);
-        // Wait for fade out animation to complete before triggering parent callback
-        setTimeout(onComplete, 500); 
-      }, 500);
+    if (progress === 100 && !assetsLoaded) {
+      setStatus('PRIMING_ASSETS');
     }
-  }, [progress, onComplete]);
+  }, [progress, assetsLoaded]);
+
+  useEffect(() => {
+    if (!PRELOAD_ASSETS.length) {
+      setAssetsLoaded(true);
+      return;
+    }
+
+    let cancelled = false;
+    const loaders = PRELOAD_ASSETS.map(src => {
+      return new Promise<void>(resolve => {
+        const img = new Image();
+        img.onload = img.onerror = () => resolve();
+        img.src = src;
+      });
+    });
+
+    Promise.all(loaders).then(() => {
+      if (!cancelled) setAssetsLoaded(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (progress === 100 && assetsLoaded) {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        setTimeout(onComplete, 500);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [progress, assetsLoaded, onComplete]);
 
   return (
     <div 

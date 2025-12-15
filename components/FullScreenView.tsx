@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { NodeData } from '../types';
-import { X, Minimize2, ExternalLink, Play, Calendar, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Minimize2, ExternalLink, Calendar, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import ContactForm from './ContactForm';
 import ProjectActions from './ProjectActions';
 import ExperienceList from './ExperienceList';
@@ -201,7 +201,15 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       <div className="w-full mb-8 rounded-xl overflow-hidden shadow-2xl bg-node-bg border border-node-border">
          <div className="relative aspect-video w-full">
             {type === 'iframe' && <iframe src={url} className="w-full h-full border-0" allowFullScreen />}
-            {type === 'video' && <div className="w-full h-full flex items-center justify-center"><Play size={64} className="text-secondary" /></div>}
+            {type === 'video' && (
+              <video
+                controls
+                preload="metadata"
+                className="w-full h-full object-contain bg-black"
+              >
+                <source src={url} />
+              </video>
+            )}
          </div>
          {caption && <div className="p-3 bg-node-header text-center text-secondary font-mono text-sm border-t border-node-border">{caption}</div>}
       </div>

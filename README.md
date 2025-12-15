@@ -16,6 +16,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/16bvVLvlH_f5YZH1AKIK7aS
 ## Contact form
 
 - The embedded form sends data via [FormSubmit](https://formsubmit.co/) to `afergyy@gmail.com`; no extra API key is needed.
+- Submissions are rate-limited to one message per minute to keep spam at bay.
 - If you want to change the recipient, update `components/ContactForm.tsx` to target a different FormSubmit endpoint.
 
 ## Run Locally

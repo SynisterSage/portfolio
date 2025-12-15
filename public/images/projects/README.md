@@ -1,10 +1,9 @@
 # Project Images
 
-Drop your locally hosted portfolio screenshots, renders, or artwork inside this folder.
-Vite will serve them from `/images/projects/<filename>`. 
+Drop locally hosted project thumbnails, main compositions, and gallery assets under this directory. Vite serves them from `/images/projects/<folder>/`.
 
-For example, the default nodes expect:
-  - `/images/projects/fluid-brand.jpg`
-  - `/images/projects/poly-dashboard.jpg`
+Name notes:
+- Each project folder should contain `thumbnail.*`, `main.*`, and optional `gallery-*.jpg` / `gallery-*.png`.
+- Video files (mp4/mov) can be referenced from `projects.ts` but are excluded from the spatial gallery to keep Node rendering stable.
 
-Replace or extend these files with your own images, keeping the filenames in sync with `constants.ts` if you want them to appear automatically in the spatial and document views.
+The tooling in `constants.ts` references these images, so keep folder names in sync with `projects.ts`.

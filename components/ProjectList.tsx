@@ -48,7 +48,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
           if (node?.media?.type === 'image' && node.media.url) return node.media.url;
           if (node?.gallery?.[0]) return node.gallery[0];
       }
-      return null;
+      return project.thumbnail || null;
   };
 
   return (

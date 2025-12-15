@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Send, Check, Loader2, Github, Linkedin, Instagram } from 'lucide-react';
 
 const FORM_ENDPOINT = 'https://formsubmit.co/ajax/afergyy@gmail.com';
+const RATE_LIMIT_MS = 60 * 1000;
 
 type FormState = {
   name: string;
@@ -13,13 +14,23 @@ const ContactForm: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState<FormState>({ name: '', email: '', message: '' });
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [rateLimitUntil, setRateLimitUntil] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState(0);
 
   const isSubmitting = status === 'sending';
   const isSuccess = status === 'success';
+  const isRateLimited = countdown > 0;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
+
+    const now = Date.now();
+    if (rateLimitUntil && now < rateLimitUntil) {
+      setStatus('error');
+      setErrorMessage('Please wait before sending another message.');
+      return;
+    }
 
     setStatus('sending');
     setErrorMessage('');
@@ -46,6 +57,7 @@ const ContactForm: React.FC = () => {
 
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
+      setRateLimitUntil(Date.now() + RATE_LIMIT_MS);
 
       setTimeout(() => {
         setStatus('idle');
@@ -61,6 +73,29 @@ const ContactForm: React.FC = () => {
     const { name, value } = event.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+
+  useEffect(() => {
+    if (!rateLimitUntil) {
+      setCountdown(0);
+      return;
+    }
+
+    const tick = () => {
+      const now = Date.now();
+      if (now >= rateLimitUntil) {
+        setRateLimitUntil(null);
+        setCountdown(0);
+        setStatus('idle');
+        setErrorMessage('');
+        return;
+      }
+      setCountdown(Math.ceil((rateLimitUntil - now) / 1000));
+    };
+
+    tick();
+    const interval = setInterval(tick, 250);
+    return () => clearInterval(interval);
+  }, [rateLimitUntil]);
 
   return (
     <div className="relative">
@@ -112,6 +147,11 @@ const ContactForm: React.FC = () => {
           {status === 'error' && (
             <p className="text-rose-400 text-sm font-mono">{errorMessage || 'Something went wrong. Try again.'}</p>
           )}
+          {countdown > 0 && (
+            <p className="text-xs font-mono uppercase tracking-wider text-secondary">
+              Next submission in {countdown}s
+            </p>
+          )}
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex gap-4">
@@ -128,9 +168,9 @@ const ContactForm: React.FC = () => {
 
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="bg-primary text-canvas-bg hover:bg-accent hover:text-white disabled:opacity-50 disabled:hover:bg-primary px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg cursor-pointer disabled:cursor-not-allowed"
-            >
+            disabled={isSubmitting || isRateLimited}
+            className="bg-primary text-canvas-bg hover:bg-accent hover:text-white disabled:opacity-50 disabled:hover:bg-primary px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg cursor-pointer disabled:cursor-not-allowed"
+          >
               {isSubmitting ? (
                 <>
                   <span>Sending</span>

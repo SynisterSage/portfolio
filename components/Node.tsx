@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { NodeData } from '../types';
-import { FileCode, Terminal, Layers, User, ExternalLink, Hash, Database, Image as ImageIcon, Play, Mail, History, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FileCode, Terminal, Layers, User, ExternalLink, Hash, Database, Image as ImageIcon, Mail, History, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProjectList from './ProjectList';
 import ContactForm from './ContactForm';
 import ProjectActions from './ProjectActions';
@@ -109,49 +109,58 @@ const Node: React.FC<NodeProps> = ({
     });
   };
 
-  // Carousel Logic
-  const carouselImages = useMemo(() => {
-    const images: string[] = [];
-    if (data.media?.type === 'image' && data.media.url) {
-        images.push(data.media.url);
+  const isVideoSource = (value: string) => /\.(mp4|mov|webm|ogg)$/i.test(value);
+
+  const carouselItems = useMemo(() => {
+    const items: string[] = [];
+    if (data.media?.url) {
+      items.push(data.media.url);
     }
-    if (data.gallery && data.gallery.length > 0) {
-        images.push(...data.gallery);
+    if (data.gallery) {
+      items.push(...data.gallery);
     }
-    return images;
+    return items;
   }, [data]);
 
   const nextImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (carouselImages.length <= 1) return;
-    setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+    if (carouselItems.length <= 1) return;
+    setCurrentImageIndex((prev) => (prev + 1) % carouselItems.length);
   };
 
   const prevImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (carouselImages.length <= 1) return;
-    setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+    if (carouselItems.length <= 1) return;
+    setCurrentImageIndex((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
   };
 
   const renderMedia = () => {
     // If we have carousel images (Main Image + Gallery), use Carousel
-    if (carouselImages.length > 0) {
+    if (carouselItems.length > 0) {
         const { caption, aspectRatio = 'video' } = data.media || {};
         const aspectClass = aspectRatio === 'square' ? 'aspect-square' : 
                    aspectRatio === 'portrait' ? 'aspect-[3/4]' : 
                    aspectRatio === 'wide' ? 'aspect-[21/9]' : 'aspect-video';
-       
         return (
             <div className="w-full relative bg-black/5 dark:bg-black/40 border-b border-node-border group shrink-0 select-none">
                <div className={`w-full ${aspectClass} relative overflow-hidden group/carousel`}>
-                   <img 
-                       src={carouselImages[currentImageIndex]} 
-                       alt={caption || data.title} 
-                       className="w-full h-full object-cover transition-transform duration-700" 
-                   />
-                   
+                   {isVideoSource(carouselItems[currentImageIndex]) ? (
+                       <video
+                          src={carouselItems[currentImageIndex]}
+                          controls
+                          preload="metadata"
+                          className="w-full h-full object-contain"
+                       />
+                   ) : (
+                       <img 
+                           src={carouselItems[currentImageIndex]} 
+                           alt={caption || data.title} 
+                           className="w-full h-full object-cover transition-transform duration-700" 
+                       />
+                   )}
+                  
                    {/* Overlay Controls */}
-                   {carouselImages.length > 1 && (
+                   {carouselItems.length > 1 && (
                        <>
                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover/carousel:opacity-100 transition-opacity pointer-events-none" />
                            
@@ -170,7 +179,7 @@ const Node: React.FC<NodeProps> = ({
 
                            {/* Dots */}
                            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-                               {carouselImages.map((_, idx) => (
+                               {carouselItems.map((_, idx) => (
                                    <button
                                        key={idx}
                                        onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
@@ -205,14 +214,17 @@ const Node: React.FC<NodeProps> = ({
     return (
       <div className="w-full relative bg-black/5 dark:bg-black/40 border-b border-node-border group shrink-0">
         <div className={`w-full ${aspectClass} relative overflow-hidden`}>
-          {/* Note: type === 'image' is handled by the carousel logic above */}
           {type === 'iframe' && (
              <iframe src={url} className="w-full h-full border-0" title={caption || 'Embedded content'} allowFullScreen />
           )}
           {type === 'video' && (
-              <div className="w-full h-full flex items-center justify-center bg-node-bg">
-                  <Play size={48} className="text-secondary" />
-              </div>
+            <video
+              controls
+              preload="metadata"
+              className="w-full h-full object-contain bg-black"
+            >
+              <source src={url} />
+            </video>
           )}
         </div>
         {caption && (

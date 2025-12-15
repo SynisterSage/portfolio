@@ -52,9 +52,16 @@ export interface ProjectItem {
   title: string;
   description: string;
   tags: string[];
-  category: 'engineering' | 'design' | 'hybrid';
+  category?: string;
   linkedNodeId?: string; // If it exists as a spatial node
   link?: string; // External link if no spatial node
+  thumbnail?: string; // Previews for the list
+  images?: string[]; // Additional gallery assets
+  year?: string;
+  service?: string;
+  tools?: string[];
+  fullDescription?: string;
+  figmaEmbed?: string;
 }
 
 export interface ExperienceItem {

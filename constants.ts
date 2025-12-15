@@ -1,5 +1,6 @@
 
 import { NodeData, ProjectItem, ExperienceItem } from './types';
+import { projects } from './projects';
 
 export const INITIAL_SCALE = 1;
 export const INITIAL_POSITION = { x: 0, y: 0 };
@@ -45,56 +46,76 @@ export const EXPERIENCE_LIST: ExperienceItem[] = [
 
 // Project visuals assume you drop high-res files under `/public/images/projects`.
 // See `public/images/projects/README.md` for recommended filenames.
-export const PROJECTS_LIST: ProjectItem[] = [
-  {
-    id: 'p1',
-    title: 'Fluid Identity System',
-    description: 'Generative branding using real-time fluid simulation shaders.',
-    tags: ['WebGL', 'Three.js', 'React'],
-    category: 'design',
-    linkedNodeId: 'proj-1'
-  },
-  {
-    id: 'p2',
-    title: 'Poly Analytics',
-    description: 'Full-stack analytics platform with WebSocket collaboration.',
-    tags: ['Angular', 'Python', 'Postgres'],
-    category: 'engineering',
-    linkedNodeId: 'proj-2'
-  },
-  {
-    id: 'p3',
-    title: 'Neon Commerce',
-    description: 'Headless Shopify storefront with 3D product configurator.',
-    tags: ['Vue', 'Shopify', 'GSAP'],
-    category: 'hybrid',
-    link: '#'
-  },
-  {
-    id: 'p4',
-    title: 'Rust Raytracer',
-    description: 'Multi-threaded raytracer written from scratch for learning.',
-    tags: ['Rust', 'WASM', 'Graphics'],
-    category: 'engineering',
-    link: '#'
-  },
-  {
-    id: 'p5',
-    title: 'Kinetic Type Engine',
-    description: 'Custom canvas-based typography engine for web.',
-    tags: ['Canvas API', 'TypeScript'],
-    category: 'design',
-    link: '#'
-  }
-];
+const withImagesPath = (value: string | undefined) => {
+  if (!value) return value;
+  if (value.startsWith('/projects')) return `/images${value}`;
+  return value;
+};
 
-export const NODES: NodeData[] = [
+const isImageAsset = (value: string) => /\.(png|jpe?g|gif|svg|webp)$/i.test(value);
+const isVideoAsset = (value: string) => /\.(mp4|mov|webm|ogg)$/i.test(value);
+
+const normalizeList = (list?: string[]) => {
+  if (!list) return [];
+  return list
+    .map(item => withImagesPath(item))
+    .filter((item): item is string => Boolean(item));
+};
+
+const deriveCategory = (project: (typeof projects)[number]) => {
+  const engineerKeywords = ['App', 'Development', 'Full Stack', 'Interactive', 'Digital'];
+  const designKeywords = ['Design', 'Typography', 'Brand', 'Illustration', 'Graphic'];
+  if (project.service) {
+    const service = project.service.toLowerCase();
+    if (engineerKeywords.some(keyword => service.includes(keyword.toLowerCase()))) return 'engineering';
+    if (designKeywords.some(keyword => service.includes(keyword.toLowerCase()))) return 'design';
+  }
+  return 'hybrid';
+};
+
+export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
+  const normalizedThumbnail = withImagesPath(project.thumbnail);
+  return {
+    id: project.id,
+    title: project.title,
+    description: project.description,
+    tags: [
+      ...(project.categories || []),
+      ...(project.tools || []),
+      ...(project.service ? [project.service] : [])
+    ],
+    category: deriveCategory(project),
+    linkedNodeId: project.id,
+    link: project.link,
+    thumbnail: normalizedThumbnail,
+    images: normalizeList(project.images),
+    year: project.year,
+    service: project.service,
+    tools: project.tools,
+    fullDescription: project.fullDescription,
+    figmaEmbed: project.figmaEmbed
+  };
+});
+
+const unique = (list: string[]) => Array.from(new Set(list));
+export const PRELOAD_ASSETS = unique(
+  projects.flatMap(project => {
+    const normalizedThumbnail = withImagesPath(project.thumbnail);
+    const assets = [normalizedThumbnail, withImagesPath(project.images?.[0] || '')].filter(Boolean) as string[];
+    const gallery = normalizeList(project.images)
+      .slice(1, 4)
+      .filter(item => isImageAsset(item));
+    return [...assets, ...gallery];
+  }).filter(Boolean)
+).filter(item => isImageAsset(item));
+
+const baseNodes: NodeData[] = [
   {
     id: 'projects-hub',
     title: 'projects/README.md',
     type: 'project-hub',
     // Row 1, Col 1
-    position: { x: 0, y: 0 }, 
+    position: { x: 0, y: 0 },
     width: 600,
     content: '',
     tags: ['Directory', 'Filterable'],
@@ -128,7 +149,7 @@ Let's discuss how we can solve your problems.
     title: 'stack.yml',
     type: 'skill',
     // Row 2, Col 1
-    position: { x: 0, y: 550 }, 
+    position: { x: 0, y: 550 },
     width: 450,
     content: `
 core:
@@ -170,59 +191,39 @@ I build digital products where **System Architecture** meets **Interaction Desig
 Focused on **Performance**, **Scalability**, and **Motion**.
     `,
     tags: ['Design Engineer', 'Creative Dev', 'CS + Design'],
-  },
-  {
-    id: 'proj-1',
-    title: 'projects/fluid-brand.glsl',
-    type: 'project',
-    hidden: true, // Hidden by default (OS Window)
-    position: { x: 0, y: 0 }, // Position determined by spawn logic
-    width: 500,
-    media: {
-        type: 'image',
-        url: '/images/projects/fluid-brand.jpg',
-        aspectRatio: 'wide',
-        caption: 'Real-time GLSL fluid simulation'
-    },
-    gallery: [
-      '/images/projects/fluid-brand-gallery-1.jpg',
-      '/images/projects/fluid-brand-gallery-2.jpg',
-      '/images/projects/fluid-brand-gallery-3.jpg'
-    ],
-    content: `
-A generative branding identity system.
-
-Uses real-time fluid simulation shaders to generate unique logo variations for every user session.
-
-- **Stack**: Three.js, React-Three-Fiber, GLSL
-- **Concept**: Visual Identity as Code
-    `,
-    tags: ['Generative Art', 'WebGL', 'Branding'],
-    links: [{ label: 'View Shader', url: '#' }, { label: 'Live Demo', url: '#' }]
-  },
-  {
-    id: 'proj-2',
-    title: 'projects/poly-dashboard.tsx',
-    type: 'project',
-    hidden: true, // Hidden by default
-    position: { x: 0, y: 0 },
-    width: 480,
-    media: {
-        type: 'image',
-        url: '/images/projects/poly-dashboard.jpg',
-        aspectRatio: 'video'
-    },
-    content: `
-Full-stack analytics platform for creative teams.
-
-- **Frontend**: Angular & RxJS for complex state management.
-- **Backend**: Python (Django) & PostgreSQL.
-- **Features**: Real-time canvas collaboration using WebSockets.
-    `,
-    tags: ['Angular', 'Python', 'PostgreSQL'],
-    links: [{ label: 'GitHub', url: '#' }]
   }
 ];
+
+const projectNodes: NodeData[] = projects.map(project => {
+  const normalizedThumbnail = withImagesPath(project.thumbnail) || '';
+  const normalizedImages = normalizeList(project.images);
+  const mainMedia = normalizedImages[0] || normalizedThumbnail || '';
+  const galleryAssets = normalizedImages.slice(1);
+  const galleryImages = galleryAssets.filter(isImageAsset);
+  return {
+    id: project.id,
+    title: project.title,
+    type: 'project',
+    hidden: true,
+    position: { x: 0, y: 0 },
+    width: 520,
+    media: {
+      type: mainMedia && isVideoAsset(mainMedia) ? 'video' : 'image',
+      url: mainMedia || normalizedThumbnail || '',
+      aspectRatio: 'wide',
+      caption: project.title
+    },
+    gallery: galleryImages,
+    content: project.fullDescription || project.description,
+    tags: [...(project.categories || []), project.service || '', ...(project.tools || [])].filter(Boolean),
+    links: [
+      ...(project.link ? [{ label: 'Visit Project', url: project.link }] : []),
+      ...(project.figmaEmbed ? [{ label: 'View Figma', url: project.figmaEmbed }] : [])
+    ]
+  };
+});
+
+export const NODES: NodeData[] = [...baseNodes, ...projectNodes];
 
 export const SYSTEM_INSTRUCTION = `
 You are the AI Assistant for a Design Engineer's portfolio. 

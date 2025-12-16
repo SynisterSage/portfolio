@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Cpu, Zap } from 'lucide-react';
+// Replaced lucide icons with an inline SVG logo (styled green)
 import { PRELOAD_ASSETS } from '../constants';
 
 export const PRELOADER_KEY = 'portfolio.preloader.lastSeen';
@@ -176,12 +176,15 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       <div className="w-64 md:w-80 space-y-6">
         {/* Logo / Icon Area */}
         <div className="flex justify-center mb-8">
-            <div className="relative">
-                <Cpu size={48} className="text-primary animate-pulse" />
-                <div className="absolute -top-1 -right-1">
-                    <Zap size={16} className="text-accent fill-accent animate-bounce" />
-                </div>
-            </div>
+          <div className="relative flex items-center justify-center">
+            {/* Use the repo's logo.svg and recolor it via currentColor. */}
+            <img
+              src="/icons/logo.svg"
+              alt="Logo"
+              className="w-20 h-20 text-emerald-500 transform transition-transform duration-500 hover:scale-105 animate-[pulse_1.4s_ease-in-out_infinite]"
+              style={{ willChange: 'transform' }}
+            />
+          </div>
         </div>
 
         {/* Progress Bar */}

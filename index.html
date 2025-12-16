@@ -10,8 +10,23 @@
     <meta property="og:title" content="Lex Ferguson | Spatial Dev Portfolio" />
     <meta property="og:description" content="A virtual, infinite-canvas portfolio focusing on frontend mechanics with a markdown aesthetic and AI assistance." />
     <meta property="og:url" content="https://aferguson.art/" />
-    <meta property="og:image" content="https://aferguson.art/images/og/preview.png" />
     <meta property="og:site_name" content="Spatial Dev Portfolio" />
+    <!-- Primary OG image (1200x630) -->
+    <meta property="og:image" content="/icons/og-preview.png" />
+    <meta property="og:image:alt" content="Lex Ferguson — Web & Visual Designer" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- High-res fallback (2x) -->
+    <meta property="og:image" content="/icons/og-preview@2x.png" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lex Ferguson | Web & Visual Designer" />
+    <meta name="twitter:description" content="A virtual, infinite-canvas portfolio focusing on frontend mechanics with a markdown aesthetic and AI assistance." />
+    <meta name="twitter:image" content="/icons/og-preview.png" />
+    <meta name="twitter:image:alt" content="Lex Ferguson — Web & Visual Designer" />
     <!-- Twitter Card -->
     <meta name="google-site-verification" content="EmnE3-EcoKuPMqO4jlaFdpPzW13SzBH2meqG1TtcHGY" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -22,12 +37,12 @@
     <link rel="canonical" href="https://aferguson.art/" />
     <meta name="robots" content="index, follow" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFJPNSXCQ4"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag(){dataLayer.push(arguments);} 
       gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX', {
+      gtag('config', 'G-GFJPNSXCQ4', {
         anonymize_ip: true,
         page_path: window.location.pathname
       });
@@ -124,7 +139,13 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="mask-icon" href="/icons/favicon.svg" color="#10b981" />
+    <meta name="theme-color" content="#10b981" />
+
+    <!-- Android / PWA icons (manifest should reference these too) -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/favicon-512.png" />
 
     <!-- Structured Data: Person -->
     <script type="application/ld+json">

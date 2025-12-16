@@ -67,6 +67,18 @@ const App: React.FC = () => {
     setTimeout(() => setActiveNodeId(null), 500);
   };
 
+  // Fire GA page_view/config on internal navigation (SPA)
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof (window as any).gtag !== 'function') return;
+    const path = activeNodeId ? `/node/${activeNodeId}` : window.location.pathname + window.location.search;
+    try {
+      (window as any).gtag('event', 'page_view', { page_path: path });
+      (window as any).gtag('config', 'G-GFJPNSXCQ4', { page_path: path });
+    } catch (e) {
+      // swallow errors silently
+    }
+  }, [activeNodeId, viewMode]);
+
   const handleToggleView = () => {
     setViewMode(prev => prev === 'spatial' ? 'document' : 'spatial');
   };

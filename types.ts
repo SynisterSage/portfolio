@@ -24,6 +24,7 @@ export interface NodeData {
   links?: { label: string; url: string }[];
   hidden?: boolean; // If true, node is not rendered until opened
   figmaEmbed?: string;
+  likes?: number;
 }
 
 export interface CanvasState {
@@ -64,6 +65,7 @@ export interface ProjectItem {
   fullDescription?: string;
   figmaEmbed?: string;
   figmaEmbedLabel?: string;
+  likes?: number;
 }
 
 export interface ExperienceItem {

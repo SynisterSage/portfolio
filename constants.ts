@@ -116,6 +116,7 @@ export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
     link: project.link,
     thumbnail: normalizedThumbnail,
     images: normalizeList(project.images),
+    likes: project.likes ?? 0,
     year: project.year,
     service: project.service,
     tools: project.tools,
@@ -245,6 +246,7 @@ const projectNodes: NodeData[] = projects.map(project => {
     tags: Array.from(
       new Set([...(project.categories || []), project.service || '', ...(project.tools || [])].filter(Boolean))
     ),
+    likes: project.likes ?? 0,
     figmaEmbed: project.figmaEmbed,
     links: [
       ...(project.link ? [{ label: 'Visit Project', url: project.link }] : []),

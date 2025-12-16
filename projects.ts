@@ -15,6 +15,7 @@ export interface Project {
   fullDescription?: string;
   figmaEmbed?: string;
   figmaEmbedLabel?: string;
+  likes?: number;
 }
 
 const baseProjects: Omit<Project, 'images' | 'thumbnail'>[] = [
@@ -27,6 +28,7 @@ const baseProjects: Omit<Project, 'images' | 'thumbnail'>[] = [
     year: '2025',
     service: 'UI/UX',
     tools: ['Figma'],
+    likes: 34,
     fullDescription: `This mobile redesign reimagines the Domino's ordering experience with a sharper, more intuitive user flow and a bold flat-UI aesthetic. After auditing the existing app I mapped each core journey, sketched flows, and defined states before translating them into a component system. Created as a class assignment, it became a passion project driven by my love for improving everyday digital experiences. The goal was simple: fix the frustrating UX of the existing app and make pizza ordering fast, clear, and visually cohesive.
 
 I rebuilt the entire design system from the ground up with clean, modular components, defined states, and a flexible variable structure supporting light and dark modes. The color palette was reinvented for vibrancy and contrast, while typography stays confident yet readable. Every interaction, from micro animations to modal transitions, was refined to feel responsive and satisfying.
@@ -46,6 +48,7 @@ It's a complete end-to-end Figma prototype that feels modern, efficient, and coh
     year: '2025',
     service: 'App Development',
     tools: ['TypeScript', 'React', 'Web Audio API'],
+    likes: 24,
     fullDescription: `Deployed as Overtone, this mobile-first drum-tuning companion was prototyped and designed in Figma, then coded in TypeScript/JavaScript, HTML, and CSS and hosted on Vercel. The interface supports light and dark modes for studio and stage, and the app runs as a fast single-page experience so it feels instant on phones.
 
 At its core is a Hz mic pickup written in JavaScript using the Web Audio API that listens through the device mic and detects the fundamental in real time. A locking system holds the reading once the pitch stabilizes so fine adjustments are easy and the value does not jump around. Settings let you dial in detection behavior and create kits with named drums, sizes, and saved values, all persisted in local storage so session tweaks return on reload. The main tuner view keeps focus with a large frequency readout, note mapping, peak hold, and clear Live/Locked states. Continuous deploys keep the embedded demo current while iterating on workflows and presets.`,
@@ -62,6 +65,7 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     year: '2025',
     service: 'Typography',
     tools: ['Adobe Illustrator', 'Adobe InDesign'],
+    likes: 9,
     fullDescription: `Velkro is a custom geometric typeface that balances modern aesthetics with exceptional readability. Inspired by Swiss design principles and contemporary digital interfaces, Velkro features clean lines, precise curves, and carefully adjusted spacing.
 
 The family includes multiple weights from Light to Bold, each crafted to maintain consistency across sizes. Special attention was paid to kerning pairs and OpenType features to ensure professional-grade typesetting results. A specimen book showcases Velkro in various applications, from editorial layouts to poster designs.`
@@ -75,6 +79,7 @@ The family includes multiple weights from Light to Bold, each crafted to maintai
     year: '2025',
     service: 'App Development',
     tools: ['TypeScript', 'React', 'Realtime APIs'],
+    likes: 41,
     fullDescription: `Deployed and in daily use at Packanack Golf Course, this project delivers a member-only mobile experience and a desktop staff console with role-based authorization and real-time syncing.
 
 It was built with TypeScript and React, splitting mobile and console flows into shared component patterns while tapping Packanack's private REST endpoints for tee-time availability, event data, and order management. A lightweight event stream powers the live staff dashboard so orders, kitchen statuses, and course activity appear instantly across devices, while authenticated mobile users see the same data with turn-aware food ordering, event registration, and tee-sheet controls.`
@@ -88,6 +93,7 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     year: '2025',
     service: 'Web Development',
     tools: ['Figma', 'HTML', 'CSS'],
+    likes: 18,
     fullDescription: `Built directly from an accessible Figma system, the static site deploys on packanackgolfclub.com with semantic HTML and CSS that highlight tee-time calls to action, membership paths, and curated drone photography without extra bloat.`,
     link: 'https://www.packanackgolfclub.com/',
     figmaEmbed: 'https://www.packanackgolfclub.com/',
@@ -102,6 +108,7 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     year: '2025',
     service: 'Brand Design',
     tools: ['Adobe Illustrator', 'Adobe After Effects'],
+    likes: 8,
     fullDescription: `Halfway Construction is a tongue-in-cheek brand that leans on bold safety-inspired palette, hazard-stripe accents, and modular logos built for stickers and headers. Motion tests include an animated hazard-stripe loader and snappy logo build.`
   },
   {
@@ -112,7 +119,9 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Research-driven publication showcasing the Adelle type family across two editions, documented through usage studies and editorial spreads. I collected typographic histories, mapped usage scenarios, and curated spreads that highlight weights, ligatures, and editorial scales. Deliverables include spec sheets and print-ready files to illustrate the family's flexibility. Stack: Adobe Illustrator, Adobe InDesign.`,
     year: '2025',
     service: 'Typography',
-    tools: ['Adobe Illustrator', 'Adobe InDesign']
+    tools: ['Adobe Illustrator', 'Adobe InDesign'],
+    likes: 14
+    
   },
   {
     id: 'octone-ink',
@@ -122,7 +131,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Tattoo-ink brand identity inspired by the protective nature of octopus ink, complete with production-ready labels and merch built from storyboarded protective cues. I sketched brand language that blends fluid forms with bold glyphs, then applied the system across labels, merch, and packaging diagrams to ensure production viability. Stack: Adobe Illustrator.`,
     year: '2024',
     service: 'Brand Design',
-    tools: ['Illustrator']
+    tools: ['Illustrator'],
+    likes: 6,
   },
   {
     id: 'sage',
@@ -132,7 +142,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Private retail-commerce automation app built during COVID covering product, design, and launch workflows with rapid prototyping and front-end bridges between Vue and React. I prototyped flows in Figma, mapped data hand-offs, and built components that share state between the Vue dashboard and React launch surfaces. The goal was to keep the commerce ops team aligned while iterating the automation logic quickly. Stack: Figma, Vue.js, React.`,
     year: '2022',
     service: 'App Development',
-    tools: ['Figma', 'Vue', 'React']
+    tools: ['Figma', 'Vue', 'React'],
+    likes: 27
   },
   {
     id: 'squisito',
@@ -143,6 +154,7 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     year: '2023',
     service: 'UI/UX',
     tools: ['Figma'],
+    likes: 13,
     figmaEmbed:
       'https://embed.figma.com/proto/2ZRtnCoyDoQAiYCT3hL73i/Untitled?node-id=0-525&p=f&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=0%3A524&embed-host=share'
   },
@@ -154,7 +166,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Two companion stop-motion shorts exploring journey and rhythm, crafted frame by frame with choreographed color palettes and pacing tests. I storyboarded each beat, matched lighting palettes across shots, and tuned pacing to keep each sequence readable. Stack: Stop Motion Studio.`,
     year: '2024',
     service: 'Motion Design',
-    tools: ['Stop Motion Studio']
+    tools: ['Stop Motion Studio'],
+    likes: 14
   },
   {
     id: 'city-scapes',
@@ -164,7 +177,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Tokyo-inspired city identity system that includes a UI kit and icon set, developed after researching the city's typography and transit color systems. I pulled color cues from transit lines, distilled them into a modular icon set, and built a UI kit with responsive layouts ready for interface teams. Stack: Illustrator, Figma.`,
     year: '2024',
     service: 'Brand Design',
-    tools: ['Illustrator', 'Figma']
+    tools: ['Illustrator', 'Figma'],
+    likes: 16
   },
   {
     id: 'neon-photo',
@@ -174,7 +188,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Color and mood study using neon setups and reflective materials, planned with lighting tests and selective retouching. Each shoot started with schematic lighting diagrams, then the best frames were retouched to preserve vibrant highlights while controlling spill. Stack: DSLR, Lightroom.`,
     year: '2024',
     service: 'Design',
-    tools: ['DSLR', 'Lightroom']
+    tools: ['DSLR', 'Lightroom'],
+    likes: 10
   },
   {
     id: 'room-illustration',
@@ -184,7 +199,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Vector reconstruction of Rechnitz Hall using geometric shapes and gradients informed by architectural references. I traced structural lines, layered gradients to suggest depth, and kept proportions faithful for an accurate yet stylized representation. Stack: Illustrator.`,
     year: '2024',
     service: 'Illustration',
-    tools: ['Illustrator']
+    tools: ['Illustrator'],
+    likes: 7
   },
   {
     id: 'sunscape-poster',
@@ -194,7 +210,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Concert poster built from layered gradients and a psychedelic wordmark, developed through iterative layout studies and color passes. I explored several grid interpretations, tuned contrast for print, and layered textures to keep the wordmark legible in a dense composition. Stack: Illustrator, Photoshop.`,
     year: '2024',
     service: 'Graphic Design',
-    tools: ['Illustrator', 'Photoshop']
+    tools: ['Illustrator', 'Photoshop'],
+    likes: 5
   },
   {
     id: 'currency-redesign',
@@ -204,7 +221,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Reimagining U.S. currency through a Fender guitar lens, pairing artists with signature models and texture studies. I combined portraiture, metallic textures, and concept notes to create banknotes that feel like collectible art while staying balanced for currency layouts. Stack: Illustrator, Photoshop.`,
     year: '2024',
     service: 'Graphic Design',
-    tools: ['Illustrator', 'Photoshop']
+    tools: ['Illustrator', 'Photoshop'],
+    likes: 20
   },
   {
     id: 'selfbranding',
@@ -214,7 +232,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Personal identity system built around a custom monogram and 8-pt grid, refined through sketch iterations and modular applications. I authored iconized lockups, arranged the grid for responsive scaling, and tested applications from stationery to digital hero layouts. Stack: Illustrator.`,
     year: '2024',
     service: 'Brand Design',
-    tools: ['Illustrator']
+    tools: ['Illustrator'],
+    likes: 12
   },
   {
     id: 'space-widgets',
@@ -224,7 +243,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `iOS widgets and icon pack built around a space motif with reusable components and tested layouts for different screen sizes. I designed element systems that adapt to light/dark backgrounds and optimized each widget for clarity at small resolutions. Stack: Illustrator.`,
     year: '2024',
     service: 'Graphic Design',
-    tools: ['Illustrator']
+    tools: ['Illustrator'],
+    likes: 4
   },
   {
     id: 'trackerapp',
@@ -234,7 +254,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Dark-themed productivity hub that centralizes reminders, tasks, and appointments with flows mapped from user interviews. I diagrammed the mental model, grouped contexts, and designed card-based patterns that keep focus while respecting the night-friendly palette. Stack: Figma.`,
     year: '2022',
     service: 'UI/UX',
-    tools: ['Figma']
+    tools: ['Figma'],
+    likes: 15
   },
   {
     id: 'color-collages',
@@ -244,7 +265,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Four-piece collage series blending hand work with digital craft via scanned layers and digital compositing. I layered analog cut papers, scanned them, and recomposed with digital masking to balance texture and precision. Stack: Scanner, Photoshop, Illustrator.`,
     year: '2023',
     service: 'Graphic Design',
-    tools: ['Scanner', 'Photoshop', 'Illustrator']
+    tools: ['Scanner', 'Photoshop', 'Illustrator'],
+    likes: 8
   },
   {
     id: 'minimalist-poster',
@@ -254,7 +276,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Minimalist poster using bold type blocks and controlled grain for print, refined through test prints for contrast. I built high-contrast layouts, added controlled grain textures, and produced proofs to ensure the type stayed sharp on paper. Stack: Illustrator, Photoshop.`,
     year: '2024',
     service: 'Graphic Design',
-    tools: ['Illustrator', 'Photoshop']
+    tools: ['Illustrator', 'Photoshop'],
+    likes: 5
   },
   {
     id: 'charcole',
@@ -264,7 +287,8 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     description: `Figure, skull, and still-life studies in charcoal and sanguine, focusing on tonal gradations and gesture. I layered charcoal build-ups, refined edges with sanguine highlights, and captured the tactile quality of each subject. Stack: Charcoal, Sanguine.`,
     year: '2023-24',
     service: 'Illustration',
-    tools: ['Charcoal', 'Sanguine']
+    tools: ['Charcoal', 'Sanguine'],
+    likes: 3
   }
 ];
 

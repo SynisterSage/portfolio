@@ -126,10 +126,10 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
     return (
         <div className="max-w-4xl">
              {/* Staggered load for Title */}
-             <div className="overflow-hidden">
+             <div className="overflow-visible">
                 <h1 className={`text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter mb-6 md:mb-8 text-primary leading-[0.9] transition-all duration-1000 ease-out transform ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                     {title.split(' ').map((word, i) => (
-                        <span key={i} className={i === 1 ? 'text-accent block' : 'block'}>{word}</span>
+                        <span key={i} className={i === 1 ? 'text-accent block' : 'block'} style={i === 1 ? { textShadow: '0 0 20px rgba(16,185,129,0.55)' } : undefined}>{word}</span>
                     ))}
                 </h1>
              </div>
@@ -146,12 +146,21 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
              </div>
 
              {/* Staggered load for Tags */}
-            <div className={`flex flex-wrap gap-2 md:gap-3 mt-8 md:mt-12 transition-all duration-1000 delay-500 ease-out transform ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+            <div className={`flex flex-wrap items-center gap-2 md:gap-3 mt-8 md:mt-12 transition-all duration-1000 delay-500 ease-out transform ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                 {heroNode.tags?.map(tag => (
                     <span key={tag} className="px-2.5 py-1.5 border border-node-border rounded text-[10px] md:text-xs font-mono text-secondary uppercase tracking-widest bg-black/5 dark:bg-white/5">
                         {tag}
                     </span>
                 ))}
+                <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-gradient-to-b from-emerald-400/80 to-emerald-500 text-white shadow-[0_0_25px_rgba(16,185,129,0.3)] transition hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(16,185,129,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+                    style={{ filter: 'drop-shadow(0 0 15px rgba(16,185,129,0.35))' }}
+                >
+                    Download Resume
+                </a>
             </div>
         </div>
     );

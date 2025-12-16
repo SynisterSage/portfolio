@@ -10,12 +10,30 @@ interface ProjectActionsProps {
 
 const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes = 0, projectTitle, className = '' }) => {
   const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(initialLikes || Math.floor(Math.random() * 50) + 10);
+  const [likes, setLikes] = useState(initialLikes);
   const [isAnimating, setIsAnimating] = useState(false);
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'shared' | 'error'>('idle');
   const [isPulsing, setIsPulsing] = useState(false);
   const statusTimer = useRef<number | null>(null);
   const pulseTimer = useRef<number | null>(null);
+
+  const LIKE_COUNT_KEY = `project-like-count-${projectId}`;
+  const LIKED_STATE_KEY = `project-liked-${projectId}`;
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const storedCount = window.localStorage.getItem(LIKE_COUNT_KEY);
+    const storedLiked = window.localStorage.getItem(LIKED_STATE_KEY);
+    const hasStoredCount = storedCount !== null && !Number.isNaN(Number(storedCount));
+    const shouldUseSeed =
+      !hasStoredCount ||
+      (storedCount === '0' && storedLiked !== 'true' && initialLikes > 0 && initialLikes !== Number(storedCount));
+    const baseCount = shouldUseSeed ? initialLikes : Number(storedCount);
+    setLikes(baseCount);
+    setLiked(storedLiked === 'true');
+    window.localStorage.setItem(LIKE_COUNT_KEY, `${baseCount}`);
+    window.localStorage.setItem(LIKED_STATE_KEY, `${storedLiked === 'true'}`);
+  }, [LIKE_COUNT_KEY, LIKED_STATE_KEY, initialLikes]);
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -27,7 +45,14 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
     }
 
     setLiked(!liked);
-    setLikes(prev => liked ? prev - 1 : prev + 1);
+    setLikes(prev => {
+      const next = liked ? prev - 1 : prev + 1;
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(LIKE_COUNT_KEY, `${next}`);
+        window.localStorage.setItem(LIKED_STATE_KEY, `${!liked}`);
+      }
+      return next;
+    });
   };
 
   const scheduleReset = () => {
@@ -103,7 +128,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
   }, []);
 
   const buttonClasses = [
-    'relative overflow-hidden flex items-center gap-1.5 text-xs font-mono transition-colors group',
+    'relative overflow-visible flex items-center gap-1.5 rounded px-2 py-1.5 text-xs font-mono transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
     shareStatus === 'error'
       ? 'text-amber-400'
       : shareStatus === 'idle'
@@ -144,7 +169,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
         }
       >
         {isPulsing && (
-          <span className="absolute inset-0 rounded-full bg-accent/30 animate-ping" />
+          <span className="absolute inset-0 rounded-full bg-accent/30 animate-ping pointer-events-none" />
         )}
         <span className="relative z-10 flex items-center gap-1">
           {(shareStatus === 'copied' || shareStatus === 'shared') ? (

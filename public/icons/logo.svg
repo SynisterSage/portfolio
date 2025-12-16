@@ -1,15 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 21.53">
-  <defs>
-    <style>
-      /* Use currentColor so consumers can recolor the logo via CSS */
-      .cls-1 {
-        fill: currentColor;
-      }
-    </style>
-  </defs>
-  <g id="Layer_4" data-name="Layer 4">
-    <polygon class="cls-1" points="36 21.53 6.35 21.46 15.29 12.56 17.81 15.08 20.64 15.08 16.71 11.15 21.27 6.61 36 21.53"/>
-    <polygon class="cls-1" points="3.1 21.31 0 21.31 21.52 0 33.79 12.21 30.35 12.21 21.5 3.42 3.1 21.31"/>
-  </g>
+<svg width="122" height="73" viewBox="0 0 122 73" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M122 72.9999L21.5195 72.7625L51.8161 42.586L60.3561 51.1304H69.9467L56.6284 37.8053L72.0817 22.4119L122 72.9999Z" fill="#00BC7C"/>
+<path d="M10.5056 72.2541H0L72.9289 0L114.511 41.3994H102.853L72.8611 11.5959L10.5056 72.2541Z" fill="#00BC7C"/>
 </svg>

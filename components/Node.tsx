@@ -49,6 +49,10 @@ const Node: React.FC<NodeProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [data.id, data.media?.url, data.gallery?.length]);
+
+  useEffect(() => {
     // Trigger animation frame to ensure DOM is ready for transition
     requestAnimationFrame(() => {
         setIsMounted(true);
@@ -141,19 +145,22 @@ const Node: React.FC<NodeProps> = ({
         const aspectClass = aspectRatio === 'square' ? 'aspect-square' : 
                    aspectRatio === 'portrait' ? 'aspect-[3/4]' : 
                    aspectRatio === 'wide' ? 'aspect-[21/9]' : 'aspect-video';
+        const currentMedia = carouselItems[currentImageIndex];
         return (
             <div className="w-full relative bg-black/5 dark:bg-black/40 border-b border-node-border group shrink-0 select-none">
                <div className={`w-full ${aspectClass} relative overflow-hidden group/carousel`}>
-                   {isVideoSource(carouselItems[currentImageIndex]) ? (
+                   {isVideoSource(currentMedia) ? (
                        <video
-                          src={carouselItems[currentImageIndex]}
+                          key={currentMedia}
+                          src={currentMedia}
                           controls
                           preload="metadata"
                           className="w-full h-full object-contain"
                        />
                    ) : (
                        <img 
-                           src={carouselItems[currentImageIndex]} 
+                           key={currentMedia}
+                           src={currentMedia} 
                            alt={caption || data.title} 
                            className="w-full h-full object-cover transition-transform duration-700" 
                        />

@@ -155,16 +155,37 @@ const ContactForm: React.FC = () => {
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex gap-4">
-              <a href="#" className="text-secondary hover:text-primary transition-colors hover:scale-110 transform duration-200" title="GitHub">
-                <Github size={20} />
-              </a>
-              <a href="#" className="text-secondary hover:text-blue-500 transition-colors hover:scale-110 transform duration-200" title="LinkedIn">
-                <Linkedin size={20} />
-              </a>
-              <a href="#" className="text-secondary hover:text-pink-500 transition-colors hover:scale-110 transform duration-200" title="Instagram">
-                <Instagram size={20} />
-              </a>
-            </div>
+                <a
+                  href="https://github.com/SynisterSage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-secondary hover:text-primary transition-colors hover:scale-110 transform duration-200"
+                  title="GitHub"
+                  aria-label="GitHub — opens in new tab"
+                >
+                  <Github size={20} />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/lex-ferguson-3056a3275/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-secondary hover:text-blue-500 transition-colors hover:scale-110 transform duration-200"
+                  title="LinkedIn"
+                  aria-label="LinkedIn — opens in new tab"
+                >
+                  <Linkedin size={20} />
+                </a>
+                <a
+                  href="https://www.instagram.com/artbylexf/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-secondary hover:text-pink-500 transition-colors hover:scale-110 transform duration-200"
+                  title="Instagram"
+                  aria-label="Instagram — opens in new tab"
+                >
+                  <Instagram size={20} />
+                </a>
+              </div>
 
             <button
               type="submit"

@@ -162,6 +162,11 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     }
   }, [carouselItems.length, currentImageIndex]);
 
+  // Reset carousel index when switching projects
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [data.id]);
+
 
   const renderContent = (content: string) => {
     return content.split('\n').map((line, i) => {
@@ -197,6 +202,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     if (item.type === 'video') {
       return (
         <video
+          key={item.url}
           controls
           preload="metadata"
           className="w-full h-full object-cover"
@@ -208,6 +214,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     if (item.type === 'iframe') {
       return (
         <iframe
+          key={item.url}
           src={item.url}
           className="w-full h-full border-0"
           title={`${data.title} prototype`}
@@ -217,6 +224,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     }
     return (
       <img
+        key={item.url}
         src={item.url}
         alt={`${data.title} ${altSuffix || ''}`}
         className="w-full h-full object-cover transition-opacity duration-300"
@@ -468,10 +476,10 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="p-4 space-y-1">
+                                        <div className="p-4 space-y-3">
                                             <p className="text-sm font-semibold text-primary line-clamp-1 text-left">{project.title}</p>
                                             <p className="text-xs text-secondary/70 leading-snug line-clamp-2 text-left">{project.description}</p>
-                                            <div className="flex flex-wrap gap-1 mt-2">
+                                            <div className="flex flex-wrap gap-1 mt-4">
                                                 {project.tags.slice(0, 2).map(tag => (
                                                     <span
                                                         key={tag}

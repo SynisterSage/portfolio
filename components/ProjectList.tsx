@@ -13,6 +13,8 @@ interface ProjectListProps {
 
 const isVideoSource = (value?: string) => !!value && /\.(mp4|mov|webm|ogg)$/i.test(value);
 
+const isImageAsset = (value?: string) => !!value && /\.(png|jpe?g|gif|svg|webp)$/i.test(value);
+
 const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, variant = 'list' }) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'design' | 'engineering' | 'hybrid'>('all');
@@ -44,8 +46,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
 
   const getProjectThumbnail = (project: ProjectItem) => {
       if (project.linkedNodeId) {
-          const node = NODES.find(n => n.id === project.linkedNodeId);
-          if (node?.media?.type === 'image' && node.media.url) return node.media.url;
+           const node = NODES.find(n => n.id === project.linkedNodeId);
+           if (node?.media?.type === 'image' && node.media.url) return node.media.url;
+          const galleryImage = node?.gallery?.find(isImageAsset);
+          if (galleryImage) return galleryImage;
           if (node?.gallery?.[0]) return node.gallery[0];
       }
       return project.thumbnail || null;
@@ -67,9 +71,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
           />
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
             {/* Filters */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
             {[
                 { id: 'all', label: 'All', icon: <Box size={12} /> },
                 { id: 'engineering', label: 'Eng', icon: <Cpu size={12} /> },
@@ -92,7 +96,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
             </div>
 
             {/* View Toggle */}
-            <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50">
+            <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50 flex-shrink-0">
                 <button 
                     onClick={() => setViewMode('list')}
                     className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}

@@ -45,9 +45,9 @@ export const PROJECT_ASSETS = {
   },
   "dominos": {
     "folder": "dominos",
-    "thumbnail": "/images/projects/dominos/main.jpg",
+    "thumbnail": "/images/projects/dominos/thumbnail.jpg",
     "media": [
-      "/images/projects/dominos/main.jpg",
+      "/images/projects/dominos/thumbnail.jpg",
       "/images/projects/dominos/gallery-1.jpg",
       "/images/projects/dominos/gallery-2.jpg",
       "/images/projects/dominos/gallery-3.jpg"
@@ -113,10 +113,10 @@ export const PROJECT_ASSETS = {
   },
   "room-illsutration": {
     "folder": "room-illsutration",
-    "thumbnail": "/images/projects/room-illsutration/thumbnail.jpg",
+    "thumbnail": "/images/projects/room-illsutration/thumbnail.png",
     "media": [
-      "/images/projects/room-illsutration/gallery-1.jpg",
-      "/images/projects/room-illsutration/main.png"
+      "/images/projects/room-illsutration/thumbnail.png",
+      "/images/projects/room-illsutration/gallery-1.jpg"
     ]
   },
   "sageaio": {
@@ -124,7 +124,6 @@ export const PROJECT_ASSETS = {
     "thumbnail": "/images/projects/sageaio/thumbnail.jpg",
     "media": [
       "/images/projects/sageaio/gallery-4.jpg",
-      "/images/projects/sageaio/main.jpg",
       "/images/projects/sageaio/gallery-1.jpg",
       "/images/projects/sageaio/gallery-2.jpg",
       "/images/projects/sageaio/gallery-3.jpg"
@@ -134,9 +133,9 @@ export const PROJECT_ASSETS = {
   },
   "self-branding": {
     "folder": "self-branding",
-    "thumbnail": "/images/projects/self-branding/thumbnail.svg",
+    "thumbnail": "/images/projects/self-branding/thumbnail.jpg",
     "media": [
-      "/images/projects/self-branding/main.jpg",
+      "/images/projects/self-branding/thumbnail.jpg",
       "/images/projects/self-branding/gallery-1.jpg",
       "/images/projects/self-branding/gallery-2.jpg",
       "/images/projects/self-branding/gallery-3.svg"
@@ -183,9 +182,9 @@ export const PROJECT_ASSETS = {
   },
   "velkro": {
     "folder": "velkro",
-    "thumbnail": "/images/projects/velkro/main.jpg",
+    "thumbnail": "/images/projects/velkro/thumbnail.jpg",
     "media": [
-      "/images/projects/velkro/main.jpg",
+      "/images/projects/velkro/thumbnail.jpg",
       "/images/projects/velkro/gallery-2.jpg",
       "/images/projects/velkro/gallery-1.jpg"
     ]

@@ -102,11 +102,15 @@ export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
     id: project.id,
     title: project.title,
     description: project.description,
-    tags: [
-      ...(project.categories || []),
-      ...(project.tools || []),
-      ...(project.service ? [project.service] : [])
-    ],
+    tags: Array.from(
+      new Set(
+        [
+          ...(project.categories || []),
+          ...(project.tools || []),
+          ...(project.service ? [project.service] : [])
+        ].filter(Boolean)
+      )
+    ),
     category: deriveCategory(project),
     linkedNodeId: project.id,
     link: project.link,
@@ -221,8 +225,8 @@ Focused on **Performance**, **Scalability**, and **Motion**.
 const projectNodes: NodeData[] = projects.map(project => {
   const normalizedThumbnail = withImagesPath(project.thumbnail) || '';
   const normalizedImages = normalizeList(project.images);
-  const mainMedia = normalizedImages[0] || normalizedThumbnail || '';
-  const galleryAssets = normalizedImages.slice(1);
+  const mainMedia = normalizedThumbnail || normalizedImages[0] || '';
+  const galleryAssets = normalizedImages.filter(url => url !== mainMedia);
   return {
     id: project.id,
     title: project.title,
@@ -238,7 +242,9 @@ const projectNodes: NodeData[] = projects.map(project => {
     },
     gallery: galleryAssets,
     content: project.fullDescription || project.description,
-    tags: [...(project.categories || []), project.service || '', ...(project.tools || [])].filter(Boolean),
+    tags: Array.from(
+      new Set([...(project.categories || []), project.service || '', ...(project.tools || [])].filter(Boolean))
+    ),
     figmaEmbed: project.figmaEmbed,
     links: [
       ...(project.link ? [{ label: 'Visit Project', url: project.link }] : []),

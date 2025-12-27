@@ -139,6 +139,8 @@ export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
     category: deriveCategory(project),
     linkedNodeId: project.id,
     link: project.link,
+    linkLabel: project.linkLabel,
+    showLink: project.showLink,
     thumbnail: normalizedThumbnail,
     images: normalizeList(project.images),
     likes: project.likes ?? 0,
@@ -146,7 +148,9 @@ export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
     service: project.service,
     tools: project.tools,
     fullDescription: project.fullDescription,
-    figmaEmbed: project.figmaEmbed
+    figmaEmbed: project.figmaEmbed,
+    figmaEmbedLabel: project.figmaEmbedLabel,
+    showEmbedLink: project.showEmbedLink
   };
 });
 
@@ -274,8 +278,8 @@ const projectNodes: NodeData[] = projects.map(project => {
     likes: project.likes ?? 0,
     figmaEmbed: project.figmaEmbed,
     links: [
-      ...(project.link ? [{ label: 'Visit Project', url: project.link }] : []),
-      ...(project.figmaEmbed
+      ...(project.link && project.showLink ? [{ label: project.linkLabel || 'Visit Project', url: project.link }] : []),
+      ...(project.figmaEmbed && project.showEmbedLink !== false
         ? [{ label: project.figmaEmbedLabel || 'View Figma', url: project.figmaEmbed }]
         : [])
     ]

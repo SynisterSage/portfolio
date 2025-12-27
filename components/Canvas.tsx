@@ -61,6 +61,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   
   // Full Screen State
   const [maximizedNode, setMaximizedNode] = useState<{ id: string; initialRect: DOMRect } | null>(null);
+  const maximizedStackRef = useRef<{ id: string; initialRect: DOMRect }[]>([]);
   const [restoringId, setRestoringId] = useState<string | null>(null);
 
   // Sync nodePositionsRef
@@ -252,15 +253,37 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     handleFocusNode(id);
   }, [openNodes, handleFocusNode, nodes]);
 
+  const popPreviousMaximized = useCallback(() => {
+    const stack = maximizedStackRef.current;
+    const previous = stack[stack.length - 1] || null;
+    maximizedStackRef.current = previous ? stack.slice(0, -1) : [];
+    return previous;
+  }, []);
+
   const handleCloseProject = useCallback((id: string) => {
     const node = nodes.find(n => n.id === id);
     const isPermanent = !node?.hidden;
 
+    // Remove any stale references in the stack
+    maximizedStackRef.current = maximizedStackRef.current.filter(item => item.id !== id);
+
     if (isPermanent) {
-        setMaximizedNode(null);
         setOpenNodes(prev => prev.filter(n => n !== id));
+
+        if (maximizedNode?.id === id) {
+            const previous = popPreviousMaximized();
+            if (previous) {
+                setMaximizedNode(previous);
+                return;
+            }
+        }
+
+        setMaximizedNode(prev => prev?.id === id ? null : prev);
         return;
     }
+
+    // For project overlays, closing should exit fully (no reopening the last item)
+    maximizedStackRef.current = [];
 
     setClosingNodes(prev => new Set(prev).add(id));
     
@@ -272,22 +295,32 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
             return next;
         });
         
-        setMaximizedNode(prev => prev?.id === id ? null : prev);
+        if (maximizedNode?.id === id) {
+            setMaximizedNode(null);
+        } else {
+            setMaximizedNode(prev => prev?.id === id ? null : prev);
+        }
     }, 300);
-  }, [nodes]);
+  }, [nodes, maximizedNode, popPreviousMaximized]);
 
   const handleMaximize = useCallback((id: string, rect: DOMRect) => {
     handleOpenProject(id);
-    setMaximizedNode({ id, initialRect: rect });
+    setMaximizedNode(prev => {
+      if (prev && prev.id !== id) {
+        maximizedStackRef.current = [...maximizedStackRef.current.filter(item => item.id !== id), prev];
+      }
+      return { id, initialRect: rect };
+    });
   }, [handleOpenProject]);
 
   const handleRestore = useCallback(() => {
-    if (maximizedNode) {
-        setRestoringId(maximizedNode.id);
-        setMaximizedNode(null);
-        setTimeout(() => setRestoringId(null), 100);
-    }
-  }, [maximizedNode]);
+    if (!maximizedNode) return;
+    
+    const previous = popPreviousMaximized();
+    setRestoringId(maximizedNode.id);
+    setMaximizedNode(previous || null);
+    setTimeout(() => setRestoringId(null), 100);
+  }, [maximizedNode, popPreviousMaximized]);
 
 
   // --- Fly To Animation ---
@@ -406,7 +439,9 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     dragRef.current.draggedNodeId = null;
   };
 
-  const getDistanceBetweenTouches = (touches: TouchList) => {
+  type TouchListLike = ArrayLike<{ clientX: number; clientY: number }>;
+
+  const getDistanceBetweenTouches = (touches: TouchListLike) => {
     if (touches.length < 2) return 0;
     const touchA = touches[0];
     const touchB = touches[1];
@@ -420,14 +455,14 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     pinchRef.current.initialDistance = 0;
   };
 
-  const handlePinchStart = (touches: TouchList) => {
+  const handlePinchStart = (touches: TouchListLike) => {
     if (touches.length < 2) return;
     pinchRef.current.isPinching = true;
     pinchRef.current.initialDistance = getDistanceBetweenTouches(touches);
     pinchRef.current.initialScale = cameraRef.current.scale;
   };
 
-  const handlePinchMove = (touches: TouchList) => {
+  const handlePinchMove = (touches: TouchListLike) => {
     if (!pinchRef.current.isPinching || touches.length < 2) return;
     const distance = getDistanceBetweenTouches(touches);
     if (pinchRef.current.initialDistance === 0) return;

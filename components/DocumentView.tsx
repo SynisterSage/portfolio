@@ -71,8 +71,16 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const [heroVisible, setHeroVisible] = useState(false);
   const [viewReady, setViewReady] = useState(false);
+  const [overlayStack, setOverlayStack] = useState<{ id: string; rect: DOMRect }[]>([]);
+  const selectedProject = overlayStack[overlayStack.length - 1] || null;
 
-  const [selectedProject, setSelectedProject] = useState<{ id: string; rect: DOMRect } | null>(null);
+  const handleOverlayMaximize = (id: string, rect: DOMRect) => {
+    // Always replace the overlay with the newly selected item;
+    // closing should exit, not return to previous items.
+    setOverlayStack([{ id, rect }]);
+  };
+
+  const closeOverlay = () => setOverlayStack([]);
 
     // Trigger Hero animation only when the document view itself is ready
     // (this ensures the hero animates in sync with the view fade-in on reload)
@@ -201,7 +209,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                         onClick={(e) => {
                             const section = sectionRefs.current['projects-hub'];
                             const rect = section?.getBoundingClientRect() || new DOMRect();
-                            setSelectedProject({ id: 'projects-hub', rect });
+                            handleOverlayMaximize('projects-hub', rect);
                         }}
                         className="p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-accent hover:text-white text-secondary transition-all"
                         aria-label="Maximize Project View"
@@ -215,7 +223,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
             <div className="bg-node-bg border border-node-border rounded-2xl overflow-hidden flex flex-col h-[600px] md:h-[800px] shadow-2xl transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)]">
                 <div className="flex-1 overflow-hidden">
                     <ProjectList 
-                        onMaximize={(id, rect) => setSelectedProject({ id, rect })}
+                        onMaximize={handleOverlayMaximize}
                         variant="grid"
                     />
                 </div>
@@ -385,11 +393,12 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
       {selectedProject && selectedNodeData && (
           <div className="fixed inset-0 z-50">
              <FullScreenView 
+                 key={selectedProject.id}
                  data={selectedNodeData}
                  initialRect={selectedProject.rect}
-                 onRestore={() => setSelectedProject(null)}
-                 onClose={() => setSelectedProject(null)}
-                 onMaximize={(id, rect) => setSelectedProject({ id, rect })}
+                 onRestore={closeOverlay}
+                 onClose={closeOverlay}
+                 onMaximize={handleOverlayMaximize}
              />
           </div>
       )}

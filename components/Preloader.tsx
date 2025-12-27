@@ -26,6 +26,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const [shouldDisplayPreloader] = useState(shouldShowPreloader);
   const [isVisible, setIsVisible] = useState(shouldDisplayPreloader);
   const [status, setStatus] = useState('INITIALIZING_CORE');
+  const [fallbackStatus, setFallbackStatus] = useState<string | null>(null);
   const [assetsLoaded, setAssetsLoaded] = useState(false);
   const [hasLoggedEvent, setHasLoggedEvent] = useState(false);
 
@@ -165,6 +166,27 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
     return () => window.clearTimeout(timer);
   }, [shouldDisplayPreloader, onComplete]);
 
+  // Failsafe: surface a friendly message if things run long, and force-complete if needed
+  useEffect(() => {
+    if (!shouldDisplayPreloader) return;
+    const softTimeout = window.setTimeout(() => {
+      setFallbackStatus('ALMOST THERE — finalizing assets');
+    }, 7000);
+
+    const hardTimeout = window.setTimeout(() => {
+      setFallbackStatus('Wrapping up…');
+      setProgress(100);
+      setAssetsLoaded(true);
+    }, 14000);
+
+    return () => {
+      window.clearTimeout(softTimeout);
+      window.clearTimeout(hardTimeout);
+    };
+  }, [shouldDisplayPreloader]);
+
+  const displayStatus = fallbackStatus || status;
+
   if (!shouldDisplayPreloader) return null;
 
   return (
@@ -197,7 +219,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
             </div>
             
             <div className="flex justify-between items-center text-[10px] font-mono font-medium tracking-widest text-secondary">
-                <span className="uppercase">{status}</span>
+                <span className="uppercase">{displayStatus}</span>
                 <span>{Math.floor(progress)}%</span>
             </div>
         </div>

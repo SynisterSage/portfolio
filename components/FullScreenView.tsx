@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { NodeData, Media, ProjectItem } from '../types';
-import { X, Minimize2, ExternalLink, Calendar, Tag, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { X, Minimize2, ExternalLink, Calendar, Tag, ChevronLeft, ChevronRight, Maximize2, ArrowRight } from 'lucide-react';
 import { PROJECTS_LIST, NODES } from '../constants';
 import ContactForm from './ContactForm';
 import ProjectActions from './ProjectActions';
@@ -23,7 +23,8 @@ const toMediaItem = (url: string): Media => ({
   url
 });
 
-const getMediaHeightClass = () => 'h-[clamp(280px,40vw,460px)]';
+// Keep media at a 16:9 ratio (1920x1080 style) with responsive height bounds
+const getMediaHeightClass = () => 'aspect-video min-h-[400px] max-h-[760px]';
 
 const isImageAsset = (value?: string) => /\.(png|jpe?g|gif|svg|webp)$/i.test(value || '');
 
@@ -42,6 +43,22 @@ const resolveProjectThumbnail = (project: ProjectItem) => {
 
 const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRestore, onClose, onMaximize }) => {
   const [isClosing, setIsClosing] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const projectMeta = useMemo(
+    () => (data.type === 'project' ? PROJECTS_LIST.find(p => p.id === data.id) || null : null),
+    [data.id, data.type]
+  );
+
+  const stackItems = useMemo(() => {
+    if (projectMeta?.tools?.length) return projectMeta.tools.filter(Boolean);
+    if (data.type === 'project' && data.tags?.length) {
+      return data.tags.filter(tag => !tag.includes('●')).slice(0, 6);
+    }
+    return [];
+  }, [projectMeta, data]);
+
+  const projectLinks = data.type === 'project' ? data.links || [] : [];
+  const hasInlineLinks = projectLinks.length > 0;
   const [style, setStyle] = useState<React.CSSProperties>({
     position: 'fixed',
     top: initialRect.top,
@@ -59,11 +76,36 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
 
   const contentRef = useRef<HTMLDivElement>(null);
   const mediaContainerRef = useRef<HTMLDivElement>(null);
+  const viewAllButtonRef = useRef<HTMLButtonElement>(null);
   const [lightboxItem, setLightboxItem] = useState<Media | null>(null);
 
   useEffect(() => {
+    const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
+  useEffect(() => {
+    const transitionDuration = isMobile ? '220ms' : '320ms';
+    const transitionTimingFunction = 'cubic-bezier(0.25, 1, 0.5, 1)';
+    const common = { transitionDuration, transitionTimingFunction, willChange: 'transform, width, height, opacity' as const };
+
+    setStyle({
+      position: 'fixed',
+      top: initialRect.top,
+      left: initialRect.left,
+      width: initialRect.width,
+      height: initialRect.height,
+      borderRadius: '0.75rem',
+      opacity: 0,
+      transform: 'translateZ(0)',
+      zIndex: 100,
+      ...common,
+    });
+
     requestAnimationFrame(() => {
-      setStyle(prev => ({ ...prev, opacity: 1 }));
+      setStyle(prev => ({ ...prev, opacity: 1, ...common }));
       requestAnimationFrame(() => {
         setStyle({
           position: 'fixed',
@@ -75,10 +117,11 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
           opacity: 1,
           transform: 'translateZ(0)',
           zIndex: 100,
+          ...common,
         });
       });
     });
-  }, []);
+  }, [data.id, initialRect, isMobile]);
 
   const handleRestore = () => {
     setLightboxItem(null);
@@ -180,6 +223,15 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     });
   };
 
+  const getContentWithoutStack = useMemo(() => {
+    if (data.type !== 'project') return data.content;
+    const lower = data.content.toLowerCase();
+    const marker = lower.lastIndexOf('stack:');
+    if (marker === -1) return data.content;
+    const trimmed = data.content.slice(0, marker).trim().replace(/[\s.,;:-]+$/, '');
+    return trimmed || data.content;
+  }, [data]);
+
   const handleMediaFullscreen = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     const item = carouselItems[currentImageIndex];
@@ -241,7 +293,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     return (
       <div
         ref={mediaContainerRef}
-        className="w-full mb-6 md:mb-8 rounded-[1.5rem] overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none max-w-[min(1100px,90vw)] mx-auto"
+        className="w-full mb-6 md:mb-8 rounded-[1.5rem] overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none max-w-[1200px] mx-auto"
       >
         <div className={`relative w-full ${heightClass}`}>
           {renderCurrent()}
@@ -270,15 +322,15 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                   <ChevronRight size={24} />
               </button>
 
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-2 rounded-full bg-black/40 backdrop-blur-sm shadow-lg">
                   {carouselItems.map((_, idx) => (
                       <button
                           key={idx}
                           onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
-                          className={`w-2 h-2 rounded-full transition-all ${
+                          className={`h-2.5 w-2.5 rounded-full transition-all shadow-[0_0_0_1px_rgba(0,0,0,0.35)] ${
                               idx === currentImageIndex 
-                              ? 'bg-white w-4' 
-                              : 'bg-white/40 hover:bg-white/80'
+                              ? 'bg-white w-4'
+                              : 'bg-white/60 hover:bg-white/90'
                           }`}
                       />
                   ))}
@@ -320,6 +372,22 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     }
   };
 
+  const handleViewAllProjects = () => {
+    const rect =
+      viewAllButtonRef.current?.getBoundingClientRect() ||
+      mediaContainerRef.current?.getBoundingClientRect() ||
+      contentRef.current?.getBoundingClientRect() ||
+      new DOMRect(0, 0, window.innerWidth, 80);
+    const anchorRect = new DOMRect(rect.x, rect.y, rect.width || 1, rect.height || 1);
+
+    if (onMaximize) {
+      onMaximize('projects-hub', anchorRect);
+      return;
+    }
+
+    window.location.href = '/projects-hub';
+  };
+
 
   const renderLightbox = () => {
     if (!lightboxItem) return null;
@@ -346,7 +414,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   
   return (
     <div 
-      className="bg-canvas-bg/95 backdrop-blur-xl transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden flex flex-col shadow-2xl"
+      className={`bg-canvas-bg/95 ${isMobile ? 'backdrop-blur-lg shadow-xl duration-200' : 'backdrop-blur-xl shadow-2xl duration-300'} transition-all cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden flex flex-col`}
       style={style}
     >
         {/* Header */}
@@ -397,43 +465,83 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                 </div>
                             )}
                         </div>
-                        {data.tags && data.tags.length > 0 && (
-                            <div className="relative overflow-hidden">
-                                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 py-1">
-                                    <div className="flex gap-2 whitespace-nowrap min-w-0">
-                                        {data.tags.map(tag => {
-                                            const isActive = tag.includes('●');
-                                            return (
-                                                <div
-                                                    key={tag}
-                                                    className={`flex items-center gap-1 px-3 py-1 rounded-2xl text-[11px] ${
-                                                        isActive
-                                                            ? 'text-accent bg-accent/10 border border-accent/20'
-                                                            : 'text-secondary bg-black/5 dark:bg-white/5 border border-node-border/40'
-                                                    }`}
-                                                >
-                                                    <Tag size={12} />
-                                                    <span>{isActive ? tag.replace('●', '● ') : tag}</span>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                                <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-canvas-bg to-transparent" />
-                                <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-canvas-bg to-transparent" />
-                            </div>
-                        )}
+                        {(data.tags && data.tags.length > 0) || hasInlineLinks ? (
+                          <div className="flex items-center justify-between gap-3 flex-wrap">
+                            {data.tags && data.tags.length > 0 && (
+                              <div className="relative overflow-hidden flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 py-1">
+                                      <div className="flex gap-2 whitespace-nowrap min-w-0">
+                                          {data.tags.map(tag => {
+                                              const isActive = tag.includes('●');
+                                              return (
+                                                  <div
+                                                      key={tag}
+                                                      className={`flex items-center gap-1 px-3 py-1 rounded-2xl text-[11px] ${
+                                                          isActive
+                                                              ? 'text-accent bg-accent/10 border border-accent/20'
+                                                              : 'text-secondary bg-black/5 dark:bg-white/5 border border-node-border/40'
+                                                      }`}
+                                                  >
+                                                      <Tag size={12} />
+                                                      <span>{isActive ? tag.replace('●', '● ') : tag}</span>
+                                                  </div>
+                                              );
+                                          })}
+                                      </div>
+                                  </div>
+                                  <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-canvas-bg to-transparent" />
+                                  <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-canvas-bg to-transparent" />
+                              </div>
+                            )}
+                            {data.type === 'project' && hasInlineLinks && (
+                              <div className="flex items-center gap-2 flex-wrap justify-end">
+                                {projectLinks.map(link => (
+                                  <a
+                                    key={link.label}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-node-border px-3 py-1.5 text-[12px] font-semibold text-primary transition-all bg-node-bg shadow-sm hover:-translate-y-0.5 hover:shadow-xl"
+                                  >
+                                    {link.label}
+                                    <ExternalLink size={12} />
+                                  </a>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ) : null}
                     </div>
 
                     {renderMedia()}
 
                     {/* Prose Content */}
-                    <div className="mt-6 space-y-4 text-base leading-relaxed text-secondary">
-                        {renderContent(data.content)}
+                    <div className="mt-6 md:mt-8 relative">
+                        <div className="relative space-y-4 text-base leading-relaxed text-secondary md:text-lg">
+                            {renderContent(getContentWithoutStack)}
+                        </div>
+                        {data.type === 'project' && stackItems.length > 0 && (
+                          <div className="mt-6 flex flex-wrap items-center gap-3">
+                            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-secondary/80">
+                              <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_0_2px_rgba(16,185,129,0.18)]" />
+                              <span>Stack</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {stackItems.map(tool => (
+                                <span
+                                  key={tool}
+                                  className="px-2.5 py-1 rounded-md bg-white/70 dark:bg-white/10 text-[12px] font-semibold text-secondary border border-node-border/60 shadow-sm"
+                                >
+                                  {tool}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                     </div>
 
                     {/* Links (Figma / external) */}
-                    {data.links && data.links.length > 0 && (
+                    {data.links && data.links.length > 0 && data.type !== 'project' && (
                         <div className="mt-6 flex flex-wrap gap-3">
                             {data.links.map(link => (
                                 <a
@@ -454,6 +562,15 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                         <section className="mt-10">
                             <div className="flex items-center justify-between">
                                 <h4 className="text-xs uppercase tracking-[0.4em] text-secondary/80 font-semibold">More Projects</h4>
+                                <button
+                                  type="button"
+                                  ref={viewAllButtonRef}
+                                  onClick={handleViewAllProjects}
+                                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-node-border/70 bg-node-bg/80 backdrop-blur text-[11px] uppercase tracking-[0.25em] font-semibold text-secondary transition-all hover:-translate-y-0.5 hover:shadow-lg hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent/40"
+                                >
+                                  View all
+                                  <ArrowRight size={14} />
+                                </button>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                                 {relatedProjects.map(project => (

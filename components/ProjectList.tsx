@@ -15,7 +15,7 @@ const isVideoSource = (value?: string) => !!value && /\.(mp4|mov|webm|ogg)$/i.te
 
 const isImageAsset = (value?: string) => !!value && /\.(png|jpe?g|gif|svg|webp)$/i.test(value);
 
-const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, variant = 'list' }) => {
+const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, variant = 'grid' }) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'design' | 'engineering' | 'hybrid'>('all');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>(variant);
@@ -98,18 +98,18 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
             {/* View Toggle */}
             <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50 flex-shrink-0">
                 <button 
-                    onClick={() => setViewMode('list')}
-                    className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
-                    title="List View"
-                >
-                    <List size={14} />
-                </button>
-                <button 
                     onClick={() => setViewMode('grid')}
                     className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
                     title="Grid View"
                 >
                     <LayoutGrid size={14} />
+                </button>
+                <button 
+                    onClick={() => setViewMode('list')}
+                    className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
+                    title="List View"
+                >
+                    <List size={14} />
                 </button>
             </div>
         </div>

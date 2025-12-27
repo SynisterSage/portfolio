@@ -9,6 +9,9 @@ export interface Project {
   thumbnail?: string;
   images: string[];
   link?: string;
+  linkLabel?: string;
+  showLink?: boolean;
+  showEmbedLink?: boolean;
   year?: string;
   service?: string;
   tools?: string[];
@@ -67,7 +70,11 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     tools: ['React', 'Vite', 'Supabase', 'Stripe', 'Playwright'],
     likes: 21,
     fullDescription: `GridLead is a solo-built, full-stack platform that mines local businesses, runs AI-flavored audits, and automates outreach. The frontend is React/Vite with an installable PWA shell. Supabase powers auth, Postgres, and Edge Functions for Gmail OAuth/send/poll, Stripe subscriptions, and Places-based discovery. A custom audit pipeline (PageSpeed + Playwright render proxy) scores performance, design, and trust, generates briefs, and feeds a notification stack (Realtime, push, tracking pixels). It ships on Vercel/Supabase with RLS-secured migrations and plan-based limits.`,
-    figmaEmbed: 'https://gridlead.space/',
+    link: 'https://gridlead.space/',
+    linkLabel: 'Open GridLead',
+    showLink: true,
+    showEmbedLink: false,
+    figmaEmbed: 'https://www.gridlead.space/embed.html',
     figmaEmbedLabel: 'Open GridLead'
   },
   {

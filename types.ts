@@ -57,6 +57,8 @@ export interface ProjectItem {
   category?: string;
   linkedNodeId?: string; // If it exists as a spatial node
   link?: string; // External link if no spatial node
+  linkLabel?: string;
+  showLink?: boolean;
   thumbnail?: string; // Previews for the list
   images?: string[]; // Additional gallery assets
   year?: string;
@@ -65,6 +67,7 @@ export interface ProjectItem {
   fullDescription?: string;
   figmaEmbed?: string;
   figmaEmbedLabel?: string;
+  showEmbedLink?: boolean;
   likes?: number;
 }
 

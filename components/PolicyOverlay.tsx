@@ -55,7 +55,7 @@ const PolicyOverlay: React.FC<PolicyOverlayProps> = ({ onClose }) => {
                 <div className="space-y-1">
                     <h3 className="font-bold text-primary text-sm uppercase tracking-wide">Data Minimalist</h3>
                     <p className="text-sm text-secondary leading-relaxed">
-                        This site is designed to be a portfolio, not a data harvester. I value your privacy because I value my own.
+                        This site is designed to be a portfolio, not a data harvester. <br /> I value your privacy because I value my own.
                     </p>
                 </div>
             </div>
@@ -71,7 +71,10 @@ const PolicyOverlay: React.FC<PolicyOverlayProps> = ({ onClose }) => {
                         <strong>Contact Form:</strong> If you use the contact form, the name, email, and message you provide are sent directly to my inbox. This data is used solely to reply to your inquiry. It is not stored in a marketing database or sold to third parties.
                     </p>
                     <p>
-                        <strong>Analytics:</strong> This site may use basic, anonymous analytics (like Vercel Analytics or plausible.io) to count visits. No personally identifiable information (PII) is tracked.
+                        <strong>Analytics:</strong> This site uses Google Analytics for basic, anonymous visit counts. No personally identifiable information (PII) is tracked.
+                    </p>
+                    <p>
+                        <strong>Likes:</strong> Project like counts are stored in Supabase (Postgres) using an anonymous key with Row Level Security. I only store the project id and a running total; your local browser keeps a simple “liked” flag so the heart stays active when you return.
                     </p>
                 </div>
             </section>

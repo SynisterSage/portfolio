@@ -242,13 +242,13 @@ design:
     position: { x: 500, y: 550 },
     width: 650,
     content: `
-# Creative Technologist.
+# Design Engineer.
 
-I build digital products where **System Architecture** meets **Interaction Design**. 
+I build digital products as a design engineer where **Interaction Design**, **Scalability**, and **Motion** meet.
 
-Focused on **Performance**, **Scalability**, and **Motion**.
+Focused on **Performance**, **Systems Thinking**, and **Motion Craft**.
     `,
-    tags: ['Design Engineer', 'Creative Dev', 'CS + Design'],
+    tags: ['Lex Ferguson', 'Design Engineer', 'Interaction & Motion'],
   }
 ];
 

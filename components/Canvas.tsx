@@ -614,6 +614,13 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
       onTouchEnd={handleTouchEndWrapper}
       onTouchCancel={handleTouchCancelWrapper}
     >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{
+          background:
+            'radial-gradient(circle at 20% 20%, rgba(52,211,153,0.08), transparent 35%), radial-gradient(circle at 80% 15%, rgba(52,211,153,0.06), transparent 32%), radial-gradient(circle at 60% 65%, rgba(52,211,153,0.05), transparent 30%)'
+        }}
+      />
       {/* Background Dot Pattern */}
       <div 
         className="absolute inset-0 grid-pattern pointer-events-none opacity-40"

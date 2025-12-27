@@ -180,6 +180,13 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                 viewReady ? 'opacity-100' : 'opacity-0'
             }`}
         >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{
+          background:
+            'radial-gradient(circle at 20% 20%, rgba(52,211,153,0.12), transparent 38%), radial-gradient(circle at 80% 10%, rgba(52,211,153,0.1), transparent 33%), radial-gradient(circle at 60% 60%, rgba(52,211,153,0.08), transparent 34%)'
+        }}
+      />
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-16 md:py-24 flex flex-col gap-20 md:gap-32">
         
         {/* HERO SECTION - Uses special animation internal to renderHeroContent for immediate impact */}
@@ -347,7 +354,15 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                 setRef={el => { sectionRefs.current['contact'] = el; }}
                 className="pb-24 border-t border-node-border pt-12 md:pt-16"
             >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div className="relative overflow-visible">
+                  <div
+                    className="pointer-events-none absolute inset-x-[-25vw] inset-y-[-25%] opacity-55 blur-3xl"
+                    style={{
+                      background:
+                        'radial-gradient(circle at 25% 70%, rgba(52,211,153,0.12), transparent 48%), radial-gradient(circle at 75% 90%, rgba(52,211,153,0.1), transparent 45%), radial-gradient(circle at 50% 110%, rgba(52,211,153,0.08), transparent 50%)'
+                    }}
+                  />
+                  <div className="relative grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div className="flex flex-col justify-center">
                         <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6 leading-tight">
                             Let's Build <br/> <span className="text-accent">Something New.</span>
@@ -378,12 +393,13 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                     </div>
                     
                     <div className="bg-node-bg p-6 md:p-8 rounded-xl border border-node-border shadow-sm hover:shadow-[0_8px_30px_-5px_rgba(16,185,129,0.15)] transition-all duration-300 group">
-                         <h3 className="text-xs font-bold uppercase tracking-widest text-secondary mb-6 flex items-center gap-2">
-                            <Send size={12} className="text-accent" /> 
-                            Send a Message
-                         </h3>
-                         <ContactForm />
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-secondary mb-6 flex items-center gap-2">
+                           <Send size={12} className="text-accent" /> 
+                           Send a Message
+                        </h3>
+                        <ContactForm />
                     </div>
+                  </div>
                 </div>
             </FadeIn>
         )}

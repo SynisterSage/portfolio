@@ -489,8 +489,8 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                           })}
                                       </div>
                                   </div>
-                                  <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-canvas-bg to-transparent" />
-                                  <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-canvas-bg to-transparent" />
+                                  <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-canvas-bg/40 via-canvas-bg/20 to-transparent" />
+                                  <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-canvas-bg/40 via-canvas-bg/20 to-transparent" />
                               </div>
                             )}
                             {data.type === 'project' && hasInlineLinks && (

@@ -153,7 +153,7 @@ const ContactForm: React.FC = () => {
             </p>
           )}
 
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center justify-between pt-2 gap-4">
             <div className="flex gap-4">
                 <a
                   href="https://github.com/SynisterSage"
@@ -187,23 +187,25 @@ const ContactForm: React.FC = () => {
                 </a>
               </div>
 
-            <button
-              type="submit"
-            disabled={isSubmitting || isRateLimited}
-            className="bg-primary text-canvas-bg hover:bg-accent hover:text-white disabled:opacity-50 disabled:hover:bg-primary px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg cursor-pointer disabled:cursor-not-allowed"
-          >
-              {isSubmitting ? (
-                <>
-                  <span>Sending</span>
-                  <Loader2 size={14} className="animate-spin" />
-                </>
-              ) : (
-                <>
-                  <span>Send Message</span>
-                  <Send size={14} />
-                </>
-              )}
-            </button>
+            <div className="flex-1 flex justify-end">
+              <button
+                type="submit"
+                disabled={isSubmitting || isRateLimited}
+                className="bg-primary text-canvas-bg hover:bg-accent hover:text-white disabled:opacity-50 disabled:hover:bg-primary px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg cursor-pointer disabled:cursor-not-allowed min-w-[160px] justify-center"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="relative top-[1px]">Sending</span>
+                    <Loader2 size={14} className="animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    <span className="relative top-[1px]">Send Message</span>
+                    <Send size={14} />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>

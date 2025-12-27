@@ -57,6 +57,20 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     figmaEmbedLabel: 'Open Prototype'
   },
   {
+    id: 'grid-lead',
+    title: 'GridLead',
+    folder: 'grid-lead',
+    categories: ['Full Stack', 'Automation'],
+    description: `GridLead is a solo-built platform that finds local businesses, runs automated audits, and drives outreach. The React/Vite frontend ships as an installable PWA and Supabase covers auth/Postgres/Edge Functions for Gmail OAuth/send/poll, Stripe subscriptions, and Places-powered discovery. A PageSpeed + Playwright render proxy scores performance, design, and trust, then feeds the notification stack.`,
+    year: '2025',
+    service: 'Full Stack',
+    tools: ['React', 'Vite', 'Supabase', 'Stripe', 'Playwright'],
+    likes: 21,
+    fullDescription: `GridLead is a solo-built, full-stack platform that mines local businesses, runs AI-flavored audits, and automates outreach. The frontend is React/Vite with an installable PWA shell. Supabase powers auth, Postgres, and Edge Functions for Gmail OAuth/send/poll, Stripe subscriptions, and Places-based discovery. A custom audit pipeline (PageSpeed + Playwright render proxy) scores performance, design, and trust, generates briefs, and feeds a notification stack (Realtime, push, tracking pixels). It ships on Vercel/Supabase with RLS-secured migrations and plan-based limits.`,
+    figmaEmbed: 'https://gridlead.space/',
+    figmaEmbedLabel: 'Open GridLead'
+  },
+  {
     id: 'velkro',
     title: 'Velkro Type Creation',
     folder: 'velkro',

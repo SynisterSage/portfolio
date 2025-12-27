@@ -53,6 +53,14 @@ export const PROJECT_ASSETS = {
       "/images/projects/dominos/gallery-3.jpg"
     ]
   },
+  "grid-lead": {
+    "folder": "grid-lead",
+    "thumbnail": "/images/projects/grid-lead/thumbnail.jpg",
+    "media": [
+      "/images/projects/grid-lead/thumbnail.jpg",
+      "/images/projects/grid-lead/gallery-1.jpg"
+    ]
+  },
   "halfway": {
     "folder": "halfway",
     "thumbnail": "/images/projects/halfway/thumbnail.mp4",

@@ -7,16 +7,28 @@ export const INITIAL_POSITION = { x: 0, y: 0 };
 
 export const EXPERIENCE_LIST: ExperienceItem[] = [
   {
-    id: 'exp-rsp',
-    role: 'Photo Editor & Layout Intern',
-    company: 'RSP Media',
-    period: '2022 - Present',
+    id: 'exp-gridlead',
+    role: 'Founder & Solo Engineer',
+    company: 'GridLead',
+    period: '2025 - Present',
     description: `
-- Capture high-end jewelry using various lighting sources and angles to highlight detail.
-- Color-correct and certify image quality to enhance pre-purchase confidence.
-- Coordinate layout work for marketing assets and magazine spreads.
+- Built and launched a lead discovery → audit → outreach platform end to end.
+- Owned product engineering: auth, billing, outbound workflows, and automated audits.
+- Ran ops and delivery solo: data layer, reliability, notifications, and deployments.
     `,
-    tags: ['Photography', 'Color Grading', 'Layout'],
+    tags: ['Founder', 'Full Stack', 'SaaS', 'Supabase', 'Stripe'],
+  },
+  {
+    id: 'exp-pgc-product',
+    role: 'Product Engineer (Web & Mobile)',
+    company: 'Packanack Golf Club',
+    period: '2024 - Present',
+    description: `
+- Designed and built the club website end to end (Figma to production), keeping content and membership paths current.
+- Shipped the member/staff web app for tee sheets, on-course ordering with Square, and a role-based console for live operations.
+- Handle ongoing fixes, performance passes, and content updates to keep both surfaces reliable.
+    `,
+    tags: ['Product', 'Web App', 'Square', 'Ops'],
   },
   {
     id: 'exp-chc',
@@ -31,16 +43,28 @@ export const EXPERIENCE_LIST: ExperienceItem[] = [
     tags: ['Coaching', 'Community', 'Wellness'],
   },
   {
+    id: 'exp-rsp',
+    role: 'Photo Editor & Layout Intern',
+    company: 'RSP Media',
+    period: '2022 - Present',
+    description: `
+- Capture high-end jewelry using various lighting sources and angles to highlight detail.
+- Color-correct and certify image quality to enhance pre-purchase confidence.
+- Coordinate layout work for marketing assets and magazine spreads.
+    `,
+    tags: ['Photography', 'Color Grading', 'Layout'],
+  },
+  {
     id: 'exp-pack',
     role: 'Club Web Manager & Assistant',
     company: 'Packanack Golf Club',
     period: '2022 - Present',
     description: `
 - Open and close the golf shop, ensuring four+ years of reliable operations.
-- Serve golfers on-site and maintain exceptional hospitality.
-- Manage and improve the club website with Figma/Framer to keep info fresh.
+- Serve golfers on-site, stay on-call for the team, and maintain exceptional hospitality.
+- Coordinate member communications and day-to-day ops logistics so requests and updates flow smoothly.
     `,
-    tags: ['Operations', 'Web Management', 'Hospitality'],
+    tags: ['Operations', 'Hospitality', 'On-Call'],
   },
   {
     id: 'exp-sage',
@@ -58,12 +82,13 @@ export const EXPERIENCE_LIST: ExperienceItem[] = [
     id: 'exp-mon',
     role: 'BFA Design & Animation',
     company: 'Monmouth University',
-    period: '2018 - 2027',
+    period: '2018 - Present',
     description: `
-- Graduated with a 3.6 GPA; concentration in Graphic and Interactive Design.
-- Studied multidisciplinary design, motion, illustration, and story-driven prototyping.
+- Maintaining a 3.8 GPA with a web development focus inside Graphic and Interactive Design.
+- Collaborate with Computer Science majors to design and build cross-discipline apps and prototypes.
+- Study multidisciplinary design, motion, illustration, and story-driven prototyping to support product work.
     `,
-    tags: ['Education', 'Design', 'Animation'],
+    tags: ['Education', 'Web Dev', 'Design'],
   }
 ];
 

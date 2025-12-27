@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Heart, Share2, Check } from 'lucide-react';
+import { supabase } from '../services/supabaseClient';
 
 interface ProjectActionsProps {
   projectId: string;
   initialLikes?: number;
   projectTitle?: string;
   className?: string;
+  reverseOrder?: boolean;
 }
 
-const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes = 0, projectTitle, className = '' }) => {
+const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes = 0, projectTitle, className = '', reverseOrder = false }) => {
   const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(initialLikes);
+  const [likes, setLikes] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'shared' | 'error'>('idle');
   const [isPulsing, setIsPulsing] = useState(false);
@@ -20,20 +22,49 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
   const LIKE_COUNT_KEY = `project-like-count-${projectId}`;
   const LIKED_STATE_KEY = `project-liked-${projectId}`;
 
+  const fetchLikes = async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase
+      .from('project_likes')
+      .select('likes')
+      .eq('project_id', projectId)
+      .maybeSingle();
+    if (error) {
+      console.warn('[Likes] fetch failed', error.message);
+      return;
+    }
+    if (!data) {
+      // Seed the row with zero likes
+      const { error: insertError } = await supabase.from('project_likes').insert({ project_id: projectId, likes: 0 });
+      if (insertError) console.warn('[Likes] seed failed', insertError.message);
+      setLikes(0);
+      return;
+    }
+    if (data.likes !== undefined && data.likes !== null) {
+      setLikes(data.likes);
+    } else {
+      setLikes(0);
+    }
+  };
+
+  const persistLike = async (nextLiked: boolean, nextCount: number) => {
+    if (!supabase) return;
+    const { error } = await supabase
+      .from('project_likes')
+      .upsert({
+        project_id: projectId,
+        likes: Math.max(0, nextCount),
+        updated_at: new Date().toISOString()
+      });
+    if (error) console.warn('[Likes] upsert failed', error.message);
+  };
+
   useEffect(() => {
+    fetchLikes();
     if (typeof window === 'undefined') return;
-    const storedCount = window.localStorage.getItem(LIKE_COUNT_KEY);
     const storedLiked = window.localStorage.getItem(LIKED_STATE_KEY);
-    const hasStoredCount = storedCount !== null && !Number.isNaN(Number(storedCount));
-    const shouldUseSeed =
-      !hasStoredCount ||
-      (storedCount === '0' && storedLiked !== 'true' && initialLikes > 0 && initialLikes !== Number(storedCount));
-    const baseCount = shouldUseSeed ? initialLikes : Number(storedCount);
-    setLikes(baseCount);
     setLiked(storedLiked === 'true');
-    window.localStorage.setItem(LIKE_COUNT_KEY, `${baseCount}`);
-    window.localStorage.setItem(LIKED_STATE_KEY, `${storedLiked === 'true'}`);
-  }, [LIKE_COUNT_KEY, LIKED_STATE_KEY, initialLikes]);
+  }, [LIKED_STATE_KEY]);
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -44,15 +75,16 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
         setTimeout(() => setIsAnimating(false), 1000);
     }
 
-    setLiked(!liked);
-    setLikes(prev => {
-      const next = liked ? prev - 1 : prev + 1;
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(LIKE_COUNT_KEY, `${next}`);
-        window.localStorage.setItem(LIKED_STATE_KEY, `${!liked}`);
-      }
-      return next;
-    });
+    const nextLiked = !liked;
+    const nextCount = Math.max(0, likes + (nextLiked ? 1 : -1));
+
+    setLiked(nextLiked);
+    setLikes(nextCount);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(LIKED_STATE_KEY, `${nextLiked}`);
+    }
+
+    persistLike(nextLiked, nextCount);
   };
 
   const scheduleReset = () => {
@@ -139,23 +171,6 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
   return (
     <div className={`flex items-center gap-4 ${className}`} onClick={e => e.stopPropagation()}>
       <button 
-        onClick={handleLike}
-        className={`flex items-center gap-1.5 text-xs font-mono transition-colors group relative ${liked ? 'text-rose-500' : 'text-secondary hover:text-rose-500'}`}
-        title={liked ? "Unlike" : "Like"}
-      >
-        <div className="relative">
-            <Heart 
-                size={16} 
-                className={`transition-all duration-300 ${liked ? 'fill-current scale-110' : 'group-hover:scale-110'}`} 
-            />
-            {isAnimating && (
-                 <span className="absolute inset-0 animate-ping opacity-75 rounded-full bg-rose-400/50" />
-            )}
-        </div>
-        <span className="tabular-nums">{likes}</span>
-      </button>
-
-      <button 
         onClick={handleShare}
         className={buttonClasses}
         title={
@@ -183,6 +198,25 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
             </span>
           )}
         </span>
+      </button>
+
+      <span className="text-node-border">•</span>
+
+      <button 
+        onClick={handleLike}
+        className={`flex items-center gap-1.5 text-xs font-mono transition-colors group relative ${liked ? 'text-rose-500' : 'text-secondary hover:text-rose-500'}`}
+        title={liked ? "Unlike" : "Like"}
+      >
+        <div className="relative">
+            <Heart 
+                size={16} 
+                className={`transition-all duration-300 ${liked ? 'fill-current scale-110' : 'group-hover:scale-110'}`} 
+            />
+            {isAnimating && (
+                 <span className="absolute inset-0 animate-ping opacity-75 rounded-full bg-rose-400/50" />
+            )}
+        </div>
+        <span className="tabular-nums">{likes}</span>
       </button>
     </div>
   );

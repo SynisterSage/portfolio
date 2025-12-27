@@ -135,14 +135,14 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
             const gridCenterX = (minX + maxX) / 2;
             const gridCenterY = (minY + maxY) / 2;
 
-            const padding = 100;
+            const padding = 140;
             const availableWidth = window.innerWidth - (padding * 2);
             const availableHeight = window.innerHeight - (padding * 2);
             const contentWidth = maxX - minX;
             const contentHeight = maxY - minY;
 
             let calculatedScale = Math.min(availableWidth / contentWidth, availableHeight / contentHeight);
-            initialScale = Math.min(Math.max(calculatedScale, 0.45), 0.9);
+            initialScale = Math.min(Math.max(calculatedScale, 0.35), 0.9);
 
             initialX = (window.innerWidth / 2) - (gridCenterX * initialScale);
             initialY = (window.innerHeight / 2) - (gridCenterY * initialScale);

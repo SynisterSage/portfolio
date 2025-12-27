@@ -176,7 +176,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
 
     return (
         <div
-            className={`w-full h-full overflow-y-auto bg-canvas-bg custom-scroll scroll-smooth relative transition-opacity duration-800 ease-out ${
+            className={`w-full h-full overflow-y-auto overflow-x-hidden bg-canvas-bg custom-scroll scroll-smooth relative transition-opacity duration-800 ease-out ${
                 viewReady ? 'opacity-100' : 'opacity-0'
             }`}
         >
@@ -383,7 +383,11 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                             </div>
 
                             {/* Email Link */}
-                             <a href="mailto:hello@example.com" className="flex items-center gap-3 text-secondary hover:text-primary transition-colors font-mono text-sm group mt-2">
+                             <a 
+                                href="mailto:afergyy@gmail.com" 
+                                className="flex items-center gap-3 text-secondary hover:text-primary transition-colors font-mono text-sm group mt-2"
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <div className="p-2 rounded-lg bg-black/5 dark:bg-white/5 group-hover:bg-primary group-hover:text-canvas-bg transition-colors">
                                     <Mail size={16} />
                                 </div>

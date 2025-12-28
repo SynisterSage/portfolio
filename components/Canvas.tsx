@@ -667,7 +667,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
 
       {/* Full Screen Overlay */}
       {maximizedNode && maximizedNodeData && (
-          <div className="absolute inset-0 z-50">
+          <div className="absolute inset-0 z-[200]">
               <FullScreenView 
                 key={maximizedNode.id} 
                 data={maximizedNodeData} 

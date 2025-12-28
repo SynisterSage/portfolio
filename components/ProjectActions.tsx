@@ -108,9 +108,9 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, initialLikes
     triggerPulse();
 
     const shareUrl = `${window.location.origin}/?project=${projectId}`;
-    const shareText = projectTitle ? `Check out ${projectTitle} on Spatial Dev Portfolio.` : 'Check out this project on Spatial Dev Portfolio.';
+    const shareText = projectTitle ? `Check out ${projectTitle} on Lex Ferguson's Portfolio.` : 'Check out this project on Lex Ferguson\'s Portfolio.';
     const sharePayload = {
-      title: projectTitle ? `${projectTitle} · Spatial Dev Portfolio` : 'Spatial Dev Portfolio',
+      title: projectTitle ? `${projectTitle} · Lex Ferguson's Portfolio` : 'Lex Ferguson\'s Portfolio',
       text: shareText,
       url: shareUrl,
     };

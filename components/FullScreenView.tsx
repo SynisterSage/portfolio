@@ -67,17 +67,43 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
 
   const projectLinks = data.type === 'project' ? data.links || [] : [];
   const hasInlineLinks = projectLinks.length > 0;
-  const [style, setStyle] = useState<React.CSSProperties>({
+  const targetStyle = useMemo<React.CSSProperties>(() => {
+    const transitionDuration = isMobile ? '220ms' : '320ms';
+    const transitionTimingFunction = 'cubic-bezier(0.25, 1, 0.5, 1)';
+    return {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      minWidth: '100vw',
+      maxWidth: '100vw',
+      height: '100vh',
+      minHeight: '100vh',
+      maxHeight: '100dvh',
+      borderRadius: '0px',
+      opacity: 1,
+      transform: 'translateZ(0)',
+      zIndex: 100,
+      transitionDuration,
+      transitionTimingFunction,
+      willChange: 'transform, width, height, opacity',
+    };
+  }, [isMobile]);
+
+  const [style, setStyle] = useState<React.CSSProperties>(() => ({
     position: 'fixed',
     top: initialRect.top,
     left: initialRect.left,
     width: initialRect.width,
     height: initialRect.height,
-    borderRadius: '0.75rem', 
-    opacity: 0, 
-    transform: 'translateZ(0)', 
+    borderRadius: '0.75rem',
+    opacity: 0,
+    transform: 'translateZ(0)',
     zIndex: 100,
-  });
+    transitionDuration: targetStyle.transitionDuration,
+    transitionTimingFunction: targetStyle.transitionTimingFunction,
+    willChange: targetStyle.willChange,
+  }));
 
   // Carousel State
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -98,9 +124,11 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   }, []);
 
   useEffect(() => {
-    const transitionDuration = isMobile ? '220ms' : '320ms';
-    const transitionTimingFunction = 'cubic-bezier(0.25, 1, 0.5, 1)';
-    const common = { transitionDuration, transitionTimingFunction, willChange: 'transform, width, height, opacity' as const };
+    const common = {
+      transitionDuration: targetStyle.transitionDuration,
+      transitionTimingFunction: targetStyle.transitionTimingFunction,
+      willChange: targetStyle.willChange,
+    };
 
     setStyle({
       position: 'fixed',
@@ -115,24 +143,23 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       ...common,
     });
 
+    // Primary animation path (works on modern browsers)
     requestAnimationFrame(() => {
       setStyle(prev => ({ ...prev, opacity: 1, ...common }));
       requestAnimationFrame(() => {
-        setStyle({
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          borderRadius: '0px',
-          opacity: 1,
-          transform: 'translateZ(0)',
-          zIndex: 100,
-          ...common,
-        });
+        setStyle(targetStyle);
       });
     });
-  }, [data.id, initialRect, isMobile]);
+
+    // Failsafe for throttled RAF on mobile/incognito: snap to full-screen after a beat
+    const fallback = window.setTimeout(() => {
+      setStyle(targetStyle);
+    }, 400);
+
+    return () => {
+      window.clearTimeout(fallback);
+    };
+  }, [data.id, initialRect, targetStyle]);
 
   const handleRestore = () => {
     setLightboxItem(null);
@@ -150,7 +177,18 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     setTimeout(onRestore, 300);
   };
 
-  const handleClose = () => {
+  const blurActiveElement = () => {
+    if (typeof document === 'undefined') return;
+    const active = document.activeElement as HTMLElement | null;
+    if (active && typeof active.blur === 'function') {
+      active.blur();
+    }
+  };
+
+  const handleClose = (event?: React.MouseEvent | React.TouchEvent) => {
+     event?.stopPropagation();
+     event?.preventDefault();
+     blurActiveElement();
      // If it's a permanent node (like Hubs/Bio), treat Close as Restore/Minimize
      // This prevents the "disappear then reappear" glitch by shrinking back to place
      if (!data.hidden) {
@@ -475,9 +513,12 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   const isHub = data.type === 'experience-hub' || data.type === 'project-hub';
   
   return (
-    <div 
+      <div 
       className={`bg-canvas-bg/95 ${isMobile ? 'backdrop-blur-lg shadow-xl duration-200' : 'backdrop-blur-xl shadow-2xl duration-300'} transition-all cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden flex flex-col`}
       style={style}
+      onClickCapture={e => e.stopPropagation()}
+      onMouseDownCapture={e => e.stopPropagation()}
+      onTouchStartCapture={e => e.stopPropagation()}
     >
         {/* Header */}
         <div className={`flex items-center justify-between px-4 md:px-6 h-14 md:h-16 border-b border-node-border bg-node-bg/50 shrink-0 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}>

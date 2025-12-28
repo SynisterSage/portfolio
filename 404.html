@@ -8,16 +8,41 @@
     <meta name="robots" content="noindex, nofollow" />
     <link rel="canonical" href="/" />
 
+    <script>
+      // Match the app's theme behavior (localStorage `theme`, else system preference)
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var theme =
+            saved === 'light' || saved === 'dark'
+              ? saved
+              : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.classList.remove('light', 'dark');
+          document.documentElement.classList.add(theme);
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Tailwind CDN (keeps styles consistent with index.html) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
       :root {
-        --bg-canvas: 241 245 249;
+        /* Light Mode Defaults (RGB Channels) */
+        --bg-canvas: 241 245 249; /* slate-100 */
         --bg-node: 255 255 255;
-        --text-primary: 15 23 42;
-        --text-secondary: 100 116 139;
+        --text-primary: 15 23 42; /* slate-900 */
+        --text-secondary: 100 116 139; /* slate-500 */
+        --accent: 16 185 129;
+      }
+
+      .dark {
+        /* Dark Mode Defaults (RGB Channels) */
+        --bg-canvas: 9 9 11; /* zinc-950 */
+        --bg-node: 24 24 27; /* zinc-900 */
+        --text-primary: 228 228 231; /* zinc-200 */
+        --text-secondary: 161 161 170; /* zinc-400 */
         --accent: 16 185 129;
       }
       html,body{height:100%}
@@ -36,7 +61,7 @@
   <body>
     <main class="min-h-screen flex items-center justify-center px-6">
       <section class="max-w-2xl w-full text-center">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white shadow-sm mx-auto mb-6" aria-hidden>
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[rgb(var(--bg-node))] border border-[rgb(var(--text-secondary)/0.25)] shadow-sm mx-auto mb-6" aria-hidden>
           <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-[rgb(var(--accent)/1)]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 16h.01" />
@@ -44,12 +69,12 @@
           </svg>
         </div>
 
-        <h1 class="text-3xl md:text-4xl font-semibold mb-2">404 — Page not found</h1>
-        <p class="text-sm md:text-base text-[rgb(var(--text-secondary))] mb-6">We couldn't find the page you were looking for. It may have been moved or removed.</p>
+        <h1 class="text-3xl md:text-4xl font-semibold mb-2">Oops</h1>
+        <p class="text-sm md:text-base text-[rgb(var(--text-secondary))] mb-6">This link is invalid and you will be redirected shortly</p>
 
         <div class="flex items-center justify-center gap-3">
           <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[rgb(var(--accent))] text-white text-sm font-medium shadow hover:opacity-95">Home</a>
-          <a href="/projects-hub" class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-[rgba(0,0,0,0.06)] text-sm font-medium text-[rgb(var(--text-primary))] bg-white hover:bg-[rgba(0,0,0,0.02)]">Projects</a>
+          <a href="/projects-hub" class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-[rgb(var(--text-secondary)/0.25)] text-sm font-medium text-[rgb(var(--text-primary))] bg-[rgb(var(--bg-node))] hover:bg-[rgb(var(--text-secondary)/0.08)]">Projects</a>
         </div>
 
         <p class="text-xs text-[rgb(var(--text-secondary))] mt-6">You will be redirected to the homepage in <span id="count">5</span>s — <a href="/" class="underline">skip</a>.</p>

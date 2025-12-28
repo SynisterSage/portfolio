@@ -347,17 +347,19 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     );
   };
 
-  const getMediaHeightClass = () => {
-    // Keep a 16:9 footprint and minimize blank space below the carousel
-    if (isMobile) return 'aspect-video max-h-[60vh] min-h-[220px]';
-    return 'aspect-video max-h-[760px] min-h-[360px]';
+  // Responsive height clamps to keep the frame large without leaving excess space
+  const getMediaStyle = () => {
+    // mobile: clamp between 260px and 420px based on viewport width
+    if (isMobile) return { height: 'clamp(260px, 72vw, 420px)' } as const;
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1280;
+    if (width < 1024) return { height: 'clamp(340px, 60vw, 520px)' } as const;
+    return { height: 'clamp(420px, 52vw, 680px)' } as const;
   };
 
   const renderMedia = () => {
     if (!carouselItems.length) return null;
     const currentItem = carouselItems[currentImageIndex];
     if (!currentItem) return null;
-    const heightClass = getMediaHeightClass();
     const renderCurrent = () => renderPlayer(currentItem, `slide ${currentImageIndex + 1}`);
     const canLightbox = currentItem.type !== 'demo';
 
@@ -391,9 +393,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        style={{ touchAction: 'pan-y' }}
+        style={{ touchAction: 'pan-y', ...getMediaStyle() }}
       >
-        <div className={`relative w-full ${heightClass}`}>
+        <div className="relative w-full h-full">
           <div className={`h-full w-full transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
             {renderCurrent()}
           </div>

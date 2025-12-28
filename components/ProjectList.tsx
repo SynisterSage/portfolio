@@ -96,20 +96,22 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
             </div>
 
             {/* View Toggle */}
-            <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50 flex-shrink-0">
+            <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50 flex-shrink-0 w-full sm:w-auto">
                 <button 
                     onClick={() => setViewMode('grid')}
-                    className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
+                    className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md transition-all inline-flex items-center justify-center gap-2 ${viewMode === 'grid' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
                     title="Grid View"
                 >
                     <LayoutGrid size={14} />
+                    <span className="text-[11px] font-semibold sm:hidden">Grid</span>
                 </button>
                 <button 
                     onClick={() => setViewMode('list')}
-                    className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
+                    className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md transition-all inline-flex items-center justify-center gap-2 ${viewMode === 'list' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
                     title="List View"
                 >
                     <List size={14} />
+                    <span className="text-[11px] font-semibold sm:hidden">List</span>
                 </button>
             </div>
         </div>

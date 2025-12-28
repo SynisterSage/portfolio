@@ -86,6 +86,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   const mediaContainerRef = useRef<HTMLDivElement>(null);
   const viewAllButtonRef = useRef<HTMLButtonElement>(null);
   const [lightboxItem, setLightboxItem] = useState<Media | null>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
     const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
@@ -221,6 +224,13 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     setCurrentImageIndex(0);
   }, [data.id]);
 
+  useEffect(() => {
+    if (!carouselItems.length) return;
+    setIsFading(true);
+    const id = requestAnimationFrame(() => setIsFading(false));
+    return () => cancelAnimationFrame(id);
+  }, [currentImageIndex, carouselItems.length]);
+
 
   const renderContent = (content: string) => {
     return content.split('\n').map((line, i) => {
@@ -310,13 +320,43 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     const heightClass = getMediaHeightClass();
     const renderCurrent = () => renderPlayer(currentItem, `slide ${currentImageIndex + 1}`);
     const canLightbox = currentItem.type !== 'demo';
+
+    const handleTouchStart = (event: React.TouchEvent) => {
+      touchStartX.current = event.touches[0]?.clientX ?? null;
+      touchEndX.current = null;
+    };
+
+    const handleTouchMove = (event: React.TouchEvent) => {
+      touchEndX.current = event.touches[0]?.clientX ?? null;
+    };
+
+    const handleTouchEnd = () => {
+      if (touchStartX.current === null || touchEndX.current === null) return;
+      const delta = touchEndX.current - touchStartX.current;
+      const threshold = 40;
+      if (Math.abs(delta) < threshold) return;
+      if (delta < 0) {
+        nextImage();
+      } else {
+        prevImage();
+      }
+      touchStartX.current = null;
+      touchEndX.current = null;
+    };
+
     return (
       <div
         ref={mediaContainerRef}
         className="w-full mb-6 md:mb-8 rounded-[1.5rem] overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none max-w-[1200px] mx-auto"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{ touchAction: 'pan-y' }}
       >
         <div className={`relative w-full ${heightClass}`}>
-          {renderCurrent()}
+          <div className={`h-full w-full transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
+            {renderCurrent()}
+          </div>
           {canLightbox && (
             <button
               onClick={handleMediaFullscreen}

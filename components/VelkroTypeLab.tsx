@@ -15,6 +15,7 @@ const VelkroTypeLab: React.FC = () => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const [bounds, setBounds] = useState({ width: 0, height: 0 });
+  const isMobile = bounds.width > 0 && bounds.width < 640;
 
   useEffect(() => {
     const el = previewRef.current;
@@ -30,7 +31,7 @@ const VelkroTypeLab: React.FC = () => {
 
   useEffect(() => {
     if (!previewRef.current || !measureRef.current) return;
-    const padding = bounds.width < 640 ? 20 : 32;
+    const padding = isMobile ? 16 : 32;
     const availableWidth = Math.max(140, previewRef.current.clientWidth - padding * 2);
     const availableHeight = Math.max(140, previewRef.current.clientHeight - padding * 2);
     const value = text.trim() || DEFAULT_TEXT;
@@ -80,7 +81,7 @@ const VelkroTypeLab: React.FC = () => {
       }}
     >
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-end px-4 md:px-6 pt-4 pb-2">
+        <div className="flex items-center justify-end px-4 md:px-6 pt-3 pb-2">
           <button
             type="button"
             onClick={reset}
@@ -96,7 +97,7 @@ const VelkroTypeLab: React.FC = () => {
           </button>
         </div>
 
-        <div className="flex-1 px-4 md:px-8 pb-4 md:pb-8">
+        <div className="flex-1 px-3 md:px-8 pb-3 md:pb-8">
           <div
             ref={previewRef}
             className="relative w-full h-full rounded-2xl border overflow-hidden"
@@ -104,7 +105,7 @@ const VelkroTypeLab: React.FC = () => {
               borderColor: '#e3d7c8',
               background: palette.paper,
               boxShadow: '0 18px 40px rgba(0,0,0,0.08)',
-              minHeight: '320px'
+              minHeight: isMobile ? '220px' : '320px'
             }}
             onClick={() => inputRef.current?.focus()}
           >
@@ -140,13 +141,13 @@ const VelkroTypeLab: React.FC = () => {
           </div>
         </div>
 
-        <div className="px-4 md:px-8 pb-5">
+        <div className="px-3 md:px-8 pb-4 md:pb-5">
           <textarea
             ref={inputRef}
             value={text}
             onChange={event => setText(event.target.value)}
             rows={2}
-            className="w-full resize-none rounded-2xl px-4 py-6 md:px-6 md:py-7 text-2xl md:text-3xl border outline-none"
+            className="w-full resize-none rounded-2xl px-4 py-5 md:px-6 md:py-7 text-2xl md:text-3xl border outline-none"
             style={{
               background: '#ffffff',
               borderColor: '#d8cdbf',

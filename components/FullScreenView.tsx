@@ -291,7 +291,6 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     event.stopPropagation();
     const item = carouselItems[currentImageIndex];
     if (!item) return;
-    if (item.type === 'demo') return;
     setLightboxItem(item);
   };
 
@@ -347,13 +346,24 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     );
   };
 
-  // Responsive height clamps to keep the frame large without leaving excess space
-  const getMediaStyle = () => {
-    // mobile: clamp between 260px and 420px based on viewport width
-    if (isMobile) return { height: 'clamp(260px, 72vw, 420px)' } as const;
+  // Responsive height clamps to keep the frame large without leaving excess space.
+  // Demo (Velkro) needs a bit more vertical room for the input field.
+  const getMediaStyle = (type?: Media['type']) => {
     const width = typeof window !== 'undefined' ? window.innerWidth : 1280;
-    if (width < 1024) return { height: 'clamp(340px, 60vw, 520px)' } as const;
-    return { height: 'clamp(420px, 52vw, 680px)' } as const;
+    const isDemo = type === 'demo';
+    if (isMobile) {
+      return {
+        height: isDemo ? 'clamp(320px, 78vw, 520px)' : 'clamp(260px, 72vw, 420px)'
+      } as const;
+    }
+    if (width < 1024) {
+      return {
+        height: isDemo ? 'clamp(420px, 68vw, 640px)' : 'clamp(340px, 60vw, 520px)'
+      } as const;
+    }
+    return {
+      height: isDemo ? 'clamp(500px, 50vw, 780px)' : 'clamp(420px, 52vw, 680px)'
+    } as const;
   };
 
   const renderMedia = () => {
@@ -361,7 +371,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     const currentItem = carouselItems[currentImageIndex];
     if (!currentItem) return null;
     const renderCurrent = () => renderPlayer(currentItem, `slide ${currentImageIndex + 1}`);
-    const canLightbox = currentItem.type !== 'demo';
+    const canLightbox = true; // allow lightbox even for demo
 
     const handleTouchStart = (event: React.TouchEvent) => {
       touchStartX.current = event.touches[0]?.clientX ?? null;
@@ -393,7 +403,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        style={{ touchAction: 'pan-y', ...getMediaStyle() }}
+        style={{ touchAction: 'pan-y', ...getMediaStyle(currentItem.type) }}
       >
         <div className="relative w-full h-full">
           <div className={`h-full w-full transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
@@ -495,9 +505,12 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
 
   const renderLightbox = () => {
     if (!lightboxItem) return null;
+    const isDemo = lightboxItem.type === 'demo';
     return (
       <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-6">
-        <div className="relative w-full max-w-[min(1100px,calc(100%_-_48px))] h-[clamp(320px,80vh,720px)]">
+        <div
+          className={`relative w-full max-w-[min(1100px,calc(100%_-_48px))] ${isDemo ? 'max-h-[85vh] h-auto' : 'h-[clamp(320px,80vh,720px)]'}`}
+        >
           <button
             onClick={() => setLightboxItem(null)}
             className="absolute top-4 right-4 z-20 rounded-full bg-black/60 text-white p-2 hover:bg-white hover:text-black transition-all shadow-lg"
@@ -505,7 +518,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
           >
             <X size={18} />
           </button>
-          <div className="w-full h-full rounded-[1.5rem] overflow-hidden bg-node-bg border border-node-border shadow-2xl">
+          <div className={`w-full ${isDemo ? 'max-h-[85vh]' : 'h-full'} rounded-[1.5rem] overflow-hidden bg-node-bg border border-node-border shadow-2xl`}>
             {renderPlayer(lightboxItem)}
           </div>
         </div>

@@ -75,7 +75,7 @@ const VelkroTypeLab: React.FC = () => {
 
   return (
     <div
-      className="w-full h-full relative overflow-hidden"
+      className="w-full h-full relative overflow-auto"
       style={{
         background: palette.paper
       }}

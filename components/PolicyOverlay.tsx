@@ -21,7 +21,7 @@ const PolicyOverlay: React.FC<PolicyOverlayProps> = ({ onClose }) => {
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 transition-all duration-300 ease-in-out ${
+      className={`fixed inset-0 z-[150] flex items-center justify-center p-4 md:p-8 transition-all duration-300 ease-in-out ${
         isVisible ? 'bg-black/60 backdrop-blur-sm' : 'bg-transparent pointer-events-none'
       }`}
       onClick={handleClose}

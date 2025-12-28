@@ -408,7 +408,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
 
       {/* FULL SCREEN OVERLAY */}
       {selectedProject && selectedNodeData && (
-          <div className="fixed inset-0 z-[200]">
+          <div className="fixed inset-0 z-[300]">
              <FullScreenView 
                  key={selectedProject.id}
                  data={selectedNodeData}

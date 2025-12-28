@@ -24,9 +24,6 @@ const toMediaItem = (url: string): Media => ({
   url
 });
 
-// Keep media at a 16:9 ratio (1920x1080 style) with responsive height bounds
-const getMediaHeightClass = () => 'aspect-video min-h-[400px] max-h-[760px]';
-
 const isImageAsset = (value?: string) => /\.(png|jpe?g|gif|svg|webp)$/i.test(value || '');
 
 const resolveProjectThumbnail = (project: ProjectItem) => {
@@ -187,7 +184,6 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
 
   const handleClose = (event?: React.MouseEvent | React.TouchEvent) => {
      event?.stopPropagation();
-     event?.preventDefault();
      blurActiveElement();
      // If it's a permanent node (like Hubs/Bio), treat Close as Restore/Minimize
      // This prevents the "disappear then reappear" glitch by shrinking back to place
@@ -349,6 +345,12 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
         className="w-full h-full object-cover transition-opacity duration-300"
       />
     );
+  };
+
+  const getMediaHeightClass = () => {
+    // Keep a 16:9 footprint but avoid oversized height on mobile
+    if (isMobile) return 'aspect-video max-h-[70vh] min-h-[220px]';
+    return 'aspect-video max-h-[760px] min-h-[360px]';
   };
 
   const renderMedia = () => {
@@ -513,12 +515,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   const isHub = data.type === 'experience-hub' || data.type === 'project-hub';
   
   return (
-      <div 
+    <div 
       className={`bg-canvas-bg/95 ${isMobile ? 'backdrop-blur-lg shadow-xl duration-200' : 'backdrop-blur-xl shadow-2xl duration-300'} transition-all cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden flex flex-col`}
       style={style}
-      onClickCapture={e => e.stopPropagation()}
-      onMouseDownCapture={e => e.stopPropagation()}
-      onTouchStartCapture={e => e.stopPropagation()}
     >
         {/* Header */}
         <div className={`flex items-center justify-between px-4 md:px-6 h-14 md:h-16 border-b border-node-border bg-node-bg/50 shrink-0 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}>

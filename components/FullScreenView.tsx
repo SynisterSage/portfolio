@@ -348,8 +348,8 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   };
 
   const getMediaHeightClass = () => {
-    // Keep a 16:9 footprint but avoid oversized height on mobile
-    if (isMobile) return 'aspect-video max-h-[70vh] min-h-[220px]';
+    // Keep a 16:9 footprint and minimize blank space below the carousel
+    if (isMobile) return 'aspect-video max-h-[60vh] min-h-[220px]';
     return 'aspect-video max-h-[760px] min-h-[360px]';
   };
 

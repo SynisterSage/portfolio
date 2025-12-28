@@ -21,9 +21,11 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
   const [viewMode, setViewMode] = useState<'list' | 'grid'>(variant);
 
   const filteredProjects = useMemo(() => {
+    const term = search.toLowerCase();
     return PROJECTS_LIST.filter(p => {
-      const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) || 
-                            p.tags.some(t => t.toLowerCase().includes(search.toLowerCase()));
+      const matchesSearch = term.length === 0
+        ? true
+        : p.title.toLowerCase().includes(term) || p.tags.some(t => t.toLowerCase().includes(term));
       const matchesFilter = filter === 'all' || p.category === filter;
       return matchesSearch && matchesFilter;
     });
@@ -99,7 +101,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
             <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50 flex-shrink-0 w-full sm:w-auto">
                 <button 
                     onClick={() => setViewMode('grid')}
-                    className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md transition-all inline-flex items-center justify-center gap-2 ${viewMode === 'grid' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
+                    className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md inline-flex items-center justify-center gap-2 ${viewMode === 'grid' ? 'bg-node-bg text-primary' : 'text-secondary'}`}
                     title="Grid View"
                 >
                     <LayoutGrid size={14} />
@@ -107,7 +109,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                 </button>
                 <button 
                     onClick={() => setViewMode('list')}
-                    className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md transition-all inline-flex items-center justify-center gap-2 ${viewMode === 'list' ? 'bg-node-bg shadow text-primary' : 'text-secondary hover:text-primary'}`}
+                    className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md inline-flex items-center justify-center gap-2 ${viewMode === 'list' ? 'bg-node-bg text-primary' : 'text-secondary'}`}
                     title="List View"
                 >
                     <List size={14} />
@@ -118,7 +120,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto custom-scroll p-3">
+      <div className="flex-1 overflow-y-auto custom-scroll p-3" style={{ willChange: 'transform' }}>
         {filteredProjects.length === 0 ? (
             <div className="p-8 text-center text-secondary text-sm font-mono italic">
                 No modules found.
@@ -134,7 +136,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                             <div 
                                 key={project.id}
                                 onClick={(e) => handleProjectClick(e, project)}
-                                className="group flex flex-col bg-black/5 dark:bg-white/5 border border-transparent hover:border-node-border rounded-xl overflow-hidden cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1"
+                                className="group flex flex-col bg-black/5 dark:bg-white/5 border border-transparent hover:border-node-border rounded-xl overflow-hidden cursor-pointer"
                             >
                                 {/* Large Image */}
                                 <div className="w-full aspect-video relative overflow-hidden bg-black/10 border-b border-node-border/50">
@@ -184,7 +186,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                         </h3>
                                         {project.linkedNodeId ? <ArrowRight size={14} className="text-accent opacity-0 group-hover:opacity-100 transition-opacity" /> : <ExternalLink size={14} className="text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />}
                                     </div>
-                                    <p className="text-xs text-secondary line-clamp-2 mb-4 leading-relaxed">
+                                    <p className="text-xs text-secondary mb-4 leading-relaxed">
                                         {project.description}
                                     </p>
                             <div className="mt-auto flex flex-wrap gap-1.5 items-start justify-start">

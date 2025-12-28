@@ -5,7 +5,7 @@ import { PRELOAD_ASSETS } from '../constants';
 
 export const PRELOADER_KEY = 'portfolio.preloader.lastSeen';
 export const PRELOADER_HIDE_DURATION = 1000 * 60 * 60 * 24; // 24 hours
-const PRELOAD_TIMEOUT = 15000;
+const PRELOAD_TIMEOUT = 8000;
 const imageCache = new Map<string, HTMLImageElement>();
 
 export const shouldShowPreloader = () => {
@@ -171,13 +171,13 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
     if (!shouldDisplayPreloader) return;
     const softTimeout = window.setTimeout(() => {
       setFallbackStatus('ALMOST THERE — finalizing assets');
-    }, 7000);
+    }, 4000);
 
     const hardTimeout = window.setTimeout(() => {
       setFallbackStatus('Wrapping up…');
       setProgress(100);
       setAssetsLoaded(true);
-    }, 14000);
+    }, 8000);
 
     return () => {
       window.clearTimeout(softTimeout);

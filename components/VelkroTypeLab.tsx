@@ -7,7 +7,7 @@ const MAX_SIZE = 340;
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const VelkroTypeLab: React.FC = () => {
-  const [text, setText] = useState(DEFAULT_TEXT);
+  const [text, setText] = useState('');
   const [fontSize, setFontSize] = useState(180);
 
   const previewRef = useRef<HTMLDivElement>(null);
@@ -68,7 +68,7 @@ const VelkroTypeLab: React.FC = () => {
   );
 
   const reset = () => {
-    setText(DEFAULT_TEXT);
+    setText('');
     inputRef.current?.focus();
   };
 

@@ -32,10 +32,12 @@ html.fullscreen-active .policy-toggle,
 html.fullscreen-active .policy-overlay {
   opacity: 0 !important;
   pointer-events: none !important;
+  transition: none !important;
 }
 html.fullscreen-active .system-status {
   opacity: 0 !important;
   pointer-events: none !important;
+  transition: none !important;
 }
 
 /* Smooth fade for status/policy controls */

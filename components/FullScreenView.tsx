@@ -332,22 +332,14 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       );
     }
     if (item.type === 'iframe') {
-      if (!isActive) {
-        return (
-          <div
-            key={item.url}
-            className="w-full h-full grid place-items-center bg-node-bg text-secondary text-sm border border-node-border"
-          >
-            <span>Load prototype</span>
-          </div>
-        );
-      }
       return (
         <iframe
           key={item.url}
           src={item.url}
           className="w-full h-full border-0"
           title={`${data.title} prototype`}
+          loading="lazy"
+          allow="fullscreen; clipboard-read; clipboard-write; autoplay"
           allowFullScreen
         />
       );
@@ -433,7 +425,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
           </div>
           {carouselItems
             .map((item, idx) => ({ item, idx }))
-            .filter(({ idx }) => Math.abs(idx - currentImageIndex) === 1)
+            .filter(({ item, idx }) => item.type !== 'iframe' && Math.abs(idx - currentImageIndex) === 1)
             .map(({ item, idx }) => (
               <div key={`${item.url}-preload`} className="hidden">
                 {renderPlayer(item, `slide ${idx + 1}`, false)}

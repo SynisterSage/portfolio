@@ -330,10 +330,6 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     if (bootState === 'scanning') return; 
 
     const targetNode = nodes.find(n => n.id === activeNodeId);
-    if (targetNode?.hidden && !openNodes.includes(activeNodeId)) {
-        handleOpenProject(activeNodeId);
-        return; 
-    }
 
     const currentPos = nodePositionsRef.current[activeNodeId] || targetNode?.position || { x: 0, y: 0 };
     

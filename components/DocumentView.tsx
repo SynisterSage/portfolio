@@ -167,7 +167,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                     className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-gradient-to-b from-emerald-400/80 to-emerald-500 text-white shadow-[0_0_25px_rgba(16,185,129,0.3)] transition hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(16,185,129,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
                     style={{ filter: 'drop-shadow(0 0 15px rgba(16,185,129,0.35))' }}
                 >
-                    Download Resume
+                    View Resume
                 </a>
             </div>
         </div>

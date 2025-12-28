@@ -299,6 +299,10 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   // Add a global flag to suppress policy UI while fullscreen is open
   useEffect(() => {
     if (typeof document === 'undefined') return;
+    // Make controls hide instantly when entering fullscreen
+    requestAnimationFrame(() => {
+      document.documentElement.classList.add('fullscreen-active');
+    });
     document.documentElement.classList.add('fullscreen-active');
     return () => {
       document.documentElement.classList.remove('fullscreen-active');

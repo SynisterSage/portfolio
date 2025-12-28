@@ -42,5 +42,5 @@ html.fullscreen-active .system-status {
 .policy-toggle,
 .policy-overlay,
 .system-status {
-  transition: opacity 250ms ease;
+  transition: opacity 150ms ease;
 }

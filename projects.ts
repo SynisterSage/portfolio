@@ -74,9 +74,9 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     description: `GridLead is a solo-built platform that finds local businesses, runs automated audits, and drives outreach. The React/Vite frontend ships as an installable PWA and Supabase covers auth/Postgres/Edge Functions for Gmail OAuth/send/poll, Stripe subscriptions, and Places-powered discovery. A PageSpeed + Playwright render proxy scores performance, design, and trust, then feeds the notification stack.`,
     year: '2025',
     service: 'Full Stack',
-    tools: ['React', 'Vite', 'Supabase', 'Stripe', 'Playwright'],
+    tools: ['React', 'Vite', 'Supabase', 'Stripe', 'Playwright', 'Logo Creation: Dan Martin'],
     likes: 21,
-    fullDescription: `GridLead is a solo-built, full-stack platform that mines local businesses, runs AI-flavored audits, and automates outreach. The frontend is React/Vite with an installable PWA shell. Supabase powers auth, Postgres, and Edge Functions for Gmail OAuth/send/poll, Stripe subscriptions, and Places-based discovery. A custom audit pipeline (PageSpeed + Playwright render proxy) scores performance, design, and trust, generates briefs, and feeds a notification stack (Realtime, push, tracking pixels). It ships on Vercel/Supabase with RLS-secured migrations and plan-based limits.`,
+    fullDescription: `GridLead is a solo-built, full-stack platform that mines local businesses, runs AI-flavored audits, and automates outreach. The frontend is React/Vite with an installable PWA shell. Supabase powers auth, Postgres, and Edge Functions for Gmail OAuth/send/poll, Stripe subscriptions, and Places-based discovery. A custom audit pipeline (PageSpeed + Playwright render proxy) scores performance, design, and trust, generates briefs, and feeds a notification stack (Realtime, push, tracking pixels). It ships on Vercel/Supabase with RLS-secured migrations and plan-based limits. (Shout out to Dan Martin for the logo creation)`,
     link: 'https://gridlead.space/',
     linkLabel: 'Open GridLead',
     showLink: true,
@@ -88,11 +88,11 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     id: 'tempo',
     title: 'Tempo',
     folder: 'tempo',
-    categories: ['Web App', 'Automation'],
-    description: `Tempo is a workflow accelerator that sequences audio/video production tasks, wraps AI-assisted notes, and tracks delivery status in one place. This entry uses a lean gallery (thumbnail + main) and relies on embedded Figma frames for the full presentation and prototype walkthrough.`,
+    categories: ['Product Design', 'Mobile App'],
+    description: `Tempo is a golf companion built from full-stack discovery, competitive analysis, and a Figma-native design system to deliver real-time intelligence that helps golfers understand their swing, navigate the course, and make smarter decisions with a playful, easy-to-use interface.`,
     year: '2025',
-    service: 'Product Design',
-    tools: ['Figma', 'React'],
+    service: 'Product Design & Prototype',
+    tools: ['Figma', 'Design System', 'Color Tokens', 'Iconography', 'React Native'],
     likes: 0,
     figmaEmbeds: [
       'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=346-2808&p=f&scaling=scale-down&content-scaling=fixed&page-id=211%3A847&embed-host=share',
@@ -101,7 +101,7 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     link: 'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=203-1111&p=f&scaling=scale-down&content-scaling=fixed&page-id=203%3A2&starting-point-node-id=203%3A1102&embed-host=share',
     linkLabel: 'Open Prototype',
     showLink: true,
-    fullDescription: `Tempo is built to keep production teams in lockstep: a single surface for sequencing shoots, tracking notes, and managing approvals. The carousel keeps a tight set of static assets while embedding the full presentation and prototype for richer context.`
+    fullDescription: `Tempo is a golf companion app that pairs real-time intelligence with a playful, easy-to-use interface so golfers can understand their swing, navigate the course, and make smarter decisions. I ran user research and competitive analysis, then designed the entire system in Figma with color tokens, custom iconography, and a reusable UI kit. The presentation and prototype live in Figma embeds; the product is now moving through React Native development with multiple CS partners. Everything from the design guide to the decks was authored end to end to keep the experience fun, legible, and production-ready.`
   },
   {
     id: 'velkro',

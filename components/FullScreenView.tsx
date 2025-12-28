@@ -622,16 +622,17 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                             {data.type === 'project' && hasInlineLinks && (
                               <div className="flex items-center gap-2 flex-wrap justify-end">
                                 {projectLinks.map(link => (
-                                  <a
-                                    key={link.label}
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-flex items-center gap-1.5 rounded-full border border-node-border px-3 py-1.5 text-[12px] font-semibold text-primary transition-all bg-node-bg shadow-sm hover:-translate-y-0.5 hover:shadow-xl"
-                                  >
-                                    {link.label}
-                                    <ExternalLink size={12} />
-                                  </a>
+                                  <div key={link.label} className="inline-flex items-center gap-2">
+                                    <a
+                                      href={link.url}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-flex items-center gap-1.5 rounded-full border border-node-border px-3 py-1.5 text-[12px] font-semibold text-primary transition-all bg-node-bg shadow-sm hover:-translate-y-0.5 hover:shadow-xl"
+                                    >
+                                      {link.label}
+                                      <ExternalLink size={12} />
+                                    </a>
+                                  </div>
                                 ))}
                               </div>
                             )}

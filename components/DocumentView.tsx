@@ -176,9 +176,10 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
 
     return (
         <div
-            className={`w-full h-full overflow-y-auto overflow-x-hidden bg-canvas-bg custom-scroll scroll-smooth relative transition-opacity duration-800 ease-out ${
+            className={`w-full h-full overflow-y-auto overflow-x-hidden bg-canvas-bg custom-scroll relative transition-opacity duration-800 ease-out ${
                 viewReady ? 'opacity-100' : 'opacity-0'
             }`}
+            style={{ WebkitOverflowScrolling: 'touch' }}
         >
       <div
         className="pointer-events-none absolute inset-0 opacity-70"

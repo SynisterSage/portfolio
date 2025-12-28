@@ -60,8 +60,8 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   const [highestZ, setHighestZ] = useState(10);
   
   // Full Screen State
-  const [maximizedNode, setMaximizedNode] = useState<{ id: string; initialRect: DOMRect } | null>(null);
-  const maximizedStackRef = useRef<{ id: string; initialRect: DOMRect }[]>([]);
+  const [maximizedNode, setMaximizedNode] = useState<{ id: string; initialRect: DOMRect; snap?: boolean } | null>(null);
+  const maximizedStackRef = useRef<{ id: string; initialRect: DOMRect; snap?: boolean }[]>([]);
   const [restoringId, setRestoringId] = useState<string | null>(null);
 
   // Sync nodePositionsRef
@@ -304,14 +304,16 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   }, [nodes, maximizedNode, popPreviousMaximized]);
 
   const handleMaximize = useCallback((id: string, rect: DOMRect) => {
-    handleOpenProject(id);
+    const snap = Boolean(maximizedNode);
+    // Only track fullscreen state; do not spawn a spatial node for hidden projects.
     setMaximizedNode(prev => {
       if (prev && prev.id !== id) {
         maximizedStackRef.current = [...maximizedStackRef.current.filter(item => item.id !== id), prev];
       }
-      return { id, initialRect: rect };
+      const nextRect = snap ? new DOMRect(0, 0, window.innerWidth, window.innerHeight) : rect;
+      return { id, initialRect: nextRect, snap };
     });
-  }, [handleOpenProject]);
+  }, [maximizedNode]);
 
   const handleRestore = useCallback(() => {
     if (!maximizedNode) return;
@@ -668,14 +670,15 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
       {/* Full Screen Overlay */}
       {maximizedNode && maximizedNodeData && (
           <div className="absolute inset-0 z-[300]">
-              <FullScreenView 
-                key={maximizedNode.id} 
-                data={maximizedNodeData} 
-                initialRect={maximizedNode.initialRect}
-                onRestore={handleRestore}
-                onClose={() => handleCloseProject(maximizedNode.id)}
-                onMaximize={handleMaximize}
-              />
+      <FullScreenView 
+        key={maximizedNode.id} 
+        data={maximizedNodeData} 
+        initialRect={maximizedNode.initialRect}
+        onRestore={handleRestore}
+        onClose={() => handleCloseProject(maximizedNode.id)}
+        onMaximize={handleMaximize}
+        snapToFull={maximizedNode.snap}
+      />
           </div>
       )}
     </div>

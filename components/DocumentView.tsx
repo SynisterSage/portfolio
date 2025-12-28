@@ -71,13 +71,15 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const [heroVisible, setHeroVisible] = useState(false);
   const [viewReady, setViewReady] = useState(false);
-  const [overlayStack, setOverlayStack] = useState<{ id: string; rect: DOMRect }[]>([]);
+  const [overlayStack, setOverlayStack] = useState<{ id: string; rect: DOMRect; snap?: boolean }[]>([]);
   const selectedProject = overlayStack[overlayStack.length - 1] || null;
 
   const handleOverlayMaximize = (id: string, rect: DOMRect) => {
     // Always replace the overlay with the newly selected item;
     // closing should exit, not return to previous items.
-    setOverlayStack([{ id, rect }]);
+    const snap = overlayStack.length > 0;
+    const nextRect = snap ? new DOMRect(0, 0, window.innerWidth, window.innerHeight) : rect;
+    setOverlayStack([{ id, rect: nextRect, snap }]);
   };
 
   const closeOverlay = () => setOverlayStack([]);
@@ -416,6 +418,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                  onRestore={closeOverlay}
                  onClose={closeOverlay}
                  onMaximize={handleOverlayMaximize}
+                 snapToFull={selectedProject.snap}
              />
           </div>
       )}

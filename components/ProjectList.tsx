@@ -149,7 +149,14 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                           />
                                         ) : (
-                                          <img src={thumb} alt={project.title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                          <img
+                                            src={thumb}
+                                            alt={project.title}
+                                            loading="lazy"
+                                            decoding="async"
+                                            fetchpriority="low"
+                                            className="w-full h-full object-cover"
+                                          />
                                         )
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-secondary/30">

@@ -15,6 +15,7 @@ interface FullScreenViewProps {
   onRestore: () => void; // Minimize back to window
   onClose: () => void;   // Close project entirely
   onMaximize?: (id: string, rect: DOMRect) => void;
+  snapToFull?: boolean;
 }
 
 const isVideoSource = (value?: string) => !!value && /\.(mp4|mov|webm|ogg)$/i.test(value);
@@ -39,7 +40,7 @@ const resolveProjectThumbnail = (project: ProjectItem) => {
   return project.images?.[0] || null;
 };
 
-const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRestore, onClose, onMaximize }) => {
+const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRestore, onClose, onMaximize, snapToFull }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const projectMeta = useMemo(
@@ -77,7 +78,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       height: '100vh',
       minHeight: '100vh',
       maxHeight: '100dvh',
-      borderRadius: '0px',
+      borderRadius: '0.75rem',
       opacity: 1,
       transform: 'translateZ(0)',
       zIndex: 300,
@@ -127,6 +128,13 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       willChange: targetStyle.willChange,
     };
 
+    // If we are swapping projects while already fullscreen, snap directly
+    if (snapToFull || (style.width === '100vw' && style.height === '100vh')) {
+      setStyle(targetStyle);
+      return;
+    }
+
+    // Start from the source rect so open mirrors the close animation
     setStyle({
       position: 'fixed',
       top: initialRect.top,
@@ -134,18 +142,14 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       width: initialRect.width,
       height: initialRect.height,
       borderRadius: '0.75rem',
-      opacity: 0,
+      opacity: 1,
       transform: 'translateZ(0)',
-      zIndex: 100,
+      zIndex: 300,
       ...common,
     });
 
-    // Primary animation path (works on modern browsers)
     requestAnimationFrame(() => {
-      setStyle(prev => ({ ...prev, opacity: 1, ...common }));
-      requestAnimationFrame(() => {
-        setStyle(targetStyle);
-      });
+      setStyle(targetStyle);
     });
 
     // Failsafe for throttled RAF on mobile/incognito: snap to full-screen after a beat
@@ -156,7 +160,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     return () => {
       window.clearTimeout(fallback);
     };
-  }, [data.id, initialRect, targetStyle]);
+  }, [data.id, initialRect, targetStyle, style.width, style.height, snapToFull]);
 
   const handleRestore = () => {
     setLightboxItem(null);

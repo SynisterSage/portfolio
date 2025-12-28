@@ -159,6 +159,12 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     service: 'Brand Design',
     tools: ['Adobe Illustrator', 'Adobe After Effects'],
     likes: 8,
+    figmaEmbeds: [
+      'https://embed.figma.com/proto/ApePTuZihCRpIRA2Jo39PP/Halfway-Construction-website?node-id=1-3&p=f&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=28%3A168&embed-host=share'
+    ],
+    link: 'https://embed.figma.com/proto/ApePTuZihCRpIRA2Jo39PP/Halfway-Construction-website?node-id=1-3&p=f&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=28%3A168&embed-host=share',
+    linkLabel: 'Open Prototype',
+    showLink: true,
     fullDescription: `Halfway Construction is a tongue-in-cheek brand that leans on bold safety-inspired palette, hazard-stripe accents, and modular logos built for stickers and headers. Motion tests include an animated hazard-stripe loader and snappy logo build.`
   },
   {

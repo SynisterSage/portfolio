@@ -3,7 +3,6 @@ export const PROJECT_ASSETS = {
     "folder": "adelle",
     "thumbnail": "/images/projects/adelle/thumbnail.jpg",
     "media": [
-      "/images/projects/adelle/main.jpg",
       "/images/projects/adelle/gallery-2.jpg",
       "/images/projects/adelle/gallery-1.jpg"
 
@@ -16,14 +15,12 @@ export const PROJECT_ASSETS = {
       "/images/projects/charcole/main.jpg",
       "/images/projects/charcole/gallery-1.jpg",
       "/images/projects/charcole/gallery-2.jpg",
-      "/images/projects/charcole/gallery-3.jpg"
     ]
   },
   "city-scapes": {
     "folder": "city-scapes",
     "thumbnail": "/images/projects/city-scapes/thumbnail.jpg",
     "media": [
-      "/images/projects/city-scapes/main.jpg",
       "/images/projects/city-scapes/gallery-1.jpg",
       "/images/projects/city-scapes/gallery-2.jpg",
       "/images/projects/city-scapes/gallery-3.jpg"
@@ -33,7 +30,6 @@ export const PROJECT_ASSETS = {
     "folder": "color-collages",
     "thumbnail": "/images/projects/color-collages/thumbnail.jpg",
     "media": [
-      "/images/projects/color-collages/main.jpg",
       "/images/projects/color-collages/gallery-1.jpg"
 
     ]
@@ -63,7 +59,7 @@ export const PROJECT_ASSETS = {
   },
   "halfway": {
     "folder": "halfway",
-    "thumbnail": "/images/projects/halfway/thumbnail.mp4",
+    "thumbnail": "/images/projects/halfway/main.gif",
     "media": [
       "/images/projects/halfway/main.gif",
       "/images/projects/halfway/gallery-1.jpg",
@@ -83,7 +79,6 @@ export const PROJECT_ASSETS = {
     "folder": "neon-photo",
     "thumbnail": "/images/projects/neon-photo/thumbnail.jpg",
     "media": [
-      "/images/projects/neon-photo/main.jpg",
       "/images/projects/neon-photo/gallery-1.jpg",
       "/images/projects/neon-photo/gallery-2.jpg",
       "/images/projects/neon-photo/gallery-3.jpg"
@@ -94,11 +89,9 @@ export const PROJECT_ASSETS = {
     "folder": "octone",
     "thumbnail": "/images/projects/octone/thumbnail.png",
     "media": [
-      "/images/projects/octone/main.png",
       "/images/projects/octone/gallery-1.png",
       "/images/projects/octone/gallery-2.png",
       "/images/projects/octone/gallery-3.png"
-
     ]
   },
   "overtone": {
@@ -141,13 +134,12 @@ export const PROJECT_ASSETS = {
   },
   "self-branding": {
     "folder": "self-branding",
-    "thumbnail": "/images/projects/self-branding/thumbnail.jpg",
+    "thumbnail": "/images/projects/self-branding/thumbnail.svg",
     "media": [
-      "/images/projects/self-branding/thumbnail.jpg",
+      "/images/projects/self-branding/thumbnail.svg",
+      "/images/projects/self-branding/main.jpg",
       "/images/projects/self-branding/gallery-1.jpg",
       "/images/projects/self-branding/gallery-2.jpg",
-      "/images/projects/self-branding/gallery-3.svg"
-
     ]
   },
   "space-themed-widgets": {
@@ -159,10 +151,8 @@ export const PROJECT_ASSETS = {
     "folder": "squisito",
     "thumbnail": "/images/projects/squisito/thumbnail.jpg",
     "media": [
-      "/images/projects/squisito/main.jpg",
       "/images/projects/squisito/gallery-1.jpg",
       "/images/projects/squisito/gallery-2.jpg"
-
     ]
   },
   "stopmotion": {
@@ -182,7 +172,6 @@ export const PROJECT_ASSETS = {
     "folder": "tracker-app",
     "thumbnail": "/images/projects/tracker-app/thumbnail.svg",
     "media": [
-      "/images/projects/tracker-app/main.svg",
       "/images/projects/tracker-app/gallery-1.svg",
       "/images/projects/tracker-app/gallery-2.svg"
 

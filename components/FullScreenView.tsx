@@ -211,13 +211,22 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     if (data.gallery && data.gallery.length > 0) {
       items.push(...data.gallery.map(toMediaItem));
     }
+    if (Array.isArray(data.figmaEmbeds) && data.figmaEmbeds.length) {
+      items.push(...data.figmaEmbeds.filter(Boolean).map(url => ({ type: 'iframe', url })));
+    }
     if (data.figmaEmbed) {
       items.push({ type: 'iframe', url: data.figmaEmbed });
     }
     if (data.type === 'project' && data.id === 'velkro') {
       items.push({ type: 'demo', url: 'velkro-type-lab' });
     }
-    return items;
+    // dedupe on url to avoid duplicates between figmaEmbed and figmaEmbeds[0]
+    const seen = new Set<string>();
+    return items.filter(item => {
+      if (seen.has(item.url)) return false;
+      seen.add(item.url);
+      return true;
+    });
   }, [data]);
 
   const nextImage = (e?: React.MouseEvent) => {

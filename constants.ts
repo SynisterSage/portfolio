@@ -123,6 +123,7 @@ const deriveCategory = (project: (typeof projects)[number]) => {
 
 export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
   const normalizedThumbnail = withImagesPath(project.thumbnail);
+  const normalizedFigmaEmbeds = project.figmaEmbeds || [];
   return {
     id: project.id,
     title: project.title,
@@ -148,9 +149,10 @@ export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
     service: project.service,
     tools: project.tools,
     fullDescription: project.fullDescription,
-    figmaEmbed: project.figmaEmbed,
+    figmaEmbed: project.figmaEmbed || normalizedFigmaEmbeds[0],
     figmaEmbedLabel: project.figmaEmbedLabel,
-    showEmbedLink: project.showEmbedLink
+    showEmbedLink: project.showEmbedLink,
+    figmaEmbeds: normalizedFigmaEmbeds
   };
 });
 
@@ -276,7 +278,8 @@ const projectNodes: NodeData[] = projects.map(project => {
       new Set([...(project.categories || []), project.service || '', ...(project.tools || [])].filter(Boolean))
     ),
     likes: project.likes ?? 0,
-    figmaEmbed: project.figmaEmbed,
+    figmaEmbed: project.figmaEmbed || project.figmaEmbeds?.[0],
+    figmaEmbeds: project.figmaEmbeds,
     links: [
       ...(project.link && project.showLink ? [{ label: project.linkLabel || 'Visit Project', url: project.link }] : []),
       ...(project.figmaEmbed && project.showEmbedLink !== false

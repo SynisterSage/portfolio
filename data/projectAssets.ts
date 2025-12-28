@@ -43,10 +43,7 @@ export const PROJECT_ASSETS = {
     "folder": "dominos",
     "thumbnail": "/images/projects/dominos/thumbnail.jpg",
     "media": [
-      "/images/projects/dominos/thumbnail.jpg",
-      "/images/projects/dominos/gallery-1.jpg",
-      "/images/projects/dominos/gallery-2.jpg",
-      "/images/projects/dominos/gallery-3.jpg"
+      "/images/projects/dominos/thumbnail.jpg"
     ]
   },
   "grid-lead": {
@@ -57,6 +54,13 @@ export const PROJECT_ASSETS = {
       "/images/projects/grid-lead/gallery-1.png",
       "/images/projects/grid-lead/gallery-2.png",
       "/images/projects/grid-lead/gallery-3.png"
+    ]
+  },
+  "tempo": {
+    "folder": "tempo",
+    "thumbnail": "/images/projects/tempo/thumbnail.png",
+    "media": [
+      "/images/projects/tempo/thumbnail.png"
     ]
   },
   "halfway": {

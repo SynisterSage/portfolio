@@ -18,6 +18,7 @@ export interface Project {
   fullDescription?: string;
   figmaEmbed?: string;
   figmaEmbedLabel?: string;
+  figmaEmbeds?: string[];
   likes?: number;
 }
 
@@ -39,8 +40,14 @@ I rebuilt the entire design system from the ground up with clean, modular compon
 The new flow dramatically reduces the number of steps to browse the menu, build a pizza, and check out. Features like guest checkout and simplified navigation remove friction while keeping the brand's personality intact. I validated improvements through peer feedback and user testing, iterating based on real behavior.
 
 It's a complete end-to-end Figma prototype that feels modern, efficient, and cohesive from screen to screen, a redesign that makes ordering pizza actually enjoyable.`,
-    figmaEmbed:
+    figmaEmbeds: [
+      'https://embed.figma.com/proto/dJgsXGf3LhAJuVZAnJyLqh/Dominos-Redesign-Main-File?node-id=1-5&p=f&scaling=contain&content-scaling=fixed&page-id=0%3A1&embed-host=share',
       'https://embed.figma.com/proto/dJgsXGf3LhAJuVZAnJyLqh/Dominos-Redesign-Main-File?node-id=108-916&p=f&scaling=scale-down&content-scaling=fixed&page-id=1%3A2&starting-point-node-id=108%3A914&embed-host=share'
+    ],
+    link: 'https://embed.figma.com/proto/dJgsXGf3LhAJuVZAnJyLqh/Dominos-Redesign-Main-File?node-id=108-916&p=f&scaling=scale-down&content-scaling=fixed&page-id=1%3A2&starting-point-node-id=108%3A914&embed-host=share',
+    linkLabel: 'Open Prototype',
+    showLink: true,
+    showEmbedLink: true
   },
   {
     id: 'overtone-app',
@@ -76,6 +83,25 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     showEmbedLink: false,
     figmaEmbed: 'https://www.gridlead.space/embed.html',
     figmaEmbedLabel: 'Open GridLead'
+  },
+  {
+    id: 'tempo',
+    title: 'Tempo',
+    folder: 'tempo',
+    categories: ['Web App', 'Automation'],
+    description: `Tempo is a workflow accelerator that sequences audio/video production tasks, wraps AI-assisted notes, and tracks delivery status in one place. This entry uses a lean gallery (thumbnail + main) and relies on embedded Figma frames for the full presentation and prototype walkthrough.`,
+    year: '2025',
+    service: 'Product Design',
+    tools: ['Figma', 'React'],
+    likes: 0,
+    figmaEmbeds: [
+      'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=346-2808&p=f&scaling=scale-down&content-scaling=fixed&page-id=211%3A847&embed-host=share',
+      'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=203-1111&p=f&scaling=scale-down&content-scaling=fixed&page-id=203%3A2&starting-point-node-id=203%3A1102&embed-host=share'
+    ],
+    link: 'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=203-1111&p=f&scaling=scale-down&content-scaling=fixed&page-id=203%3A2&starting-point-node-id=203%3A1102&embed-host=share',
+    linkLabel: 'Open Prototype',
+    showLink: true,
+    fullDescription: `Tempo is built to keep production teams in lockstep: a single surface for sequencing shoots, tracking notes, and managing approvals. The carousel keeps a tight set of static assets while embedding the full presentation and prototype for richer context.`
   },
   {
     id: 'velkro',

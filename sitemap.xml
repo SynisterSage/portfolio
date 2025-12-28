@@ -3,37 +3,37 @@
   <!-- Core views -->
   <url>
     <loc>https://aferguson.art/</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://aferguson.art/projects</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://aferguson.art/projects-hub</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aferguson.art/experience-hub</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aferguson.art/skills</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://aferguson.art/contact</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -41,7 +41,7 @@
   <!-- Projects -->
   <url>
     <loc>https://aferguson.art/projects/dominos</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -50,8 +50,28 @@
     </image:image>
   </url>
   <url>
+    <loc>https://aferguson.art/projects/grid-lead</loc>
+    <lastmod>2025-12-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://aferguson.art/images/projects/grid-lead/main.png</image:loc>
+      <image:caption>GridLead — automated audits and outreach</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aferguson.art/projects/tempo</loc>
+    <lastmod>2025-12-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://aferguson.art/images/projects/tempo/thumbnail.png</image:loc>
+      <image:caption>Tempo — workflow accelerator</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://aferguson.art/projects/overtone</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -61,7 +81,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/velkro</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -71,7 +91,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/pgc-app</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -81,7 +101,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/pgc-website</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -91,7 +111,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/halfway</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -101,7 +121,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/adelle</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -111,7 +131,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/octone</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -121,7 +141,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/sageaio</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -131,7 +151,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/squisito</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -141,7 +161,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/stopmotion</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -151,7 +171,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/city-scapes</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -161,7 +181,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/neon-photo</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -171,7 +191,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/room-illsutration</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -181,7 +201,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/sunscape-poster</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -191,7 +211,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/currency-redesign</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -201,7 +221,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/self-branding</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -211,7 +231,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/space-themed-widgets</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -221,7 +241,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/tracker-app</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -231,7 +251,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/color-collages</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -241,7 +261,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/minimalist-poster</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
@@ -251,7 +271,7 @@
   </url>
   <url>
     <loc>https://aferguson.art/projects/charcole</loc>
-    <lastmod>2025-12-15</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>

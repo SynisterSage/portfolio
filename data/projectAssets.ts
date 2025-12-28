@@ -51,10 +51,12 @@ export const PROJECT_ASSETS = {
   },
   "grid-lead": {
     "folder": "grid-lead",
-    "thumbnail": "/images/projects/grid-lead/thumbnail.jpg",
+    "thumbnail": "/images/projects/grid-lead/thumbnail.png",
     "media": [
-      "/images/projects/grid-lead/thumbnail.jpg",
-      "/images/projects/grid-lead/gallery-1.jpg"
+      "/images/projects/grid-lead/main.png",
+      "/images/projects/grid-lead/gallery-1.png",
+      "/images/projects/grid-lead/gallery-2.png",
+      "/images/projects/grid-lead/gallery-3.png"
     ]
   },
   "halfway": {

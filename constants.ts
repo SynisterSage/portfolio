@@ -158,14 +158,13 @@ export const PROJECTS_LIST: ProjectItem[] = projects.map(project => {
 
 const unique = (list: string[]) => Array.from(new Set(list));
 export const PRELOAD_ASSETS = unique(
-  projects.flatMap(project => {
-    const normalizedThumbnail = withImagesPath(project.thumbnail);
-    const assets = [normalizedThumbnail, withImagesPath(project.images?.[0] || '')].filter(Boolean) as string[];
-    const gallery = normalizeList(project.images)
-      .slice(1, 4)
-      .filter(item => isImageAsset(item));
-    return [...assets, ...gallery];
-  }).filter(Boolean)
+  projects
+    .map(project => {
+      const normalizedThumbnail = withImagesPath(project.thumbnail);
+      const firstGallery = normalizeList(project.images).find(item => isImageAsset(item));
+      return [normalizedThumbnail, firstGallery].filter(Boolean) as string[];
+    })
+    .flat()
 ).filter(item => isImageAsset(item));
 
 const baseNodes: NodeData[] = [

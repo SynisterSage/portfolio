@@ -212,10 +212,10 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       items.push(...data.gallery.map(toMediaItem));
     }
     if (Array.isArray(data.figmaEmbeds) && data.figmaEmbeds.length) {
-      items.push(...data.figmaEmbeds.filter(Boolean).map(url => ({ type: 'iframe', url })));
+      items.push(...data.figmaEmbeds.filter(Boolean).map(url => ({ type: 'iframe' as const, url })));
     }
     if (data.figmaEmbed) {
-      items.push({ type: 'iframe', url: data.figmaEmbed });
+      items.push({ type: 'iframe' as const, url: data.figmaEmbed });
     }
     if (data.type === 'project' && data.id === 'velkro') {
       items.push({ type: 'demo', url: 'velkro-type-lab' });
@@ -314,7 +314,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxItem]);
 
-  const renderPlayer = (item: Media, altSuffix?: string) => {
+  const renderPlayer = (item: Media, altSuffix?: string, isActive?: boolean) => {
     if (item.type === 'video') {
       return (
         <video
@@ -332,6 +332,16 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       );
     }
     if (item.type === 'iframe') {
+      if (!isActive) {
+        return (
+          <div
+            key={item.url}
+            className="w-full h-full grid place-items-center bg-node-bg text-secondary text-sm border border-node-border"
+          >
+            <span>Load prototype</span>
+          </div>
+        );
+      }
       return (
         <iframe
           key={item.url}
@@ -379,7 +389,10 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     if (!carouselItems.length) return null;
     const currentItem = carouselItems[currentImageIndex];
     if (!currentItem) return null;
-    const renderCurrent = () => renderPlayer(currentItem, `slide ${currentImageIndex + 1}`);
+    const renderCurrent = () => {
+      const isActive = true;
+      return renderPlayer(currentItem, `slide ${currentImageIndex + 1}`, isActive);
+    };
     const canLightbox = true; // allow lightbox even for demo
 
     const handleTouchStart = (event: React.TouchEvent) => {
@@ -418,6 +431,14 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
           <div className={`h-full w-full transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
             {renderCurrent()}
           </div>
+          {carouselItems
+            .map((item, idx) => ({ item, idx }))
+            .filter(({ idx }) => Math.abs(idx - currentImageIndex) === 1)
+            .map(({ item, idx }) => (
+              <div key={`${item.url}-preload`} className="hidden">
+                {renderPlayer(item, `slide ${idx + 1}`, false)}
+              </div>
+            ))}
           {canLightbox && (
             <button
               onClick={handleMediaFullscreen}

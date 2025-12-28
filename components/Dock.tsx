@@ -66,6 +66,11 @@ const DockIconButton: React.FC<{
     );
   };
 
+  const clearFocus = (e: React.SyntheticEvent) => {
+    const target = e.currentTarget as HTMLElement;
+    target?.blur?.();
+  };
+
   return (
     <div className="relative flex items-center justify-center">
       <Tooltip />
@@ -74,7 +79,10 @@ const DockIconButton: React.FC<{
         onClick={onClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-secondary hover:text-primary transition-all active:scale-95"
+        onMouseUp={clearFocus}
+        onTouchEnd={clearFocus}
+        className="flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg text-secondary hover:text-primary active:scale-95 focus:outline-none focus-visible:outline-none focus-visible:ring-0"
+        style={{ WebkitTapHighlightColor: 'transparent' }}
         aria-label={label}
       >
         {icon}
@@ -120,12 +128,15 @@ const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleVie
                 setLocalActive(item.id);
                 onNavigate(item.id);
               }}
+              onMouseUp={(e) => (e.currentTarget as HTMLButtonElement).blur()}
+              onTouchEnd={(e) => (e.currentTarget as HTMLButtonElement).blur()}
               aria-current={isActive ? 'page' : undefined}
-            className={`relative overflow-visible flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg transition-all active:scale-95 whitespace-nowrap border ${
+            className={`relative overflow-visible flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg active:scale-95 whitespace-nowrap border focus:outline-none focus-visible:outline-none focus-visible:ring-0 ${
                 isActive
                   ? 'bg-black/10 dark:bg-white/10 text-primary font-semibold border-transparent'
-                  : 'border-transparent hover:bg-black/5 dark:hover:bg-white/10 text-secondary hover:text-primary'
+                  : 'border-transparent text-secondary'
               }`}
+              style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               {/* No glow for active state; keep clean gray card */}
               <span className="relative z-10 flex items-center gap-2">

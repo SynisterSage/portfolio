@@ -85,6 +85,14 @@ const DockIconButton: React.FC<{
 
 const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleView, isVisible = true }) => {
   const { theme, toggleTheme } = useTheme();
+  const [localActive, setLocalActive] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only update when a real activeId is provided; ignore null to preserve local highlight.
+    if (activeId) {
+      setLocalActive(activeId);
+    }
+  }, [activeId]);
 
   const navItems = [
     { id: 'hero', label: 'Home', icon: <User size={14} /> },
@@ -103,21 +111,31 @@ const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleVie
       }`}
     >
       <div className="bg-node-bg/90 backdrop-blur-md border border-node-border p-1.5 rounded-xl flex items-center gap-1 shadow-2xl overflow-x-auto no-scrollbar ring-1 ring-black/5 dark:ring-white/5 max-w-full">
-        {navItems.map(item => (
-          <button
-            key={item.id}
-            onClick={() => onNavigate(item.id)}
-            className={`flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg transition-all active:scale-95 whitespace-nowrap ${
-              activeId === item.id 
-                ? 'bg-primary/10 text-primary font-medium' 
-                : 'hover:bg-black/5 dark:hover:bg-white/10 text-secondary hover:text-primary'
-            }`}
-          >
-            {item.icon}
-            {/* On very small screens, hide labels if needed, but flex-shrink might handle it. Using text-[10px] for mobile. */}
-            <span className="font-mono text-[10px] md:text-xs font-medium hidden sm:block">{item.label}</span>
-          </button>
-        ))}
+        {navItems.map(item => {
+          const isActive = (activeId ?? localActive) === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                setLocalActive(item.id);
+                onNavigate(item.id);
+              }}
+              aria-current={isActive ? 'page' : undefined}
+            className={`relative overflow-visible flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg transition-all active:scale-95 whitespace-nowrap border ${
+                isActive
+                  ? 'bg-black/10 dark:bg-white/10 text-primary font-semibold border-transparent'
+                  : 'border-transparent hover:bg-black/5 dark:hover:bg-white/10 text-secondary hover:text-primary'
+              }`}
+            >
+              {/* No glow for active state; keep clean gray card */}
+              <span className="relative z-10 flex items-center gap-2">
+                {item.icon}
+                {/* On very small screens, hide labels if needed, but flex-shrink might handle it. Using text-[10px] for mobile. */}
+                <span className="font-mono text-[10px] md:text-xs font-medium hidden sm:block">{item.label}</span>
+              </span>
+            </button>
+          );
+        })}
 
         {/* Divider */}
         <div className="w-px h-5 bg-node-border mx-1 opacity-50 shrink-0" />

@@ -57,6 +57,13 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     return [];
   }, [projectMeta, data]);
 
+  const displayTags = useMemo(() => {
+    if (!data.tags) return [];
+    if (data.type !== 'project') return data.tags;
+    const stackSet = new Set(stackItems.map(t => t.toLowerCase()));
+    return data.tags.filter(tag => !stackSet.has(tag.toLowerCase()));
+  }, [data.tags, data.type, stackItems]);
+
   const projectLinks = data.type === 'project' ? data.links || [] : [];
   const hasInlineLinks = projectLinks.length > 0;
   const [style, setStyle] = useState<React.CSSProperties>({
@@ -256,6 +263,10 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
         <video
           key={item.url}
           controls
+          autoPlay
+          muted
+          loop
+          playsInline
           preload="metadata"
           className="w-full h-full object-cover"
         >
@@ -465,13 +476,13 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                 </div>
                             )}
                         </div>
-                        {(data.tags && data.tags.length > 0) || hasInlineLinks ? (
+                        {(displayTags.length > 0) || hasInlineLinks ? (
                           <div className="flex items-center justify-between gap-3 flex-wrap">
-                            {data.tags && data.tags.length > 0 && (
+                            {displayTags.length > 0 && (
                               <div className="relative overflow-hidden flex-1 min-w-0">
                                   <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 py-1">
                                       <div className="flex gap-2 whitespace-nowrap min-w-0">
-                                          {data.tags.map(tag => {
+                                          {displayTags.map(tag => {
                                               const isActive = tag.includes('●');
                                               return (
                                                   <div
@@ -578,9 +589,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                         key={project.id}
                                         type="button"
                                         onClick={() => handleRelatedClick(project)}
-                                        className="group flex flex-col overflow-hidden rounded-2xl border border-node-border bg-node-bg transition-all hover:-translate-y-0.5 hover:shadow-xl text-left"
+                                    className="group flex flex-col overflow-hidden rounded-2xl border border-node-border bg-node-bg transition-all hover:-translate-y-0.5 hover:shadow-xl text-left"
                                     >
-                                        <div className="relative h-32 overflow-hidden bg-black/5">
+                                        <div className="relative h-40 md:h-44 overflow-hidden bg-black/5">
                                             {getRelatedThumbnail(project) ? (
                                                 <img
                                                     src={getRelatedThumbnail(project)}
@@ -593,10 +604,10 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="p-4 space-y-3">
+                                        <div className="p-4 space-y-2">
                                             <p className="text-sm font-semibold text-primary line-clamp-1 text-left">{project.title}</p>
                                             <p className="text-xs text-secondary/70 leading-snug line-clamp-2 text-left">{project.description}</p>
-                                            <div className="flex flex-wrap gap-1 mt-4">
+                                            <div className="flex flex-wrap gap-1 mt-3">
                                                 {project.tags.slice(0, 2).map(tag => (
                                                     <span
                                                         key={tag}

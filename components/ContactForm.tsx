@@ -100,7 +100,13 @@ const ContactForm: React.FC = () => {
   return (
     <div className="relative">
       <div className={`transition-all duration-500 ease-in-out ${isSuccess ? 'opacity-0 scale-95 pointer-events-none blur-sm' : 'opacity-100 scale-100 blur-0'}`}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-secondary font-semibold">
+            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-black/10 dark:bg-white/5 border border-node-border">
+              <Send size={16} className="text-accent" />
+            </span>
+            <span>Send a message</span>
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <label className="flex flex-col gap-1.5 text-[10px] uppercase font-bold text-secondary tracking-wider">
               Name

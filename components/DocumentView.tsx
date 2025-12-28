@@ -397,10 +397,6 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                     </div>
                     
                     <div className="bg-node-bg p-6 md:p-8 rounded-xl border border-node-border shadow-sm hover:shadow-[0_8px_30px_-5px_rgba(16,185,129,0.15)] transition-all duration-300 group">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-secondary mb-6 flex items-center gap-2">
-                           <Send size={12} className="text-accent" /> 
-                           Send a Message
-                        </h3>
                         <ContactForm />
                     </div>
                   </div>

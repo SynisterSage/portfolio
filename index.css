@@ -26,3 +26,21 @@ html:not(.app-ready) * {
 
 /* Keep the preloader visible transitions intact by scoping animations in components to run
    after the `.app-ready` class is present. */
+
+/* Hide policy UI when fullscreen overlays are active */
+html.fullscreen-active .policy-toggle,
+html.fullscreen-active .policy-overlay {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+html.fullscreen-active .system-status {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Smooth fade for status/policy controls */
+.policy-toggle,
+.policy-overlay,
+.system-status {
+  transition: opacity 250ms ease;
+}

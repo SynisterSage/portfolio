@@ -296,6 +296,15 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     return trimmed || data.content;
   }, [data]);
 
+  // Add a global flag to suppress policy UI while fullscreen is open
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.classList.add('fullscreen-active');
+    return () => {
+      document.documentElement.classList.remove('fullscreen-active');
+    };
+  }, []);
+
   const handleMediaFullscreen = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     const item = carouselItems[currentImageIndex];

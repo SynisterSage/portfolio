@@ -7,6 +7,7 @@ import ContactForm from './ContactForm';
 import ProjectActions from './ProjectActions';
 import ExperienceList from './ExperienceList';
 import ProjectList from './ProjectList';
+import VelkroTypeLab from './VelkroTypeLab';
 
 interface FullScreenViewProps {
   data: NodeData;
@@ -176,6 +177,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     if (data.figmaEmbed) {
       items.push({ type: 'iframe', url: data.figmaEmbed });
     }
+    if (data.type === 'project' && data.id === 'velkro') {
+      items.push({ type: 'demo', url: 'velkro-type-lab' });
+    }
     return items;
   }, [data]);
 
@@ -243,6 +247,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     event.stopPropagation();
     const item = carouselItems[currentImageIndex];
     if (!item) return;
+    if (item.type === 'demo') return;
     setLightboxItem(item);
   };
 
@@ -285,6 +290,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
         />
       );
     }
+    if (item.type === 'demo') {
+      return <VelkroTypeLab key={item.url} />;
+    }
     return (
       <img
         key={item.url}
@@ -301,6 +309,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     if (!currentItem) return null;
     const heightClass = getMediaHeightClass();
     const renderCurrent = () => renderPlayer(currentItem, `slide ${currentImageIndex + 1}`);
+    const canLightbox = currentItem.type !== 'demo';
     return (
       <div
         ref={mediaContainerRef}
@@ -308,14 +317,16 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
       >
         <div className={`relative w-full ${heightClass}`}>
           {renderCurrent()}
-          <button
-            onClick={handleMediaFullscreen}
-            className="absolute top-4 left-4 p-2 rounded-full bg-black/30 text-white hover:bg-white hover:text-black transition-all shadow-lg backdrop-blur z-20"
-            title="Open lightbox"
-            aria-label="Open lightbox"
-          >
-            <Maximize2 size={18} />
-          </button>
+          {canLightbox && (
+            <button
+              onClick={handleMediaFullscreen}
+              className="absolute top-4 left-4 p-2 rounded-full bg-black/30 text-white hover:bg-white hover:text-black transition-all shadow-lg backdrop-blur z-20"
+              title="Open lightbox"
+              aria-label="Open lightbox"
+            >
+              <Maximize2 size={18} />
+            </button>
+          )}
           {carouselItems.length > 1 && (
             <>
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />

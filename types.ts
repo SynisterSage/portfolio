@@ -5,7 +5,7 @@ export interface Position {
 }
 
 export interface Media {
-  type: 'image' | 'video' | 'iframe';
+  type: 'image' | 'video' | 'iframe' | 'demo';
   url: string;
   caption?: string;
   aspectRatio?: 'video' | 'square' | 'wide' | 'portrait'; // video = 16:9

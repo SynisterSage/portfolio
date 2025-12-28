@@ -82,14 +82,17 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     title: 'Velkro Type Creation',
     folder: 'velkro',
     categories: ['Typography', 'Poster'],
-    description: `Custom geometric typeface project exploring modern forms with a focus on readability and versatility, developed through sketching, metric testing, and precise grid studies. I worked from hand sketches to digital outlines, tuning curves and kerning before assembling a specimen book that shows editorial and poster use cases. Stack: Adobe Illustrator, Adobe InDesign.`,
+    description: `Custom geometric typeface project exploring modern forms with a focus on readability and versatility, developed through sketching, metric testing, and precise grid studies. I worked from hand sketches to digital outlines, tuning curves and kerning before assembling a specimen book that shows editorial and poster use cases. Stack: Adobe Illustrator, Adobe InDesign. Try the interactive demo slide in the carousel.`,
     year: '2025',
     service: 'Typography',
     tools: ['Adobe Illustrator', 'Adobe InDesign'],
     likes: 9,
+    link: '/fonts/velkro.otf',
+    linkLabel: 'Download OTF',
+    showLink: true,
     fullDescription: `Velkro is a custom geometric typeface that balances modern aesthetics with exceptional readability. Inspired by Swiss design principles and contemporary digital interfaces, Velkro features clean lines, precise curves, and carefully adjusted spacing.
 
-The family includes multiple weights from Light to Bold, each crafted to maintain consistency across sizes. Special attention was paid to kerning pairs and OpenType features to ensure professional-grade typesetting results. A specimen book showcases Velkro in various applications, from editorial layouts to poster designs.`
+The family includes multiple weights from Light to Bold, each crafted to maintain consistency across sizes. Special attention was paid to kerning pairs and OpenType features to ensure professional-grade typesetting results. A specimen book showcases Velkro in various applications, from editorial layouts to poster designs. Try the interactive demo slide in the carousel, or download the otf file.`
   },
   {
     id: 'pgc-app',

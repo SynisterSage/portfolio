@@ -116,9 +116,7 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     link: '/fonts/velkro.otf',
     linkLabel: 'Download OTF',
     showLink: true,
-    fullDescription: `Velkro is a custom geometric typeface that balances modern aesthetics with exceptional readability. Inspired by Swiss design principles and contemporary digital interfaces, Velkro features clean lines, precise curves, and carefully adjusted spacing.
-
-The family includes multiple weights from Light to Bold, each crafted to maintain consistency across sizes. Special attention was paid to kerning pairs and OpenType features to ensure professional-grade typesetting results. A specimen book showcases Velkro in various applications, from editorial layouts to poster designs. Try the interactive demo slide in the carousel, or download the otf file.`
+    fullDescription: `Velkro is a playful, modular typeface built for a poster and a booklet  with skewed, chunky, and deliberately funky. Inspired by Swiss rigor but bent toward a more irreverent, handmade feel, it leans on a single expressive weight rather than a full family. I drew the forms, tuned spacing, and built a mini system in Figma to test how the letters stretch across layouts. The specimen and poster both showcase how the letterforms stay legible while leaning into their angled, pixel-meets-analog vibe.`
   },
   {
     id: 'pgc-app',

@@ -475,7 +475,8 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                   <ChevronRight size={24} />
               </button>
 
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-2 rounded-full bg-black/40 backdrop-blur-sm shadow-lg">
+              <div className="absolute bottom-4 inset-x-0 flex items-center justify-center px-3">
+                <div className="flex gap-2 px-3 py-2 rounded-full bg-black/40 backdrop-blur-sm shadow-lg">
                   {carouselItems.map((_, idx) => (
                       <button
                           key={idx}
@@ -487,6 +488,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                           }`}
                       />
                   ))}
+                </div>
               </div>
             </>
           )}

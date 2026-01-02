@@ -354,9 +354,9 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     service: 'Full Stack Development',
     tools: ['React', 'TypeScript', 'GraphQL', 'Shopify API', 'Webhooks', 'Tailwind CSS', 'Supabase', 'Vite'],
     likes: 0,
-    link: 'http://wickedworks.store/',
-    linkLabel: 'Visit Site',
     showLink: true,
+    figmaEmbed: 'https://wickedworks.store/',
+    figmaEmbedLabel: 'Live Store',
     fullDescription: `Client e-commerce platform for a technical streetwear brand combining React and Shopify APIs with a token-based design system featuring dark/light mode and neon accent layers. The architecture queries product data via GraphQL, manages customer accounts through secure API authentication, and syncs inventory in real time from Shopify's Admin layer. Webhook integrations allow the client to upload products, collections, archives, and blog posts directly from their admin dashboard, auto-updating the storefront without code deployments. A Supabase notification engine powers subscriptions, order updates, and product restocks, while GDPR-compliant analytics and consent flows track user behavior across Google Analytics and Facebook Pixel. I continue to manage and optimize the platform today, ensuring smooth operations and scaling as the brand grows.`
   }
 ];

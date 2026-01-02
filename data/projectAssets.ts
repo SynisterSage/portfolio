@@ -194,10 +194,10 @@ export const PROJECT_ASSETS = {
   },
   "wicked-works-storefront": {
     "folder": "wicked-works-storefront",
-    "thumbnail": "/images/projects/wicked-works-storefront/thumbnail.jpg",
+    "thumbnail": "/images/projects/wicked-works-storefront/thumbnail.png",
     "media": [
-      "/images/projects/wicked-works-storefront/gallery-1.jpg",
-      "/images/projects/wicked-works-storefront/gallery-2.jpg"
+      "/images/projects/wicked-works-storefront/gallery-1.png",
+      "/images/projects/wicked-works-storefront/gallery-2.png"
     ]
   }
 } as const;

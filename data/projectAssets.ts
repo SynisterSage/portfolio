@@ -191,5 +191,13 @@ export const PROJECT_ASSETS = {
       "/images/projects/velkro/gallery-2.jpg",
       "/images/projects/velkro/gallery-1.jpg"
     ]
+  },
+  "wicked-works-storefront": {
+    "folder": "wicked-works-storefront",
+    "thumbnail": "/images/projects/wicked-works-storefront/thumbnail.jpg",
+    "media": [
+      "/images/projects/wicked-works-storefront/gallery-1.jpg",
+      "/images/projects/wicked-works-storefront/gallery-2.jpg"
+    ]
   }
 } as const;

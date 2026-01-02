@@ -343,6 +343,21 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     service: 'Illustration',
     tools: ['Charcoal', 'Sanguine'],
     likes: 3
+  },
+  {
+    id: 'wicked-works-shopify',
+    title: 'Wicked Works',
+    folder: 'wicked-works-storefront',
+    categories: ['E-commerce', 'Full Stack', 'Design System'],
+    description: `E-commerce platform for a technical streetwear brand built on React and Shopify APIs with a token-based design system, dark/light mode, and GraphQL-powered product queries. Webhook integrations let the client manage products, collections, and content without code deployments. I continue to manage the platform and handle ongoing optimization. Stack: React, TypeScript, Shopify API, Supabase, Vite.`,
+    year: '2026',
+    service: 'Full Stack Development',
+    tools: ['React', 'TypeScript', 'GraphQL', 'Shopify API', 'Webhooks', 'Tailwind CSS', 'Supabase', 'Vite'],
+    likes: 0,
+    link: 'http://wickedworks.store/',
+    linkLabel: 'Visit Site',
+    showLink: true,
+    fullDescription: `Client e-commerce platform for a technical streetwear brand combining React and Shopify APIs with a token-based design system featuring dark/light mode and neon accent layers. The architecture queries product data via GraphQL, manages customer accounts through secure API authentication, and syncs inventory in real time from Shopify's Admin layer. Webhook integrations allow the client to upload products, collections, archives, and blog posts directly from their admin dashboard, auto-updating the storefront without code deployments. A Supabase notification engine powers subscriptions, order updates, and product restocks, while GDPR-compliant analytics and consent flows track user behavior across Google Analytics and Facebook Pixel. I continue to manage and optimize the platform today, ensuring smooth operations and scaling as the brand grows.`
   }
 ];
 
@@ -355,11 +370,17 @@ const getFolderAssets = (folder: string) => {
   };
 };
 
-export const projects: Project[] = baseProjects.map(project => {
-  const assets = getFolderAssets(project.folder);
-  return {
-    ...project,
-    thumbnail: assets.thumbnail,
-    images: assets.images
-  };
-});
+export const projects: Project[] = baseProjects
+  .map(project => {
+    const assets = getFolderAssets(project.folder);
+    return {
+      ...project,
+      thumbnail: assets.thumbnail,
+      images: assets.images
+    };
+  })
+  .sort((a, b) => {
+    const yearA = parseInt(a.year?.split('-')[0] || '0');
+    const yearB = parseInt(b.year?.split('-')[0] || '0');
+    return yearB - yearA;
+  });

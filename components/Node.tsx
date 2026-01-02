@@ -109,7 +109,7 @@ const Node: React.FC<NodeProps> = ({
       if (trimLine.startsWith('## ')) return <h2 key={i} className="text-xl font-bold mb-3 text-primary/90">{line.replace('## ', '')}</h2>;
       if (trimLine.startsWith('- ')) return <li key={i} className="ml-4 mb-1 text-secondary list-disc text-base">{line.replace('- ', '')}</li>;
       if (trimLine.startsWith('> ')) return <blockquote key={i} className="border-l-2 border-accent pl-4 italic text-secondary my-4 text-base">{line.replace('> ', '')}</blockquote>;
-      return <p key={i} className="mb-2 min-h-[1rem] text-primary/80 text-base leading-relaxed">{line}</p>;
+      return <p key={i} className="mb-2 min-h-1rem text-primary/80 text-base leading-relaxed">{line}</p>;
     });
   };
 
@@ -169,7 +169,7 @@ const Node: React.FC<NodeProps> = ({
                    {/* Overlay Controls */}
                    {carouselItems.length > 1 && (
                        <>
-                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover/carousel:opacity-100 transition-opacity pointer-events-none" />
+                           <div className="absolute inset-0 bg-linear-to from-black/50 via-transparent to-transparent opacity-0 group-hover/carousel:opacity-100 transition-opacity pointer-events-none" />
                            
                            <button 
                                onClick={prevImage}
@@ -202,7 +202,7 @@ const Node: React.FC<NodeProps> = ({
                    )}
                </div>
                {(caption && currentImageIndex === 0) && (
-                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pointer-events-none">
+                   <div className="absolute bottom-0 left-0 right-0 bg-linear-to from-black/80 to-transparent p-3 pointer-events-none">
                        <span className="text-xs font-mono text-gray-300">{caption}</span>
                    </div>
                )}
@@ -235,7 +235,7 @@ const Node: React.FC<NodeProps> = ({
           )}
         </div>
         {caption && (
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pointer-events-none">
+          <div className="absolute bottom-0 left-0 right-0 bg-linear-to from-black/80 to-transparent p-3 pointer-events-none">
              <span className="text-xs font-mono text-gray-300">{caption}</span>
           </div>
         )}
@@ -341,7 +341,7 @@ const Node: React.FC<NodeProps> = ({
         ) : (
             <>
                 {renderMedia()}
-                <div className="flex-1 p-6 font-mono text-sm leading-relaxed custom-scroll overflow-y-auto max-h-[500px]">
+                <div className="flex-1 p-6 font-mono text-sm leading-relaxed custom-scroll overflow-y-auto max-h-500px">
                     {renderContent(data.content)}
 
                     {/* Contact Form Injection */}

@@ -28,7 +28,7 @@ const ExperienceList: React.FC = () => {
   return (
     <div className="flex flex-row h-full w-full bg-node-bg overflow-hidden">
       {/* Sidebar List - Fixed Width for Desktop feel */}
-      <div className="w-[200px] h-full border-r border-node-border flex flex-col bg-black/5 dark:bg-white/5 shrink-0">
+      <div className="w-200px h-full border-r border-node-border flex flex-col bg-black/5 dark:bg-white/5 shrink-0">
          <div className="p-3 border-b border-node-border text-[10px] font-bold uppercase text-secondary tracking-widest bg-black/5 dark:bg-white/5">
             Timeline
          </div>

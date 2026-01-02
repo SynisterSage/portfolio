@@ -191,7 +191,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] bg-canvas-bg flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out ${
+      className={`fixed inset-0 z-100 bg-canvas-bg flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >

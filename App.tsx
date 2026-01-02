@@ -1,7 +1,6 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Canvas from './components/Canvas';
 import DocumentView from './components/DocumentView';
 import Dock from './components/Dock';
 import Preloader, { shouldShowPreloader } from './components/Preloader';
@@ -11,6 +10,7 @@ import { Shield } from 'lucide-react'; // Import Icon
 import FullScreenView from './components/FullScreenView';
 import { NodeData } from './types';
 import NotFound from './components/NotFound';
+import Canvas from './components/Canvas';
 
 const VIEW_MODE_KEY = 'portfolio.viewMode';
 
@@ -46,6 +46,7 @@ const App: React.FC = () => {
   const [routeProjectId, setRouteProjectId] = useState<string | null>(null);
   const lastDocumentPathRef = useRef<string>('/');
   const [notFound, setNotFound] = useState(false);
+  const [spatialOverlay, setSpatialOverlay] = useState<{ id: string; rect: DOMRect } | null>(null);
   
   // Loading state
   const [isLoading, setIsLoading] = useState(() => shouldShowPreloader());
@@ -215,6 +216,12 @@ const App: React.FC = () => {
   const handleGoProjects = () => navigate('/projects', { replace: false });
   const handleGoSpatial = () => navigate('/spatial', { replace: false });
 
+  const handleOpenSpatialProject = (projectId: string, rect: DOMRect) => {
+    setSpatialOverlay({ id: projectId, rect });
+  };
+
+  const closeSpatialOverlay = () => setSpatialOverlay(null);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const oldValue = window.localStorage.getItem(VIEW_MODE_KEY);
@@ -263,28 +270,26 @@ const App: React.FC = () => {
       {/* View Container with Transitions */}
       {/* Opacity is controlled by loading state to ensure fade-in reveal */}
       <div className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        {notFound ? (
-          <NotFound onGoHome={handleGoHome} onGoProjects={handleGoProjects} onGoSpatial={handleGoSpatial} />
-        ) : viewMode === 'spatial' ? (
-          <Canvas 
-             nodes={NODES} 
-             activeNodeId={activeNodeId} 
-             onNavigate={handleNavigate}
-             onProjectRoute={handleProjectRoute}
-             // Only start canvas intro if main loading is done and intro hasn't played yet
-             shouldPlayIntro={!isLoading && !hasIntroPlayed}
-             onIntroComplete={handleIntroComplete}
-         />
-     ) : (
-         <DocumentView 
-             nodes={NODES}
-             targetId={activeNodeId}
-             viewMode={viewMode}
-             isReady={!isLoading}
-             onProjectRoute={handleProjectRoute}
-         />
-     )}
-   </div>
+          {notFound ? (
+            <NotFound onGoHome={handleGoHome} onGoProjects={handleGoProjects} onGoSpatial={handleGoSpatial} />
+          ) : viewMode === 'spatial' ? (
+            <Canvas
+              nodes={NODES}
+              activeNodeId={activeNodeId}
+              onNavigate={handleNavigate}
+              shouldPlayIntro={!hasIntroPlayed}
+              onIntroComplete={handleIntroComplete}
+            />
+          ) : (
+            <DocumentView 
+                nodes={NODES}
+                targetId={activeNodeId}
+                viewMode={viewMode}
+                isReady={!isLoading}
+                onProjectRoute={handleProjectRoute}
+            />
+          )}
+        </div>
 
       <Dock 
         activeId={activeNodeId} 
@@ -296,7 +301,7 @@ const App: React.FC = () => {
 
       {/* Route-driven Project Fullscreen */}
       {routeProjectNode && (
-          <div className="fixed inset-0 z-400">
+        <div className="fixed inset-0 z-400">
           <FullScreenView
             key={routeProjectNode.id}
             data={routeProjectNode}
@@ -305,6 +310,21 @@ const App: React.FC = () => {
             onClose={closeRouteProject}
             onMaximize={(id) => handleProjectRoute(id)}
             snapToFull
+          />
+        </div>
+      )}
+
+      {/* Spatial Project Fullscreen (no routing) */}
+      {spatialOverlay && (
+        <div className="fixed inset-0 z-400">
+          <FullScreenView
+            key={spatialOverlay.id}
+            data={nodeById[spatialOverlay.id]}
+            initialRect={spatialOverlay.rect}
+            onRestore={closeSpatialOverlay}
+            onClose={closeSpatialOverlay}
+            onMaximize={(id) => setSpatialOverlay({ id, rect: fullscreenRect })}
+            snapToFull={false}
           />
         </div>
       )}

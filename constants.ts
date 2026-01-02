@@ -1,6 +1,6 @@
 
 import { NodeData, ProjectItem, ExperienceItem } from './types';
-import { projects } from './projects';
+import { projects } from './data/projectsData';
 
 export const INITIAL_SCALE = 1;
 export const INITIAL_POSITION = { x: 0, y: 0 };

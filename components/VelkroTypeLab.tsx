@@ -111,7 +111,7 @@ const VelkroTypeLab: React.FC = () => {
           >
             <div className="absolute inset-0 flex items-center justify-center px-6 md:px-10">
               <div
-                className="w-full text-center leading-[0.85] break-words"
+                className="w-full text-center leading-[0.85] wrap-break"
                 style={{
                   fontFamily: '"Velkro", ui-sans-serif, system-ui',
                   fontSize: `${fontSize}px`,

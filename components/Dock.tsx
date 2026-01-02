@@ -49,7 +49,7 @@ const DockIconButton: React.FC<{
     const topPx = `${Math.round(pos.top)}px`;
     return createPortal(
       <div
-        className="hidden md:inline-flex items-center px-2 py-1 bg-node-bg border border-node-border text-primary text-[11px] font-sans font-medium rounded-sm whitespace-nowrap z-[9999] pointer-events-none shadow-sm"
+        className="hidden md:inline-flex items-center px-2 py-1 bg-node-bg border border-node-border text-primary text-[11px] font-sans font-medium rounded-sm whitespace-nowrap z-9999 pointer-events-none shadow-sm"
         style={{
           position: 'fixed',
           left: leftPx,
@@ -111,14 +111,12 @@ const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleVie
   ];
 
   return (
-    <div 
-      className={`fixed bottom-4 md:bottom-6 left-1/2 z-40 max-w-[95vw] md:max-w-max transition-all duration-1000 delay-300 ease-out transform -translate-x-1/2 ${
-        isVisible 
-          ? 'translate-y-0 opacity-100' 
-          : 'translate-y-24 opacity-0 pointer-events-none'
+    <div
+      className={`fixed inset-x-0 bottom-4 md:bottom-6 z-40 transition-all duration-1000 delay-300 ease-out flex justify-center px-3 ${
+        isVisible ? 'translate-y-0 opacity-100 pointer-events-none' : 'translate-y-24 opacity-0 pointer-events-none'
       }`}
     >
-      <div className="bg-node-bg/90 backdrop-blur-md border border-node-border p-1.5 rounded-xl flex items-center gap-1 shadow-2xl overflow-x-auto no-scrollbar ring-1 ring-black/5 dark:ring-white/5 max-w-full">
+      <div className="bg-node-bg/90 backdrop-blur-md border border-node-border p-1.5 rounded-xl flex items-center gap-1 shadow-2xl overflow-x-auto no-scrollbar ring-1 ring-black/5 dark:ring-white/5 max-w-[95vw] md:max-w-max pointer-events-auto">
         {navItems.map(item => {
           const isActive = (activeId ?? localActive) === item.id;
           return (

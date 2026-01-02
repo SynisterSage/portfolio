@@ -31,26 +31,52 @@ const FadeIn: React.FC<FadeInProps> = ({ children, id, className = "", delay = 0
   const internalRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    const revealIfNearViewport = () => {
+      const el = internalRef.current;
+      if (!el || isVisible) return;
+      const rect = el.getBoundingClientRect();
+      const buffer = window.innerHeight * 0.25; // allow reveal slightly before entering view
+      if (rect.top <= window.innerHeight + buffer) {
+        setIsVisible(true);
+      }
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-            // Small timeout to decouple from main thread slightly for smoothness
-            setTimeout(() => setIsVisible(true), 100);
+            setTimeout(() => setIsVisible(true), 60);
             observer.disconnect();
         }
       },
       { 
         threshold: threshold, 
-        rootMargin: '0px 0px -50px 0px' // Trigger just before it's fully in view
+        root: null,
+        rootMargin: '0px 0px -8% 0px' // Trigger before fully in view within scroll container
       } 
     );
 
-    if (internalRef.current) {
-      observer.observe(internalRef.current);
-    }
+    const el = internalRef.current;
+    if (el) observer.observe(el);
 
-    return () => observer.disconnect();
-  }, [threshold]);
+    // Fallback: if element is near viewport but observer fails (mobile quirks), reveal after a short delay
+    const fallback = window.setTimeout(() => {
+      const rect = internalRef.current?.getBoundingClientRect();
+      const buffer = window.innerHeight * 0.25;
+      if (rect && rect.top <= window.innerHeight + buffer) {
+        setIsVisible(true);
+      }
+    }, 450);
+
+    window.addEventListener('scroll', revealIfNearViewport, { passive: true } as any);
+    window.addEventListener('resize', revealIfNearViewport);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(fallback);
+      window.removeEventListener('scroll', revealIfNearViewport, { passive: true } as any);
+      window.removeEventListener('resize', revealIfNearViewport);
+    };
+  }, [threshold, isVisible]);
 
     return (
         <section
@@ -74,22 +100,29 @@ const FadeIn: React.FC<FadeInProps> = ({ children, id, className = "", delay = 0
 };
 
 const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, isReady = true, onProjectRoute }) => {
+  const scrollRootRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const [heroVisible, setHeroVisible] = useState(false);
   const [viewReady, setViewReady] = useState(false);
   const [overlayStack, setOverlayStack] = useState<{ id: string; rect: DOMRect; snap?: boolean }[]>([]);
-  const selectedProject = overlayStack[overlayStack.length - 1] || null;
+  const baseOverlay = overlayStack[0] || null;
+  const projectOverlay = overlayStack.length > 1 ? overlayStack[overlayStack.length - 1] : null;
+  const baseOverlayNode = baseOverlay ? NODES.find(n => n.id === baseOverlay.id) : null;
+  const projectOverlayNode = projectOverlay ? NODES.find(n => n.id === projectOverlay.id) : null;
   const [showResume, setShowResume] = useState(false);
 
   const handleOverlayMaximize = (id: string, rect: DOMRect) => {
-    // Always replace the overlay with the newly selected item;
-    // closing should exit, not return to previous items.
-    const snap = overlayStack.length > 0;
-    const nextRect = snap ? new DOMRect(0, 0, window.innerWidth, window.innerHeight) : rect;
-    setOverlayStack([{ id, rect: nextRect, snap }]);
+    setOverlayStack(prev => {
+      const hasOverlay = prev.length > 0;
+      const safeRect = rect || new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+      const nextRect = hasOverlay ? new DOMRect(0, 0, window.innerWidth, window.innerHeight) : safeRect;
+      return [...prev, { id, rect: nextRect, snap: hasOverlay }];
+    });
   };
 
-  const closeOverlay = () => setOverlayStack([]);
+  const closeOverlay = () => {
+    setOverlayStack(prev => (prev.length > 0 ? prev.slice(0, -1) : []));
+  };
 
     // Trigger Hero animation only when the document view itself is ready
     // (this ensures the hero animates in sync with the view fade-in on reload)
@@ -132,7 +165,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
       };
   }) : [];
 
-  const selectedNodeData = selectedProject ? NODES.find(n => n.id === selectedProject.id) : null;
+  const selectedNodeData = projectOverlayNode ?? baseOverlayNode;
 
   // Custom renderer for Hero with Staggered Animation
   const renderHeroContent = () => {
@@ -171,20 +204,24 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                     </span>
                 ))}
                 <button
-                    onClick={() => setShowResume(true)}
-                    className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-gradient-to-b from-emerald-400/80 to-emerald-500 text-white shadow-[0_0_25px_rgba(16,185,129,0.3)] transition hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(16,185,129,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
-                    style={{ filter: 'drop-shadow(0 0 15px rgba(16,185,129,0.35))' }}
-                    aria-label="View resume"
+                  onClick={() => setShowResume(true)}
+                  className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)] transition hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(16,185,129,0.95), rgba(16,185,129,0.8))',
+                    filter: 'drop-shadow(0 0 8px rgba(16,185,129,0.2))'
+                  }}
+                  aria-label="View resume"
                 >
-                    View Resume
+                  View Resume
                 </button>
             </div>
         </div>
     );
   };
 
-    return (
+  return (
         <div
+            ref={scrollRootRef}
             className={`w-full h-full overflow-y-auto overflow-x-hidden bg-canvas-bg custom-scroll relative transition-opacity duration-800 ease-out ${
                 viewReady ? 'opacity-100' : 'opacity-0'
             }`}
@@ -215,7 +252,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
         <FadeIn 
             id="projects-hub" 
             setRef={el => { sectionRefs.current['projects-hub'] = el; }}
-            className="flex flex-col min-h-[500px] md:min-h-[600px]"
+            className="flex flex-col min-h-500px md:min-h-600px"
             sectionId="projects-hub"
         >
             <div className="flex items-end justify-between mb-6 md:mb-8 border-b border-node-border pb-4">
@@ -239,7 +276,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                 </div>
             </div>
 
-            <div className="bg-node-bg border border-node-border rounded-2xl overflow-hidden flex flex-col h-[600px] md:h-[800px] shadow-2xl transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)]">
+            <div className="bg-node-bg border border-node-border rounded-2xl overflow-hidden flex flex-col h-600px md:h-800px shadow-2xl transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)]">
                 <div className="flex-1 overflow-hidden">
                     <ProjectList 
                         onMaximize={handleOverlayMaximize}
@@ -265,7 +302,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                 {EXPERIENCE_LIST.map((item, i) => (
                     <FadeIn key={item.id} delay={i * 100} className="relative pl-6 md:pl-16">
                         {/* Timeline Dot */}
-                        <div className="absolute -left-[5px] md:-left-[6.5px] top-3 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-canvas-bg border-2 border-accent z-10 shadow-[0_0_0_4px_rgba(var(--bg-canvas))]" />
+                        <div className="absolute -left-5px md:-left-[6.5px] top-3 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-canvas-bg border-2 border-accent z-10 shadow-[0_0_0_4px_rgba(var(--bg-canvas))]" />
                         
                         <div className="flex flex-col gap-4 md:gap-6">
                             {/* Header */}
@@ -421,24 +458,38 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
         )}
     </div>
 
-      {/* FULL SCREEN OVERLAY */}
-      {selectedProject && selectedNodeData && (
-          <div className="fixed inset-0 z-[300]">
-             <FullScreenView 
-                 key={selectedProject.id}
-                 data={selectedNodeData}
-                 initialRect={selectedProject.rect}
-                 onRestore={closeOverlay}
-                 onClose={closeOverlay}
-                 onMaximize={handleOverlayMaximize}
-                 snapToFull={selectedProject.snap}
-             />
-          </div>
+      {/* FULL SCREEN OVERLAYS */}
+      {baseOverlay && baseOverlayNode && (
+        <div className="fixed inset-0 z-300">
+          <FullScreenView
+            key={`overlay-${baseOverlay.id}`}
+            data={baseOverlayNode}
+            initialRect={baseOverlay.rect}
+            onRestore={closeOverlay}
+            onClose={closeOverlay}
+            onMaximize={handleOverlayMaximize}
+            snapToFull={baseOverlay.snap}
+          />
+        </div>
+      )}
+
+      {projectOverlay && projectOverlayNode && (
+        <div className="fixed inset-0 z-310">
+          <FullScreenView
+            key={`overlay-${projectOverlay.id}`}
+            data={projectOverlayNode}
+            initialRect={projectOverlay.rect}
+            onRestore={closeOverlay}
+            onClose={closeOverlay}
+            onMaximize={handleOverlayMaximize}
+            snapToFull={projectOverlay.snap}
+          />
+        </div>
       )}
 
       {/* Resume Overlay */}
       {showResume && (
-        <div className="fixed inset-0 z-[320] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 py-8">
+        <div className="fixed inset-0 z-320 bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 py-8">
           <div className="relative w-full max-w-5xl h-[80vh] bg-node-bg border border-node-border rounded-2xl shadow-2xl overflow-hidden flex flex-col">
             <div className="flex items-center justify-between px-4 py-3 border-b border-node-border bg-node-header">
               <div className="flex items-center gap-2 text-secondary font-mono text-xs uppercase tracking-[0.25em]">

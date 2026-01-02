@@ -69,19 +69,19 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
       <div className="p-4 border-b border-node-border space-y-3 shrink-0">
         {/* Search */}
         <div className="relative group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-accent transition-colors" size={14} />
+          <Search className="absolute left-3 inset-y-0 my-auto text-secondary group-focus-within:text-accent transition-colors pointer-events-none" size={14} />
           <input 
             type="text" 
             placeholder="Search projects..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-black/5 dark:bg-black/20 border border-node-border rounded-md py-2 pl-9 pr-4 text-sm text-primary focus:outline-none focus:border-accent/50 focus:bg-black/10 dark:focus:bg-black/40 transition-all font-mono placeholder:text-secondary"
+            className="w-full bg-black/5 dark:bg-black/20 border border-node-border rounded-md py-2.5 pl-10 pr-4 text-sm leading-tight text-primary focus:outline-none focus:border-accent/50 focus:bg-black/10 dark:focus:bg-black/40 transition-all font-mono placeholder:text-secondary"
           />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-2">
             {/* Filters */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap w-full sm:w-auto">
             {[
                 { id: 'all', label: 'All', icon: <Box size={12} /> },
                 { id: 'engineering', label: 'Eng', icon: <Cpu size={12} /> },
@@ -91,10 +91,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                 <button
                 key={f.id}
                 onClick={() => setFilter(f.id as any)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-medium transition-colors whitespace-nowrap flex-1 sm:flex-none text-center justify-center ${
                     filter === f.id 
-                    ? 'bg-accent/10 text-accent border border-accent/20' 
-                    : 'bg-black/5 dark:bg-white/5 text-secondary hover:text-primary hover:bg-black/10 dark:hover:bg-white/10'
+                    ? 'bg-accent/10 text-accent border border-accent/20 shadow-[0_0_0_1px_rgba(16,185,129,0.15)]' 
+                    : 'bg-black/5 dark:bg-white/5 text-secondary hover:text-primary hover:bg-black/10 dark:hover:bg-white/10 border border-transparent'
                 }`}
                 >
                 {f.icon}
@@ -104,7 +104,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
             </div>
 
             {/* View Toggle */}
-            <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50 flex-shrink-0 w-full sm:w-auto">
+            <div className="flex gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-node-border/50 shrink-0 w-full sm:w-auto">
                 <button 
                     onClick={() => setViewMode('grid')}
                     className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md inline-flex items-center justify-center gap-2 ${viewMode === 'grid' ? 'bg-node-bg text-primary' : 'text-secondary'}`}
@@ -162,7 +162,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                                             alt={project.title}
                                             loading="lazy"
                                             decoding="async"
-                                            fetchpriority="low"
+                                            fetchPriority="low"
                                             className="w-full h-full object-cover"
                                           />
                                         )

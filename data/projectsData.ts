@@ -1,4 +1,4 @@
-import { PROJECT_ASSETS } from './data/projectAssets';
+import { PROJECT_ASSETS } from './projectAssets';
 
 export interface Project {
   id: string;

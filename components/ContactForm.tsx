@@ -197,16 +197,16 @@ const ContactForm: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting || isRateLimited}
-                className="bg-primary text-canvas-bg hover:bg-accent hover:text-white disabled:opacity-50 disabled:hover:bg-primary px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg cursor-pointer disabled:cursor-not-allowed min-w-[160px] justify-center"
+                className="bg-primary text-canvas-bg hover:bg-accent hover:text-white disabled:opacity-50 disabled:hover:bg-primary px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg cursor-pointer disabled:cursor-not-allowed min-w-160px justify-center"
               >
                 {isSubmitting ? (
                   <>
-                    <span className="relative top-[1px]">Sending</span>
+                    <span className="relative top-1px">Sending</span>
                     <Loader2 size={14} className="animate-spin" />
                   </>
                 ) : (
                   <>
-                    <span className="relative top-[1px]">Send Message</span>
+                    <span className="relative top-1px">Send Message</span>
                     <Send size={14} />
                   </>
                 )}
@@ -226,7 +226,7 @@ const ContactForm: React.FC = () => {
             <Check size={32} strokeWidth={3} />
           </div>
           <h3 className="text-2xl font-bold text-primary mb-2">Message Sent!</h3>
-          <p className="text-secondary text-sm max-w-[200px] leading-relaxed">
+          <p className="text-secondary text-sm max-w-200px leading-relaxed">
             Thanks for reaching out. I will respond within 24 hours.
           </p>
         </div>

@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Canvas from './components/Canvas';
 import DocumentView from './components/DocumentView';
 import Dock from './components/Dock';
@@ -7,6 +8,9 @@ import Preloader, { shouldShowPreloader } from './components/Preloader';
 import PolicyOverlay from './components/PolicyOverlay'; // Import PolicyOverlay
 import { NODES } from './constants';
 import { Shield } from 'lucide-react'; // Import Icon
+import FullScreenView from './components/FullScreenView';
+import { NodeData } from './types';
+import NotFound from './components/NotFound';
 
 const VIEW_MODE_KEY = 'portfolio.viewMode';
 
@@ -32,11 +36,16 @@ const readViewMode = (): 'spatial' | 'document' => {
 };
 
 const App: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [activeNodeId, setActiveNodeId] = useState<string | null>('hero');
   const [viewMode, setViewMode] = useState<'spatial' | 'document'>(readViewMode);
   const [hasIntroPlayed, setHasIntroPlayed] = useState(false);
   const [currentDate, setCurrentDate] = useState('');
   const [showPolicy, setShowPolicy] = useState(false); // New state for policy view
+  const [routeProjectId, setRouteProjectId] = useState<string | null>(null);
+  const lastDocumentPathRef = useRef<string>('/');
+  const [notFound, setNotFound] = useState(false);
   
   // Loading state
   const [isLoading, setIsLoading] = useState(() => shouldShowPreloader());
@@ -62,9 +71,105 @@ const App: React.FC = () => {
     }
   }, [isLoading]);
 
+  // --- Routing sync ---
+  useEffect(() => {
+    const rawPath = location.pathname.replace(/\/+$/, '') || '/';
+    const path = rawPath === '' ? '/' : rawPath;
+    const cleaned = path === '/index.html' ? '/' : path;
+
+    const isKnownStatic = (p: string) => {
+      return (
+        p === '/' ||
+        p === '/spatial' ||
+        p === '/projects' ||
+        p === '/experience' ||
+        p === '/stack' ||
+        p === '/skills' || // legacy alias
+        p === '/contact'
+      );
+    };
+
+    const matchProject = cleaned.startsWith('/projects/') ? decodeURIComponent(cleaned.replace('/projects/', '')) : null;
+    const projectNode = matchProject ? nodeById[matchProject] : null;
+
+    let nextView: 'spatial' | 'document' = 'document';
+    let nextTarget: string | null = null;
+    let projectId: string | null = null;
+    let is404 = false;
+
+    if (cleaned === '/spatial') {
+      nextView = 'spatial';
+    } else if (cleaned === '/projects') {
+      nextTarget = 'projects-hub';
+    } else if (matchProject) {
+      if (projectNode && projectNode.type === 'project') {
+        nextTarget = 'projects-hub';
+        projectId = matchProject;
+      } else {
+        is404 = true;
+      }
+    } else if (cleaned === '/experience') {
+      nextTarget = 'experience-hub';
+    } else if (cleaned === '/stack' || cleaned === '/skills') {
+      nextTarget = 'skills';
+    } else if (cleaned === '/contact') {
+      nextTarget = 'contact';
+    } else if (cleaned === '/') {
+      nextTarget = null;
+    } else if (!isKnownStatic(cleaned)) {
+      is404 = true;
+    }
+
+    if (nextView === 'document') {
+      lastDocumentPathRef.current = cleaned === '/spatial' ? lastDocumentPathRef.current : cleaned || '/';
+    }
+
+    setViewMode(nextView);
+    setActiveNodeId(nextTarget);
+    setRouteProjectId(projectId);
+    setNotFound(is404);
+  }, [location.pathname]);
+
+  const nodeById = useMemo<Record<string, NodeData>>(() => {
+    return NODES.reduce((acc, node) => {
+      acc[node.id] = node;
+      return acc;
+    }, {} as Record<string, NodeData>);
+  }, []);
+
+  const pathForNode = (id: string | null, mode: 'spatial' | 'document' = viewMode): string => {
+    if (mode === 'spatial') return '/spatial';
+    if (!id) return '/';
+    const node = nodeById[id];
+    if (node?.type === 'project') return `/projects/${id}`;
+    switch (id) {
+      case 'projects-hub':
+        return '/projects';
+      case 'experience-hub':
+        return '/experience';
+      case 'skills':
+        return '/stack';
+      case 'contact':
+        return '/contact';
+      case 'hero':
+        return '/';
+      default:
+        return '/';
+    }
+  };
+
   const handleNavigate = (nodeId: string) => {
     setActiveNodeId(nodeId);
-    setTimeout(() => setActiveNodeId(null), 500);
+    const targetPath = pathForNode(nodeId);
+    const shouldReplace = location.pathname === targetPath;
+    navigate(targetPath, { replace: shouldReplace });
+    if (viewMode === 'spatial') {
+      setTimeout(() => setActiveNodeId(null), 500);
+    }
+  };
+
+  const handleProjectRoute = (projectId: string) => {
+    navigate(`/projects/${projectId}`);
   };
 
   // Fire GA page_view/config on internal navigation (SPA)
@@ -80,7 +185,13 @@ const App: React.FC = () => {
   }, [activeNodeId, viewMode]);
 
   const handleToggleView = () => {
-    setViewMode(prev => prev === 'spatial' ? 'document' : 'spatial');
+    setViewMode(prev => {
+      const next = prev === 'spatial' ? 'document' : 'spatial';
+      const target = next === 'document' ? (lastDocumentPathRef.current || '/') : '/spatial';
+      const shouldReplace = location.pathname === target;
+      navigate(target, { replace: shouldReplace });
+      return next;
+    });
   };
 
   const handleIntroComplete = () => {
@@ -90,6 +201,19 @@ const App: React.FC = () => {
   const handlePreloaderComplete = () => {
     setIsLoading(false);
   };
+
+  const closeRouteProject = () => navigate('/projects');
+
+  const routeProjectNode = routeProjectId ? nodeById[routeProjectId] : null;
+  const fullscreenRect = useMemo(() => {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1280;
+    const height = typeof window !== 'undefined' ? window.innerHeight : 720;
+    return new DOMRect(0, 0, width, height);
+  }, [routeProjectId]);
+
+  const handleGoHome = () => navigate('/', { replace: false });
+  const handleGoProjects = () => navigate('/projects', { replace: false });
+  const handleGoSpatial = () => navigate('/spatial', { replace: false });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -139,32 +263,51 @@ const App: React.FC = () => {
       {/* View Container with Transitions */}
       {/* Opacity is controlled by loading state to ensure fade-in reveal */}
       <div className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        {viewMode === 'spatial' ? (
-             <Canvas 
-                nodes={NODES} 
-                activeNodeId={activeNodeId} 
-                onNavigate={handleNavigate}
-                // Only start canvas intro if main loading is done and intro hasn't played yet
-                shouldPlayIntro={!isLoading && !hasIntroPlayed}
-                onIntroComplete={handleIntroComplete}
-            />
-        ) : (
-            <DocumentView 
-                nodes={NODES}
-                targetId={activeNodeId}
-                viewMode={viewMode}
-                isReady={!isLoading}
-            />
-        )}
-      </div>
+        {notFound ? (
+          <NotFound onGoHome={handleGoHome} onGoProjects={handleGoProjects} onGoSpatial={handleGoSpatial} />
+        ) : viewMode === 'spatial' ? (
+          <Canvas 
+             nodes={NODES} 
+             activeNodeId={activeNodeId} 
+             onNavigate={handleNavigate}
+             onProjectRoute={handleProjectRoute}
+             // Only start canvas intro if main loading is done and intro hasn't played yet
+             shouldPlayIntro={!isLoading && !hasIntroPlayed}
+             onIntroComplete={handleIntroComplete}
+         />
+     ) : (
+         <DocumentView 
+             nodes={NODES}
+             targetId={activeNodeId}
+             viewMode={viewMode}
+             isReady={!isLoading}
+             onProjectRoute={handleProjectRoute}
+         />
+     )}
+   </div>
 
       <Dock 
         activeId={activeNodeId} 
         onNavigate={handleNavigate}
         viewMode={viewMode}
         onToggleView={handleToggleView}
-        isVisible={!isLoading}
+        isVisible={!isLoading && !notFound}
       />
+
+      {/* Route-driven Project Fullscreen */}
+      {routeProjectNode && (
+          <div className="fixed inset-0 z-400">
+          <FullScreenView
+            key={routeProjectNode.id}
+            data={routeProjectNode}
+            initialRect={fullscreenRect}
+            onRestore={closeRouteProject}
+            onClose={closeRouteProject}
+            onMaximize={(id) => handleProjectRoute(id)}
+            snapToFull
+          />
+        </div>
+      )}
 
       {/* Policy Overlay */}
       {showPolicy && (

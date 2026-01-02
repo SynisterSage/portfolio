@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NodeData } from '../types';
 import { EXPERIENCE_LIST, NODES } from '../constants';
-import { Briefcase, Github, Code, Layers, Calendar, ArrowUpRight, Cpu, Database, Layout, PenTool, Mail, Send, Maximize2 } from 'lucide-react';
+import { Briefcase, Github, Code, Layers, Calendar, ArrowUpRight, Cpu, Database, Layout, PenTool, Mail, Send, Maximize2, X, Download } from 'lucide-react';
 import ContactForm from './ContactForm';
 import FullScreenView from './FullScreenView';
 import ProjectList from './ProjectList';
@@ -12,17 +12,21 @@ interface DocumentViewProps {
   targetId: string | null;
   viewMode: 'spatial' | 'document';
   isReady?: boolean; // New prop to coordinate with Preloader
+  onProjectRoute?: (id: string) => void;
 }
 
 // Reusable FadeIn Component for Scroll Animations
-const FadeIn: React.FC<{
+type FadeInProps = {
     children: React.ReactNode;
     id?: string;
     className?: string;
     delay?: number;
     threshold?: number;
     setRef?: (el: HTMLElement | null) => void;
-}> = ({ children, id, className = "", delay = 0, threshold = 0.1, setRef }) => {
+    sectionId?: string;
+} & React.HTMLAttributes<HTMLElement>;
+
+const FadeIn: React.FC<FadeInProps> = ({ children, id, className = "", delay = 0, threshold = 0.1, setRef, sectionId, ...rest }) => {
   const [isVisible, setIsVisible] = useState(false);
   const internalRef = useRef<HTMLElement | null>(null);
 
@@ -55,6 +59,8 @@ const FadeIn: React.FC<{
                     internalRef.current = el;
                     if (setRef) setRef(el);
             }}
+            data-section-id={sectionId}
+            {...rest}
             className={`${className} transition-all duration-1000 ease-out ${
                 isVisible
                         ? 'opacity-100 translate-y-0 blur-0'
@@ -67,12 +73,13 @@ const FadeIn: React.FC<{
     );
 };
 
-const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, isReady = true }) => {
+const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, isReady = true, onProjectRoute }) => {
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const [heroVisible, setHeroVisible] = useState(false);
   const [viewReady, setViewReady] = useState(false);
   const [overlayStack, setOverlayStack] = useState<{ id: string; rect: DOMRect; snap?: boolean }[]>([]);
   const selectedProject = overlayStack[overlayStack.length - 1] || null;
+  const [showResume, setShowResume] = useState(false);
 
   const handleOverlayMaximize = (id: string, rect: DOMRect) => {
     // Always replace the overlay with the newly selected item;
@@ -110,6 +117,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
       sectionRefs.current[targetId]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [targetId]);
+
 
   const heroNode = nodes.find(n => n.id === 'hero');
   const skillsNode = nodes.find(n => n.id === 'skills');
@@ -162,15 +170,14 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                         {tag}
                     </span>
                 ))}
-                <a
-                    href="/resume.pdf"
-                    target="_blank"
-                    rel="noreferrer"
+                <button
+                    onClick={() => setShowResume(true)}
                     className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-gradient-to-b from-emerald-400/80 to-emerald-500 text-white shadow-[0_0_25px_rgba(16,185,129,0.3)] transition hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(16,185,129,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
                     style={{ filter: 'drop-shadow(0 0 15px rgba(16,185,129,0.35))' }}
+                    aria-label="View resume"
                 >
                     View Resume
-                </a>
+                </button>
             </div>
         </div>
     );
@@ -197,6 +204,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
           <section 
             id="hero" 
             ref={el => { sectionRefs.current['hero'] = el; }}
+            data-section-id="hero"
             className="min-h-[60vh] md:min-h-[75vh] flex flex-col justify-center"
           >
             {renderHeroContent()}
@@ -208,6 +216,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
             id="projects-hub" 
             setRef={el => { sectionRefs.current['projects-hub'] = el; }}
             className="flex flex-col min-h-[500px] md:min-h-[600px]"
+            sectionId="projects-hub"
         >
             <div className="flex items-end justify-between mb-6 md:mb-8 border-b border-node-border pb-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">
@@ -234,6 +243,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                 <div className="flex-1 overflow-hidden">
                     <ProjectList 
                         onMaximize={handleOverlayMaximize}
+                        onOpenProject={onProjectRoute}
                         variant="grid"
                     />
                 </div>
@@ -244,6 +254,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
         <FadeIn 
             id="experience-hub" 
             setRef={el => { sectionRefs.current['experience-hub'] = el; }} 
+            sectionId="experience-hub"
         >
             <div className="flex items-end justify-between mb-12 md:mb-16 border-b border-node-border pb-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">Experience Log</h2>
@@ -309,6 +320,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
             <FadeIn 
                 id="skills" 
                 setRef={el => { sectionRefs.current['skills'] = el; }}
+                sectionId="skills"
             >
                 <div className="flex items-end justify-between mb-8 md:mb-12 border-b border-node-border pb-4">
                     <h2 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">Technical Stack</h2>
@@ -356,6 +368,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                 id="contact" 
                 setRef={el => { sectionRefs.current['contact'] = el; }}
                 className="pb-24 border-t border-node-border pt-12 md:pt-16"
+                sectionId="contact"
             >
                 <div className="relative overflow-visible">
                   <div
@@ -421,6 +434,44 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                  snapToFull={selectedProject.snap}
              />
           </div>
+      )}
+
+      {/* Resume Overlay */}
+      {showResume && (
+        <div className="fixed inset-0 z-[320] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 py-8">
+          <div className="relative w-full max-w-5xl h-[80vh] bg-node-bg border border-node-border rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-node-border bg-node-header">
+              <div className="flex items-center gap-2 text-secondary font-mono text-xs uppercase tracking-[0.25em]">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" />
+                <span>resume.pdf</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href="/resume.pdf"
+                  download
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-node-border text-secondary hover:text-primary hover:border-accent transition-colors text-[12px] font-semibold"
+                >
+                  <Download size={14} />
+                  Download
+                </a>
+                <button
+                  onClick={() => setShowResume(false)}
+                  className="p-2 rounded-md hover:bg-red-500/10 text-secondary hover:text-red-500 transition-colors"
+                  aria-label="Close resume"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 bg-black/5">
+              <iframe
+                src="/resume.pdf#view=FitH"
+                title="Resume PDF"
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

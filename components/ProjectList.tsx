@@ -7,6 +7,7 @@ import ProjectActions from './ProjectActions';
 
 interface ProjectListProps {
   onNavigate?: (id: string) => void;
+  onOpenProject?: (id: string) => void;
   onMaximize?: (id: string, rect: DOMRect) => void;
   variant?: 'list' | 'grid';
 }
@@ -15,7 +16,7 @@ const isVideoSource = (value?: string) => !!value && /\.(mp4|mov|webm|ogg)$/i.te
 
 const isImageAsset = (value?: string) => !!value && /\.(png|jpe?g|gif|svg|webp)$/i.test(value);
 
-const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, variant = 'grid' }) => {
+const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, onMaximize, variant = 'grid' }) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'design' | 'engineering' | 'hybrid'>('all');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>(variant);
@@ -33,6 +34,11 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onMaximize, varia
 
   const handleProjectClick = (e: React.MouseEvent, project: ProjectItem) => {
     e.stopPropagation();
+
+    if (onOpenProject) {
+      onOpenProject(project.id);
+      return;
+    }
 
     if (project.linkedNodeId) {
         if (onMaximize) {

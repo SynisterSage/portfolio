@@ -333,6 +333,7 @@ const Node: React.FC<NodeProps> = ({
         {data.type === 'project-hub' ? (
             <ProjectList 
                 onNavigate={onOpenProject || onNavigate} 
+                onOpenProject={onOpenProject}
                 onMaximize={onMaximize}
             />
         ) : data.type === 'experience-hub' ? (

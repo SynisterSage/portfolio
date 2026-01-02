@@ -10,9 +10,10 @@ interface CanvasProps {
   onNavigate: (id: string) => void;
   shouldPlayIntro: boolean;
   onIntroComplete: () => void;
+  onProjectRoute?: (id: string) => void;
 }
 
-const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, shouldPlayIntro, onIntroComplete }) => {
+const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, shouldPlayIntro, onIntroComplete, onProjectRoute }) => {
   // Camera State
   const [camera, setCamera] = useState<CanvasState>({ x: 0, y: 0, scale: 1 });
   
@@ -229,6 +230,11 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   }, []);
 
   const handleOpenProject = useCallback((id: string) => {
+    if (onProjectRoute) {
+      onProjectRoute(id);
+      return;
+    }
+
     if (!openNodes.includes(id)) {
         setOpenNodes(prev => [...prev, id]);
         
@@ -251,7 +257,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
         }
     }
     handleFocusNode(id);
-  }, [openNodes, handleFocusNode, nodes]);
+  }, [openNodes, handleFocusNode, nodes, onProjectRoute]);
 
   const popPreviousMaximized = useCallback(() => {
     const stack = maximizedStackRef.current;

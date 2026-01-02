@@ -175,15 +175,18 @@ const App: React.FC = () => {
 
   // Fire GA page_view/config on internal navigation (SPA)
   useEffect(() => {
-    if (typeof window === 'undefined' || typeof (window as any).gtag !== 'function') return;
-    const path = activeNodeId ? `/node/${activeNodeId}` : window.location.pathname + window.location.search;
+    if (typeof window === 'undefined') return;
+    const gtag = (window as any).gtag;
+    const path = window.location.pathname + window.location.search;
     try {
-      (window as any).gtag('event', 'page_view', { page_path: path });
-      (window as any).gtag('config', 'G-GFJPNSXCQ4', { page_path: path });
+      if (typeof gtag === 'function') {
+        gtag('event', 'page_view', { page_path: path });
+        gtag('config', 'G-GFJPNSXCQ4', { page_path: path });
+      }
     } catch (e) {
-      // swallow errors silently
+      // ignore GA failures to reduce console noise
     }
-  }, [activeNodeId, viewMode]);
+  }, [location.pathname, viewMode]);
 
   const handleToggleView = () => {
     setViewMode(prev => {

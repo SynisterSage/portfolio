@@ -138,10 +138,22 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
         return () => { if (t) clearTimeout(t); };
     }, [viewReady]);
 
+  const hasShownRef = useRef(false);
+
   useEffect(() => {
-    setViewReady(false);
-    if (!isReady) return;
-    const timer = setTimeout(() => setViewReady(true), 80);
+    if (!isReady) {
+      setViewReady(false);
+      return;
+    }
+    if (viewMode !== 'document') return;
+    if (hasShownRef.current) {
+      setViewReady(true);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setViewReady(true);
+      hasShownRef.current = true;
+    }, 80);
     return () => clearTimeout(timer);
   }, [isReady, viewMode]);
 

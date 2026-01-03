@@ -293,24 +293,39 @@ const App: React.FC = () => {
       <div className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
           {notFound ? (
             <NotFound onGoHome={handleGoHome} onGoProjects={handleGoProjects} onGoSpatial={handleGoSpatial} />
-          ) : viewMode === 'spatial' ? (
-            <Canvas
-              nodes={NODES}
-              activeNodeId={activeNodeId}
-              onNavigate={handleNavigate}
-              shouldPlayIntro={!hasIntroPlayed}
-              onIntroComplete={handleIntroComplete}
-              autoLayoutTick={autoLayoutTick}
-            />
           ) : (
-            <DocumentView 
-                nodes={NODES}
-                targetId={activeNodeId}
-                viewMode={viewMode}
-                isReady={!isLoading}
-                onProjectRoute={handleProjectRoute}
-                onAboutRoute={handleAboutRoute}
-            />
+            <>
+              <div
+                className={`absolute inset-0 transition-opacity duration-500 ease-out ${
+                  viewMode === 'spatial' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                }`}
+                aria-hidden={viewMode !== 'spatial'}
+              >
+                <Canvas
+                  nodes={NODES}
+                  activeNodeId={activeNodeId}
+                  onNavigate={handleNavigate}
+                  shouldPlayIntro={!hasIntroPlayed}
+                  onIntroComplete={handleIntroComplete}
+                  autoLayoutTick={autoLayoutTick}
+                />
+              </div>
+              <div
+                className={`absolute inset-0 transition-opacity duration-500 ease-out ${
+                  viewMode === 'document' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                }`}
+                aria-hidden={viewMode !== 'document'}
+              >
+                <DocumentView 
+                    nodes={NODES}
+                    targetId={activeNodeId}
+                    viewMode={viewMode}
+                    isReady={!isLoading}
+                    onProjectRoute={handleProjectRoute}
+                    onAboutRoute={handleAboutRoute}
+                />
+              </div>
+            </>
           )}
         </div>
 

@@ -20,6 +20,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'design' | 'engineering' | 'hybrid'>('all');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>(variant);
+  const [loadedThumbs, setLoadedThumbs] = useState<Record<string, boolean>>({});
 
   const filteredProjects = useMemo(() => {
     const term = search.toLowerCase();
@@ -61,6 +62,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
           if (node?.gallery?.[0]) return node.gallery[0];
       }
       return project.thumbnail || null;
+  };
+
+  const markThumbLoaded = (projectId: string) => {
+    setLoadedThumbs(prev => (prev[projectId] ? prev : { ...prev, [projectId]: true }));
   };
 
   return (
@@ -136,6 +141,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                 {filteredProjects.map(project => {
                     const thumb = getProjectThumbnail(project);
                     const thumbIsVideo = isVideoSource(thumb);
+                    const thumbLoaded = !!loadedThumbs[project.id];
                     
                     if (viewMode === 'grid') {
                         return (
@@ -146,6 +152,14 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                             >
                                 {/* Large Image */}
                                 <div className="w-full aspect-video relative overflow-hidden bg-black/10 border-b border-node-border/50">
+                                    {thumb && !thumbLoaded && (
+                                      <div className="absolute inset-0 z-0 bg-black/5 dark:bg-white/5">
+                                        <div className="absolute inset-0 shimmer" />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                          <span className="h-6 w-6 rounded-full border-2 border-black/20 border-t-black/50 dark:border-white/25 dark:border-t-white/70 animate-spin" />
+                                        </div>
+                                      </div>
+                                    )}
                                     {thumb ? (
                                         thumbIsVideo ? (
                                           <video
@@ -154,7 +168,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                                             muted
                                             autoPlay
                                             playsInline
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            onLoadedData={() => markThumbLoaded(project.id)}
+                                            onError={() => markThumbLoaded(project.id)}
+                                            className={`relative z-10 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${thumbLoaded ? 'opacity-100' : 'opacity-0'}`}
                                           />
                                         ) : (
                                           <img
@@ -163,7 +179,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                                             loading="lazy"
                                             decoding="async"
                                             fetchPriority="low"
-                                            className="w-full h-full object-cover"
+                                            onLoad={() => markThumbLoaded(project.id)}
+                                            onError={() => markThumbLoaded(project.id)}
+                                            className={`relative z-10 w-full h-full object-cover transition-opacity duration-300 ${thumbLoaded ? 'opacity-100' : 'opacity-0'}`}
                                           />
                                         )
                                     ) : (
@@ -172,13 +190,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                                         </div>
                                     )}
                                     {/* Category Overlay */}
-                                    <div className="absolute top-2 left-2">
+                                    <div className="absolute top-2 left-2 z-20">
                                         <span className="px-2 py-1 bg-node-bg/90 backdrop-blur text-[10px] uppercase font-bold tracking-wider rounded border border-node-border shadow-sm">
                                             {project.category}
                                         </span>
                                     </div>
                                     {/* Type Overlay */}
-                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                    <div className="absolute inset-0 z-20 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                                          <span className="px-4 py-2 bg-node-bg/90 backdrop-blur rounded-full text-xs font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
                                             View Project
                                          </span>
@@ -215,7 +233,15 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                             className="group flex gap-4 p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 border border-transparent hover:border-node-border cursor-pointer transition-all items-center"
                         >
                             {/* Thumbnail */}
-                                <div className="w-20 h-14 md:w-24 md:h-16 shrink-0 rounded-lg overflow-hidden bg-black/10 border border-node-border relative">
+                            <div className="w-20 h-14 md:w-24 md:h-16 shrink-0 rounded-lg overflow-hidden bg-black/10 border border-node-border relative">
+                                {thumb && !thumbLoaded && (
+                                  <div className="absolute inset-0 z-0 bg-black/5 dark:bg-white/5">
+                                    <div className="absolute inset-0 shimmer" />
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                      <span className="h-5 w-5 rounded-full border-2 border-black/20 border-t-black/50 dark:border-white/25 dark:border-t-white/70 animate-spin" />
+                                    </div>
+                                  </div>
+                                )}
                                 {thumb ? (
                                     thumbIsVideo ? (
                                       <video
@@ -224,10 +250,20 @@ const ProjectList: React.FC<ProjectListProps> = ({ onNavigate, onOpenProject, on
                                         muted
                                         autoPlay
                                         playsInline
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                        onLoadedData={() => markThumbLoaded(project.id)}
+                                        onError={() => markThumbLoaded(project.id)}
+                                        className={`relative z-10 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${thumbLoaded ? 'opacity-100' : 'opacity-0'}`}
                                       />
                                     ) : (
-                                      <img src={thumb} alt={project.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                      <img
+                                        src={thumb}
+                                        alt={project.title}
+                                        loading="lazy"
+                                        decoding="async"
+                                        onLoad={() => markThumbLoaded(project.id)}
+                                        onError={() => markThumbLoaded(project.id)}
+                                        className={`relative z-10 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${thumbLoaded ? 'opacity-100' : 'opacity-0'}`}
+                                      />
                                     )
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-secondary">

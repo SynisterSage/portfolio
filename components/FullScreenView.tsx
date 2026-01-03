@@ -463,18 +463,20 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
             <>
               <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               
-              <button 
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform -translate-x-4 group-hover:translate-x-0"
-              >
-                  <ChevronLeft size={24} />
-              </button>
-              <button 
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0"
-              >
-                  <ChevronRight size={24} />
-              </button>
+              <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
+                  <button 
+                      onClick={prevImage}
+                      className="pointer-events-auto p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform -translate-x-4 group-hover:translate-x-0"
+                  >
+                      <ChevronLeft size={24} />
+                  </button>
+                  <button 
+                      onClick={nextImage}
+                      className="pointer-events-auto p-3 rounded-full bg-black/30 text-white backdrop-blur hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0"
+                  >
+                      <ChevronRight size={24} />
+                  </button>
+              </div>
 
               <div className="absolute bottom-4 inset-x-0 flex items-center justify-center px-3">
                 <div className="flex gap-2 px-3 py-2 rounded-full bg-black/40 backdrop-blur-sm shadow-lg">

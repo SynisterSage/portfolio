@@ -79,6 +79,7 @@ const App: React.FC = () => {
     const rawPath = location.pathname.replace(/\/+$/, '') || '/';
     const path = rawPath === '' ? '/' : rawPath;
     const cleaned = path === '/index.html' ? '/' : path;
+    const locationState = location.state as { fullscreenId?: string } | null;
 
     const isKnownStatic = (p: string) => {
       return (
@@ -106,6 +107,10 @@ const App: React.FC = () => {
       nextView = 'spatial';
     } else if (cleaned === '/projects') {
       nextTarget = 'projects-hub';
+      const fullscreenId = locationState?.fullscreenId;
+      if (fullscreenId && nodeById[fullscreenId]) {
+        projectId = fullscreenId;
+      }
     } else if (matchProject) {
       if (projectNode && projectNode.type === 'project') {
         nextTarget = 'projects-hub';
@@ -137,7 +142,7 @@ const App: React.FC = () => {
     setRouteProjectId(projectId);
     setRouteAboutOpen(aboutOpen);
     setNotFound(is404);
-  }, [location.pathname]);
+  }, [location.pathname, location.key]);
 
   const nodeById = useMemo<Record<string, NodeData>>(() => {
     return NODES.reduce((acc, node) => {
@@ -181,6 +186,14 @@ const App: React.FC = () => {
 
   const handleProjectRoute = (projectId: string) => {
     navigate(`/projects/${projectId}`);
+  };
+
+  const handleRouteFullscreenNavigate = (id: string) => {
+    if (id === 'projects-hub') {
+      navigate('/projects', { state: { fullscreenId: 'projects-hub' } });
+      return;
+    }
+    handleProjectRoute(id);
   };
 
   const handleAboutRoute = () => {
@@ -347,7 +360,7 @@ const App: React.FC = () => {
             initialRect={fullscreenRect}
             onRestore={closeRouteProject}
             onClose={closeRouteProject}
-            onMaximize={(id) => handleProjectRoute(id)}
+            onMaximize={handleRouteFullscreenNavigate}
             snapToFull
           />
         </div>

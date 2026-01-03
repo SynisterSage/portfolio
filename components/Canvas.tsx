@@ -70,6 +70,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   const [maximizedNode, setMaximizedNode] = useState<{ id: string; initialRect: DOMRect; snap?: boolean } | null>(null);
   const maximizedStackRef = useRef<{ id: string; initialRect: DOMRect; snap?: boolean }[]>([]);
   const [restoringId, setRestoringId] = useState<string | null>(null);
+  const restoreLockRef = useRef(false);
 
   // Sync nodePositionsRef
   useEffect(() => {
@@ -392,9 +393,14 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     if (!maximizedNode) return;
     
     const previous = popPreviousMaximized();
+    restoreLockRef.current = true;
+    setIsAnimating(false);
     setRestoringId(maximizedNode.id);
     setMaximizedNode(previous || null);
     setTimeout(() => setRestoringId(null), 100);
+    setTimeout(() => {
+      restoreLockRef.current = false;
+    }, 360);
   }, [maximizedNode, popPreviousMaximized]);
 
 
@@ -403,6 +409,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   useEffect(() => {
     if (!activeNodeId) return;
     if (bootState === 'scanning') return; 
+    if (maximizedNode || restoreLockRef.current) return;
 
     const targetNode = nodes.find(n => n.id === activeNodeId);
 
@@ -436,7 +443,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     const timer = setTimeout(() => setIsAnimating(false), 800);
     return () => clearTimeout(timer);
 
-  }, [activeNodeId, nodes, openNodes, handleOpenProject, handleFocusNode, bootState]);
+  }, [activeNodeId, nodes, openNodes, handleOpenProject, handleFocusNode, bootState, maximizedNode]);
 
   // --- Interaction Logic ---
 

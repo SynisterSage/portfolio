@@ -97,6 +97,7 @@ export const EXPERIENCE_LIST: ExperienceItem[] = [
     period: '2018 - Present',
     description: `
 - Maintaining a 3.8 GPA with a web development focus inside Graphic and Interactive Design.
+- Work featured on the Monmouth Review, multiple years and multiple pieces.
 - Collaborate with Computer Science majors to design and build cross-discipline apps and prototypes.
 - Study multidisciplinary design, motion, illustration, and story-driven prototyping to support product work.
     `,

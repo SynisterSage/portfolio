@@ -70,7 +70,7 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     id: 'grid-lead',
     title: 'GridLead',
     folder: 'grid-lead',
-    categories: ['Full Stack', 'Automation'],
+    categories: ['Full Stack', 'Automation', 'Founder'],
     description: `GridLead is a solo-built platform that finds local businesses, runs automated audits, and drives outreach. The React/Vite frontend ships as an installable PWA and Supabase covers auth/Postgres/Edge Functions for Gmail OAuth/send/poll, Stripe subscriptions, and Places-powered discovery. A PageSpeed + Playwright render proxy scores performance, design, and trust, then feeds the notification stack.`,
     year: '2025',
     service: 'Full Stack',
@@ -192,12 +192,13 @@ It was built with TypeScript and React, splitting mobile and console flows into 
     id: 'sage',
     title: 'SageAIO',
     folder: 'sageaio',
-    categories: ['App Development', 'Automation'],
-    description: `Private retail-commerce automation app built during COVID covering product, design, and launch workflows with rapid prototyping and front-end bridges between Vue and React. I prototyped flows in Figma, mapped data hand-offs, and built components that share state between the Vue dashboard and React launch surfaces. The goal was to keep the commerce ops team aligned while iterating the automation logic quickly. Stack: Figma, Vue.js, React.`,
+    categories: ['App Development', 'Automation', 'Founder'],
+    description: `Founded a retail solutions startup and led a distributed team across design and engineering. Designed and shipped core UI and UX for internal commerce tools, enabling faster iteration and alignment across product, operations, and launch workflows. Stack: Figma, Vue.js, React.`,
     year: '2022',
     service: 'App Development',
     tools: ['Figma', 'Vue', 'React'],
-    likes: 27
+    likes: 27,
+    fullDescription: 'Founded a retail solutions startup and led a distributed team of developers and designers. Owned UI and UX for the brand’s flagship digital experiences and directed social channels with 10k+ followers, building strong engagement and brand loyalty during rapid growth. Private retail commerce automation app built during COVID, covering product, design, and launch workflows. Designed and prototyped flows in Figma, mapped data hand-offs, and implemented front-end bridges between Vue and React. Built shared-state components connecting the Vue-based operations dashboard with React launch surfaces to keep commerce teams aligned while iterating automation logic quickly.'
   },
   {
     id: 'squisito',

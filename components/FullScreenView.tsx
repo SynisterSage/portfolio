@@ -576,7 +576,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
   
   return (
     <div 
-      className={`bg-canvas-bg/95 ${isMobile ? 'backdrop-blur-lg shadow-xl duration-200' : 'backdrop-blur-xl shadow-2xl duration-300'} transition-all cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden flex flex-col`}
+      className={`fullscreen-shell bg-canvas-bg/95 ${isMobile ? 'backdrop-blur-lg shadow-xl duration-200' : 'backdrop-blur-xl shadow-2xl duration-300'} transition-all cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden flex flex-col`}
       style={style}
     >
         {/* Header */}

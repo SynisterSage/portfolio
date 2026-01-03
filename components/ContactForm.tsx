@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Send, Check, Loader2, Github, Linkedin, Instagram } from 'lucide-react';
 
 const FORM_ENDPOINT = 'https://formsubmit.co/ajax/afergyy@gmail.com';
@@ -11,6 +11,7 @@ type FormState = {
 };
 
 const ContactForm: React.FC = () => {
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState<FormState>({ name: '', email: '', message: '' });
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -74,6 +75,18 @@ const ContactForm: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const syncFormFocus = () => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const hasFocus = !!(formRef.current && formRef.current.contains(document.activeElement));
+    root.classList.toggle('form-input-focus', hasFocus);
+  };
+
+  const scheduleFormFocusSync = () => {
+    if (typeof window === 'undefined') return;
+    window.requestAnimationFrame(syncFormFocus);
+  };
+
   useEffect(() => {
     if (!rateLimitUntil) {
       setCountdown(0);
@@ -97,10 +110,23 @@ const ContactForm: React.FC = () => {
     return () => clearInterval(interval);
   }, [rateLimitUntil]);
 
+  useEffect(() => {
+    return () => {
+      if (typeof document === 'undefined') return;
+      document.documentElement.classList.remove('form-input-focus');
+    };
+  }, []);
+
   return (
     <div className="relative">
       <div className={`transition-all duration-500 ease-in-out ${isSuccess ? 'opacity-0 scale-95 pointer-events-none blur-sm' : 'opacity-100 scale-100 blur-0'}`}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          onFocusCapture={scheduleFormFocusSync}
+          onBlurCapture={scheduleFormFocusSync}
+          className="flex flex-col gap-4"
+        >
           <div className="flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-secondary font-semibold">
             <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-black/10 dark:bg-white/5 border border-node-border">
               <Send size={16} className="text-accent" />
@@ -118,7 +144,7 @@ const ContactForm: React.FC = () => {
                 placeholder="John Doe"
                 required
                 disabled={isSubmitting}
-                className="w-full bg-black/5 dark:bg-white/5 border border-node-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-all placeholder:text-secondary/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-black/5 dark:bg-white/5 border border-node-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-colors placeholder:text-secondary/30 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </label>
             <label className="flex flex-col gap-1.5 text-[10px] uppercase font-bold text-secondary tracking-wider">
@@ -131,7 +157,7 @@ const ContactForm: React.FC = () => {
                 placeholder="john@example.com"
                 required
                 disabled={isSubmitting}
-                className="w-full bg-black/5 dark:bg-white/5 border border-node-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-all placeholder:text-secondary/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-black/5 dark:bg-white/5 border border-node-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-colors placeholder:text-secondary/30 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </label>
           </div>
@@ -146,7 +172,7 @@ const ContactForm: React.FC = () => {
               required
               rows={4}
               disabled={isSubmitting}
-              className="w-full bg-black/5 dark:bg-white/5 border border-node-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-all resize-none placeholder:text-secondary/30 custom-scroll disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-black/5 dark:bg-white/5 border border-node-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 transition-colors resize-none placeholder:text-secondary/30 custom-scroll disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </label>
 

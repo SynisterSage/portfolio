@@ -250,7 +250,7 @@ design:
   },
   {
     id: 'about',
-    title: 'my-shpeel.md',
+    title: 'my-spiel.md',
     type: 'bio',
     hidden: true,
     // Hidden route-only overlay (no spatial node)

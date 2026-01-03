@@ -7,6 +7,18 @@ export const INITIAL_POSITION = { x: 0, y: 0 };
 
 export const EXPERIENCE_LIST: ExperienceItem[] = [
   {
+    id: 'exp-wickedworks',
+    role: 'Full Stack Product Engineer',
+    company: 'Wicked Works',
+    period: '2026 - Present',
+    description: `
+- Built a React + Shopify Storefront API experience with GraphQL product queries and a token-based design system.
+- Implemented webhook-driven content + product updates so the client can ship changes without redeploys.
+- Continue to handle optimization, performance passes, and feature upgrades as the store scales.
+    `,
+    tags: ['Client', 'E-commerce', 'Shopify', 'GraphQL', 'React'],
+  },
+  {
     id: 'exp-gridlead',
     role: 'Founder & Solo Engineer',
     company: 'GridLead',

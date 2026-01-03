@@ -1,12 +1,22 @@
 
 import React, { useState } from 'react';
-import { Calendar, Briefcase, ChevronRight, Tag } from 'lucide-react';
-import { EXPERIENCE_LIST } from '../constants';
+import { Calendar, Briefcase, ChevronRight, Tag, ExternalLink } from 'lucide-react';
+import { EXPERIENCE_LIST, PROJECTS_LIST } from '../constants';
 
 const ExperienceList: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string>(EXPERIENCE_LIST[0].id);
 
   const selectedItem = EXPERIENCE_LIST.find(item => item.id === selectedId) || EXPERIENCE_LIST[0];
+  const experienceProjectMap: Record<string, string> = {
+    'exp-pgc-product': 'pgc-web',
+    'exp-gridlead': 'grid-lead',
+    'exp-wickedworks': 'wicked-works-shopify'
+  };
+  const selectedProjectId = experienceProjectMap[selectedItem.id];
+  const selectedProject = selectedProjectId
+    ? PROJECTS_LIST.find(project => project.id === selectedProjectId)
+    : null;
+  const liveLink = selectedProject?.figmaEmbed || selectedProject?.link || null;
 
   const renderContent = (content: string) => {
     return content.trim().split('\n').map((line, i) => {
@@ -71,9 +81,21 @@ const ExperienceList: React.FC = () => {
                         <Briefcase size={14} />
                         <span>{selectedItem.company}</span>
                     </div>
-                    <span className="text-[11px] leading-tight font-mono text-accent bg-accent/10 px-2.5 py-0.5 rounded-md border border-accent/25 shadow-sm">
-                        {selectedItem.period}
-                    </span>
+                    <div className="flex items-center gap-2">
+                        {liveLink && (
+                            <a
+                                href={liveLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1.5 text-[11px] leading-tight font-mono text-primary bg-node-bg px-2.5 py-0.5 rounded-md border border-node-border shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-transform"
+                            >
+                                Live <ExternalLink size={12} />
+                            </a>
+                        )}
+                        <span className="text-[11px] leading-tight font-mono text-accent bg-accent/10 px-2.5 py-0.5 rounded-md border border-accent/25 shadow-sm">
+                            {selectedItem.period}
+                        </span>
+                    </div>
                  </div>
              </div>
          </div>

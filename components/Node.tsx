@@ -365,6 +365,28 @@ const Node: React.FC<NodeProps> = ({
                             <div className="flex flex-wrap gap-2">
                                 {data.tags.map(tag => {
                                     const isActiveTag = tag.includes('●');
+                                    const isAboutTag = data.id === 'hero' && tag.toLowerCase() === 'lex ferguson';
+                                    if (isAboutTag) {
+                                        return (
+                                            <button
+                                                key={tag}
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    const rect = nodeRef.current?.getBoundingClientRect() || new DOMRect();
+                                                    onMaximize?.('about', rect);
+                                                }}
+                                                className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] font-mono uppercase tracking-widest bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)] transition hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+                                                style={{
+                                                    background: 'linear-gradient(135deg, rgba(16,185,129,0.95), rgba(16,185,129,0.8))',
+                                                    filter: 'drop-shadow(0 0 8px rgba(16,185,129,0.2))'
+                                                }}
+                                                aria-label="Open about"
+                                            >
+                                                {tag}
+                                            </button>
+                                        );
+                                    }
                                     return (
                                         <span 
                                             key={tag} 

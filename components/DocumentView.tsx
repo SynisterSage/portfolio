@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { NodeData } from '../types';
-import { EXPERIENCE_LIST, NODES } from '../constants';
+import { EXPERIENCE_LIST, NODES, PROJECTS_LIST } from '../constants';
 import { Briefcase, Github, Code, Layers, Calendar, ArrowUpRight, Cpu, Database, Layout, PenTool, Mail, Send, Maximize2, X, Download } from 'lucide-react';
 import ContactForm from './ContactForm';
 import FullScreenView from './FullScreenView';
@@ -158,6 +158,11 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
   const contactNode = nodes.find(n => n.id === 'contact');
   const aboutLabel = 'LEX FERGUSON';
   const heroTags = heroNode?.tags?.filter(tag => tag.toLowerCase() !== 'lex ferguson') || [];
+  const experienceProjectMap: Record<string, string> = {
+    'exp-pgc-product': 'pgc-web',
+    'exp-gridlead': 'grid-lead',
+    'exp-wickedworks': 'wicked-works-shopify'
+  };
   
   // Parse skills content into categories
   const skillCategories = skillsNode ? skillsNode.content.split('\n\n').map(group => {
@@ -316,7 +321,11 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
             </div>
 
             <div className="relative border-l border-node-border ml-4 md:ml-6 space-y-16 md:space-y-20 pb-4">
-                {EXPERIENCE_LIST.map((item, i) => (
+                {EXPERIENCE_LIST.map((item, i) => {
+                    const projectId = experienceProjectMap[item.id];
+                    const project = projectId ? PROJECTS_LIST.find(entry => entry.id === projectId) : null;
+                    const liveLink = project?.figmaEmbed || project?.link || null;
+                    return (
                     <FadeIn key={item.id} delay={i * 100} className="relative pl-8 md:pl-16">
                         {/* Timeline Dot */}
                         <div className="absolute left-0 -translate-x-1/4 top-3 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-canvas-bg border-2 border-accent z-10 shadow-[0_0_0_4px_rgba(var(--bg-canvas))]" />
@@ -330,8 +339,20 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                                         {item.company}
                                     </div>
                                 </div>
-                                <div className="font-mono text-[10px] md:text-xs font-bold text-accent border border-accent/20 bg-accent/5 px-2 md:px-3 py-1 md:py-1.5 rounded uppercase tracking-wider self-start sm:self-auto">
-                                    {item.period}
+                                <div className="flex items-center gap-2 self-start sm:self-auto">
+                                    {liveLink && (
+                                        <a
+                                            href={liveLink}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 text-[10px] md:text-xs font-mono uppercase tracking-widest text-primary border border-node-border px-2 md:px-3 py-1 md:py-1.5 rounded bg-node-bg shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-transform"
+                                        >
+                                            Live <ArrowUpRight size={12} />
+                                        </a>
+                                    )}
+                                    <div className="font-mono text-[10px] md:text-xs font-bold text-accent border border-accent/20 bg-accent/5 px-2 md:px-3 py-1 md:py-1.5 rounded uppercase tracking-wider">
+                                        {item.period}
+                                    </div>
                                 </div>
                             </div>
 
@@ -365,7 +386,8 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                             </div>
                         </div>
                     </FadeIn>
-                ))}
+                );
+                })}
             </div>
         </FadeIn>
 

@@ -629,7 +629,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                           <div className="flex items-center justify-between gap-3 flex-wrap">
                             {displayTags.length > 0 && (
                               <div className="relative flex-1 min-w-0">
-                                  <div className="flex items-center overflow-x-auto no-scrollbar py-1 [mask-[linear-gradient(to_right,transparent,black_20px,black_calc(100%-20px),transparent)]">
+                                  <div className="flex items-center overflow-x-auto no-scrollbar py-1 [mask-image:linear-gradient(to_right,transparent,black_20px,black_calc(100%_-_20px),transparent)]">
                                       <div className="flex gap-2 whitespace-nowrap px-5">
                                           {displayTags.map(tag => {
                                               const isActive = tag.includes('●');

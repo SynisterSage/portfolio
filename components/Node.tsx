@@ -24,6 +24,7 @@ interface NodeProps {
   onDragStart?: (id: string, e: React.MouseEvent | React.TouchEvent) => void;
   onFocus?: (id: string) => void;
   onMaximize?: (id: string, rect: DOMRect) => void; 
+  disableInteraction?: boolean;
 }
 
 const Node: React.FC<NodeProps> = ({ 
@@ -37,6 +38,7 @@ const Node: React.FC<NodeProps> = ({
   isClosing = false,
   isDragging = false,
   isRestoring = false,
+  disableInteraction = false,
   onNavigate, 
   onOpenProject,
   onClose,
@@ -268,11 +270,12 @@ const Node: React.FC<NodeProps> = ({
   // Logic for display transition
   const showNode = isVisible && isMounted && !isClosing;
   const transitionClass = (isDragging || isRestoring) ? 'duration-0' : 'duration-500';
+  const interactionsBlocked = disableInteraction || isMaximized || !showNode;
 
   return (
     <div 
       ref={nodeRef}
-      className={`absolute flex flex-col bg-node-bg/95 backdrop-blur-sm border ${borderColorClass()} rounded-lg transition-all ${transitionClass} overflow-hidden node-container`}
+      className={`absolute flex flex-col bg-node-bg/95 backdrop-blur-sm border ${borderColorClass()} rounded-lg transition-all ${transitionClass} overflow-hidden node-container ${disableInteraction ? 'select-none' : ''}`}
       style={{
         width: data.width || 400,
         // Removed maxWidth override to preserve desktop dimensions
@@ -286,7 +289,8 @@ const Node: React.FC<NodeProps> = ({
             : `0 10px 20px -5px rgba(0, 0, 0, 0.2), 0 0 15px -5px rgba(${nodeColor}, 0.1)`,
         borderColor: isActive ? `rgba(${nodeColor}, 0.7)` : undefined,
         opacity: (isMaximized || !showNode) ? 0 : 1, 
-        pointerEvents: (isMaximized || !showNode) ? 'none' : 'auto',
+        pointerEvents: interactionsBlocked ? 'none' : 'auto',
+        userSelect: interactionsBlocked ? 'none' : 'auto',
       }}
       onClick={() => onFocus && onFocus(data.id)}
     >
@@ -345,7 +349,11 @@ const Node: React.FC<NodeProps> = ({
                     {renderContent(data.content)}
 
                     {/* Contact Form Injection */}
-                    {data.type === 'contact' && <ContactForm />}
+                    {data.type === 'contact' && (
+                      <div className="mt-6 md:mt-7">
+                        <ContactForm />
+                      </div>
+                    )}
                 </div>
 
                 {/* Sticky Footer for Tags, Links & Actions */}

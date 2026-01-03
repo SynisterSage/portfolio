@@ -55,7 +55,7 @@ const PolicyOverlay: React.FC<PolicyOverlayProps> = ({ onClose }) => {
                 <div className="space-y-1">
                     <h3 className="font-bold text-primary text-sm uppercase tracking-wide">Data Minimalist</h3>
                     <p className="text-sm text-secondary leading-relaxed">
-                        This site is designed to be a portfolio, not a data harvester. <br /> I value your privacy because I value my own.
+                        This is my portfolio, this website is not a data harvester. <br /> I value your privacy because I value my own.
                     </p>
                 </div>
             </div>

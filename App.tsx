@@ -44,6 +44,7 @@ const App: React.FC = () => {
   const [currentDate, setCurrentDate] = useState('');
   const [showPolicy, setShowPolicy] = useState(false); // New state for policy view
   const [routeProjectId, setRouteProjectId] = useState<string | null>(null);
+  const [routeAboutOpen, setRouteAboutOpen] = useState(false);
   const lastDocumentPathRef = useRef<string>('/');
   const [notFound, setNotFound] = useState(false);
   const [spatialOverlay, setSpatialOverlay] = useState<{ id: string; rect: DOMRect } | null>(null);
@@ -86,6 +87,7 @@ const App: React.FC = () => {
         p === '/experience' ||
         p === '/stack' ||
         p === '/skills' || // legacy alias
+        p === '/about' ||
         p === '/contact'
       );
     };
@@ -96,6 +98,7 @@ const App: React.FC = () => {
     let nextView: 'spatial' | 'document' = 'document';
     let nextTarget: string | null = null;
     let projectId: string | null = null;
+    let aboutOpen = false;
     let is404 = false;
 
     if (cleaned === '/spatial') {
@@ -113,6 +116,9 @@ const App: React.FC = () => {
       nextTarget = 'experience-hub';
     } else if (cleaned === '/stack' || cleaned === '/skills') {
       nextTarget = 'skills';
+    } else if (cleaned === '/about') {
+      nextTarget = null;
+      aboutOpen = true;
     } else if (cleaned === '/contact') {
       nextTarget = 'contact';
     } else if (cleaned === '/') {
@@ -128,6 +134,7 @@ const App: React.FC = () => {
     setViewMode(nextView);
     setActiveNodeId(nextTarget);
     setRouteProjectId(projectId);
+    setRouteAboutOpen(aboutOpen);
     setNotFound(is404);
   }, [location.pathname]);
 
@@ -152,6 +159,8 @@ const App: React.FC = () => {
         return '/stack';
       case 'contact':
         return '/contact';
+      case 'about':
+        return '/about';
       case 'hero':
         return '/';
       default:
@@ -173,6 +182,10 @@ const App: React.FC = () => {
     navigate(`/projects/${projectId}`);
   };
 
+  const handleAboutRoute = () => {
+    navigate('/about');
+  };
+
   // Fire GA page_view/config on internal navigation (SPA)
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -189,13 +202,11 @@ const App: React.FC = () => {
   }, [location.pathname, viewMode]);
 
   const handleToggleView = () => {
-    setViewMode(prev => {
-      const next = prev === 'spatial' ? 'document' : 'spatial';
-      const target = next === 'document' ? (lastDocumentPathRef.current || '/') : '/spatial';
-      const shouldReplace = location.pathname === target;
-      navigate(target, { replace: shouldReplace });
-      return next;
-    });
+    const next = viewMode === 'spatial' ? 'document' : 'spatial';
+    const target = next === 'document' ? (lastDocumentPathRef.current || '/') : '/spatial';
+    const shouldReplace = location.pathname === target;
+    setViewMode(next);
+    navigate(target, { replace: shouldReplace });
   };
 
   const handleIntroComplete = () => {
@@ -207,13 +218,15 @@ const App: React.FC = () => {
   };
 
   const closeRouteProject = () => navigate('/projects');
+  const closeRouteAbout = () => navigate('/');
 
   const routeProjectNode = routeProjectId ? nodeById[routeProjectId] : null;
+  const routeAboutNode = routeAboutOpen ? nodeById['about'] : null;
   const fullscreenRect = useMemo(() => {
     const width = typeof window !== 'undefined' ? window.innerWidth : 1280;
     const height = typeof window !== 'undefined' ? window.innerHeight : 720;
     return new DOMRect(0, 0, width, height);
-  }, [routeProjectId]);
+  }, [routeProjectId, routeAboutOpen]);
 
   const handleGoHome = () => navigate('/', { replace: false });
   const handleGoProjects = () => navigate('/projects', { replace: false });
@@ -256,7 +269,7 @@ const App: React.FC = () => {
         {/* Status Badge */}
         <div className="flex items-center gap-2 font-mono text-[10px] md:text-xs text-secondary/60 select-none backdrop-blur-sm px-3 py-1.5 rounded-full border border-node-border/50 bg-canvas-bg/50 hover:border-node-border transition-all shadow-sm">
             <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <span className="tracking-widest">SYSTEM ONLINE • {currentDate}</span>
+            <span className="tracking-widest">{currentDate}</span>
         </div>
 
         {/* Policy Trigger Button */}
@@ -290,6 +303,7 @@ const App: React.FC = () => {
                 viewMode={viewMode}
                 isReady={!isLoading}
                 onProjectRoute={handleProjectRoute}
+                onAboutRoute={handleAboutRoute}
             />
           )}
         </div>
@@ -312,6 +326,20 @@ const App: React.FC = () => {
             onRestore={closeRouteProject}
             onClose={closeRouteProject}
             onMaximize={(id) => handleProjectRoute(id)}
+            snapToFull
+          />
+        </div>
+      )}
+
+      {/* Route-driven About Fullscreen */}
+      {routeAboutNode && (
+        <div className="fixed inset-0 z-400">
+          <FullScreenView
+            key={routeAboutNode.id}
+            data={routeAboutNode}
+            initialRect={fullscreenRect}
+            onRestore={closeRouteAbout}
+            onClose={closeRouteAbout}
             snapToFull
           />
         </div>

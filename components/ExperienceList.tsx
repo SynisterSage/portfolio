@@ -64,14 +64,14 @@ const ExperienceList: React.FC = () => {
       <div className="flex-1 flex flex-col bg-node-bg animate-in fade-in slide-in-from-right-4 duration-300 min-h-0">
          {/* Header */}
          <div className="p-5 border-b border-node-border bg-node-bg shrink-0">
-             <div className="flex flex-col gap-1 mb-2">
+             <div className="flex flex-col gap-2 mb-2">
                  <h3 className="text-lg font-bold text-primary leading-tight">{selectedItem.role}</h3>
-                 <div className="flex items-center justify-between">
+                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-2 text-secondary text-sm font-medium">
                         <Briefcase size={14} />
                         <span>{selectedItem.company}</span>
                     </div>
-                    <span className="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded border border-accent/20">
+                    <span className="text-[11px] leading-tight font-mono text-accent bg-accent/10 px-2.5 py-0.5 rounded-md border border-accent/25 shadow-sm">
                         {selectedItem.period}
                     </span>
                  </div>

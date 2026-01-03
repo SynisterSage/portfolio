@@ -56,9 +56,14 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   const [openNodes, setOpenNodes] = useState<string[]>([]);
   const [closingNodes, setClosingNodes] = useState<Set<string>>(new Set());
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [isPanning, setIsPanning] = useState(false);
   const [nodePositions, setNodePositions] = useState<Record<string, { x: number, y: number }>>({});
   const [nodeZIndices, setNodeZIndices] = useState<Record<string, number>>({});
   const [highestZ, setHighestZ] = useState(10);
+  const panDeltaRef = useRef<{ dx: number; dy: number }>({ dx: 0, dy: 0 });
+  const panFrameRef = useRef<number | null>(null);
+  const dragPanTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const dragPanFrameRef = useRef<number | null>(null);
   
   // Full Screen State
   const [maximizedNode, setMaximizedNode] = useState<{ id: string; initialRect: DOMRect; snap?: boolean } | null>(null);
@@ -397,6 +402,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
         
         dragRef.current.initialCameraX = cameraRef.current.x;
         dragRef.current.initialCameraY = cameraRef.current.y;
+        setIsPanning(true);
     }
   };
 
@@ -422,12 +428,21 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
             [nodeId]: { x: newX, y: newY }
         }));
     } else {
-        setCamera({
-            ...cameraRef.current,
-            scale: cameraRef.current.scale,
-            x: dragRef.current.initialCameraX + dx,
-            y: dragRef.current.initialCameraY + dy
-        });
+        const nextX = dragRef.current.initialCameraX + dx;
+        const nextY = dragRef.current.initialCameraY + dy;
+        dragPanTargetRef.current = { x: nextX, y: nextY };
+        if (!dragPanFrameRef.current) {
+          dragPanFrameRef.current = requestAnimationFrame(() => {
+            if (dragPanTargetRef.current) {
+              setCamera(prev => ({
+                ...prev,
+                x: dragPanTargetRef.current!.x,
+                y: dragPanTargetRef.current!.y
+              }));
+            }
+            dragPanFrameRef.current = null;
+          });
+        }
     }
   };
 
@@ -437,6 +452,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     }
     
     setDraggingId(null);
+    setIsPanning(false);
 
     dragRef.current.isDragging = false;
     dragRef.current.isDraggingNode = false;
@@ -530,11 +546,20 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     }
 
     e.preventDefault();
-    setCamera(prev => ({
-        ...prev,
-        x: prev.x - e.deltaX,
-        y: prev.y - e.deltaY
-    }));
+    panDeltaRef.current.dx += e.deltaX;
+    panDeltaRef.current.dy += e.deltaY;
+    if (!panFrameRef.current) {
+      panFrameRef.current = requestAnimationFrame(() => {
+        setCamera(prev => ({
+          ...prev,
+          x: prev.x - panDeltaRef.current.dx,
+          y: prev.y - panDeltaRef.current.dy
+        }));
+        panDeltaRef.current.dx = 0;
+        panDeltaRef.current.dy = 0;
+        panFrameRef.current = null;
+      });
+    }
   }, [maximizedNode, bootState]); 
 
   useEffect(() => {
@@ -544,11 +569,17 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
     }
     return () => container?.removeEventListener('wheel', handleWheel);
   }, [handleWheel]);
+  
+  useEffect(() => {
+    return () => {
+      if (panFrameRef.current) cancelAnimationFrame(panFrameRef.current);
+      if (dragPanFrameRef.current) cancelAnimationFrame(dragPanFrameRef.current);
+    };
+  }, []);
 
   const handleTouchStartWrapper = (e: React.TouchEvent<HTMLDivElement>) => {
     if (maximizedNode || bootState === 'scanning') return;
     if (e.touches.length === 2) {
-      e.preventDefault();
       handlePinchStart(e.touches);
       return;
     }
@@ -562,12 +593,10 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   const handleTouchMoveWrapper = (e: React.TouchEvent<HTMLDivElement>) => {
     if (maximizedNode || bootState === 'scanning') return;
     if (e.touches.length >= 2) {
-      e.preventDefault();
       handlePinchMove(e.touches);
       return;
     }
     if (e.touches.length === 1) {
-      e.preventDefault();
       const touch = e.touches[0];
       handleMove(touch.clientX, touch.clientY);
     }
@@ -654,6 +683,7 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
             isClosing={closingNodes.has(node.id)}
             isDragging={draggingId === node.id}
             isRestoring={restoringId === node.id}
+            disableInteraction={isPanning}
             onNavigate={onNavigate}
             onOpenProject={handleOpenProject}
             onClose={handleCloseProject}

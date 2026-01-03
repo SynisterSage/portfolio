@@ -236,6 +236,35 @@ design:
     tags: ['Full Stack', 'Polyglot', 'Design Ops']
   },
   {
+    id: 'about',
+    title: 'my-shpeel.md',
+    type: 'bio',
+    hidden: true,
+    // Hidden route-only overlay (no spatial node)
+    position: { x: 520, y: 520 },
+    width: 600,
+    content: `
+# About
+
+My name is Lex Ferguson, a design engineer focused on performance, motion, and brand-forward UX. I have been designing and building digital products since 2016, with a background in design and UX that accelerates the products I build by reducing iteration cycles, clarifying intent early, and translating decisions directly into production-ready interfaces. I create calm systems that move with purpose and stay fast under real use.
+
+
+I am open to freelance, client work, and full-time roles. Recent highlights include the Packanack Golf Course website + app still in active use, GridLead, a platform I run personally, and Wicked Works, where I implemented Shopify Storefront APIs end to end for custom, performance-focused ecommerce experiences.
+
+## Education
+- Monmouth University, West Long Branch, NJ
+- 4-year program, 3.8 GPA
+- Collaborated with CS majors to ship UX and UI ideas into production apps and websites
+
+## Focus Areas
+- Performance-minded interfaces
+- Motion craft and interaction design
+- Brand identity systems
+- Product UX that stays readable at scale
+    `,
+    tags: ['Lex Ferguson', 'Design Engineer', 'Interaction & Motion']
+  },
+  {
     id: 'hero',
     title: 'README.md',
     type: 'bio',

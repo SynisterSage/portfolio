@@ -46,13 +46,23 @@
 
   <!-- Projects -->
   <url>
-    <loc>https://aferguson.art/projects/dominos</loc>
+    <loc>https://aferguson.art/projects/dominos-redesign</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://aferguson.art/images/projects/dominos/main.jpg</image:loc>
-      <image:caption>Dominos App Redesign — hero thumbnail</image:caption>
+      <image:loc>https://aferguson.art/images/projects/dominos/thumbnail.jpg</image:loc>
+      <image:caption>Dominos App Redesign — thumbnail</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aferguson.art/projects/overtone-app</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://aferguson.art/images/projects/overtone/thumbnail.png</image:loc>
+      <image:caption>Overtone App — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -61,8 +71,8 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://aferguson.art/images/projects/grid-lead/main.png</image:loc>
-      <image:caption>GridLead — automated audits and outreach</image:caption>
+      <image:loc>https://aferguson.art/images/projects/grid-lead/thumbnail.png</image:loc>
+      <image:caption>GridLead — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -72,17 +82,7 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/tempo/thumbnail.png</image:loc>
-      <image:caption>Tempo — workflow accelerator</image:caption>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://aferguson.art/projects/overtone</loc>
-    <lastmod>2026-01-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <image:image>
-      <image:loc>https://aferguson.art/images/projects/overtone/thumbnail.png</image:loc>
-      <image:caption>Overtone App — cover art</image:caption>
+      <image:caption>Tempo — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -91,8 +91,8 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://aferguson.art/images/projects/velkro/main.jpg</image:loc>
-      <image:caption>Velkro Type Creation — specimen</image:caption>
+      <image:loc>https://aferguson.art/images/projects/velkro/thumbnail.jpg</image:loc>
+      <image:caption>Velkro Type Creation — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -102,17 +102,17 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/pgc-app/thumbnail.png</image:loc>
-      <image:caption>PGC App — dashboard snapshot</image:caption>
+      <image:caption>PGC App — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/pgc-website</loc>
+    <loc>https://aferguson.art/projects/pgc-web</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/pgc-website/thumbnail.jpg</image:loc>
-      <image:caption>PGC Website — hero banner</image:caption>
+      <image:caption>PGC Website — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -122,37 +122,37 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/halfway/main.gif</image:loc>
-      <image:caption>Halfway Construction — animated badge</image:caption>
+      <image:caption>Halfway Construction — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/adelle</loc>
+    <loc>https://aferguson.art/projects/adelle-study</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/adelle/thumbnail.jpg</image:loc>
-      <image:caption>Adelle Font Study — cover spread</image:caption>
+      <image:caption>Adelle Font Study — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/octone</loc>
+    <loc>https://aferguson.art/projects/octone-ink</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/octone/thumbnail.png</image:loc>
-      <image:caption>Octone Ink — label study</image:caption>
+      <image:caption>Octone Ink — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/sageaio</loc>
+    <loc>https://aferguson.art/projects/sage</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/sageaio/thumbnail.jpg</image:loc>
-      <image:caption>SageAIO — retail automation hero</image:caption>
+      <image:caption>SageAIO — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -162,17 +162,17 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/squisito/thumbnail.jpg</image:loc>
-      <image:caption>Squisito — recipe UI study</image:caption>
+      <image:caption>Squisito — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/stopmotion</loc>
+    <loc>https://aferguson.art/projects/stop-motion</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/stopmotion/thumbnail.jpg</image:loc>
-      <image:caption>Stop Motion Color — still frame</image:caption>
+      <image:caption>Stop Motion Color Project — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -182,7 +182,7 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/city-scapes/thumbnail.jpg</image:loc>
-      <image:caption>City Scapes — Tokyo-inspired palette</image:caption>
+      <image:caption>City Scapes — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -192,17 +192,17 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/neon-photo/thumbnail.jpg</image:loc>
-      <image:caption>Neon Photography — electric glow</image:caption>
+      <image:caption>Neon Photography — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/room-illsutration</loc>
+    <loc>https://aferguson.art/projects/room-illustration</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://aferguson.art/images/projects/room-illsutration/thumbnail.jpg</image:loc>
-      <image:caption>Room Illustration — geometric study</image:caption>
+      <image:loc>https://aferguson.art/images/projects/room-illsutration/thumbnail.png</image:loc>
+      <image:caption>Room Illustration — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -212,7 +212,7 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/sunscape-poster/thumbnail.png</image:loc>
-      <image:caption>Sunscape Poster — gradient layers</image:caption>
+      <image:caption>Sunscape Poster — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -222,37 +222,37 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/currency-redesign/thumbnail.png</image:loc>
-      <image:caption>Currency Redesign — note study</image:caption>
+      <image:caption>Currency Redesign — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/self-branding</loc>
+    <loc>https://aferguson.art/projects/selfbranding</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/self-branding/thumbnail.svg</image:loc>
-      <image:caption>Self Branding — monogram system</image:caption>
+      <image:caption>Self Branding — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/space-themed-widgets</loc>
+    <loc>https://aferguson.art/projects/space-widgets</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/space-themed-widgets/thumbnail.png</image:loc>
-      <image:caption>Space Themed App Widgets — pack shot</image:caption>
+      <image:caption>Space Themed App Widgets — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://aferguson.art/projects/tracker-app</loc>
+    <loc>https://aferguson.art/projects/trackerapp</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/tracker-app/thumbnail.svg</image:loc>
-      <image:caption>Tracker App — control center</image:caption>
+      <image:caption>Tracker App — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -262,7 +262,7 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/color-collages/thumbnail.jpg</image:loc>
-      <image:caption>Color Collages — layered texture</image:caption>
+      <image:caption>Color Collages — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -272,7 +272,7 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/minimalist-poster/thumbnail.jpg</image:loc>
-      <image:caption>Minimalist Poster — bold type</image:caption>
+      <image:caption>Minimalist Poster — thumbnail</image:caption>
     </image:image>
   </url>
   <url>
@@ -282,7 +282,17 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://aferguson.art/images/projects/charcole/thumbnail.jpg</image:loc>
-      <image:caption>Charcole — figure study</image:caption>
+      <image:caption>Charcole — thumbnail</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aferguson.art/projects/wicked-works-shopify</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://aferguson.art/images/projects/wicked-works-storefront/thumbnail.png</image:loc>
+      <image:caption>Wicked Works — thumbnail</image:caption>
     </image:image>
   </url>
 </urlset>

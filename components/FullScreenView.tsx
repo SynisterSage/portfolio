@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { NodeData, Media, ProjectItem } from '../types';
-import { X, Minimize2, ExternalLink, Calendar, Tag, ChevronLeft, ChevronRight, Maximize2, ArrowRight } from 'lucide-react';
+import { X, Minimize2, ExternalLink, Calendar, Tag, ChevronLeft, ChevronRight, Maximize2, ArrowRight, Download } from 'lucide-react';
 import { PROJECTS_LIST, NODES } from '../constants';
 import ContactForm from './ContactForm';
 import ProjectActions from './ProjectActions';
@@ -43,6 +43,7 @@ const resolveProjectThumbnail = (project: ProjectItem) => {
 const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRestore, onClose, onMaximize, snapToFull }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showResume, setShowResume] = useState(false);
   const projectMeta = useMemo(
     () => (data.type === 'project' ? PROJECTS_LIST.find(p => p.id === data.id) || null : null),
     [data.id, data.type]
@@ -430,7 +431,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     return (
       <div
         ref={mediaContainerRef}
-        className="w-full mb-6 md:mb-8 rounded-[1.5rem] overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none max-w-[1200px] mx-auto"
+        className="w-full mb-6 md:mb-8 rounded-3xl overflow-hidden shadow-2xl bg-node-bg border border-node-border relative group select-none max-w-300 mx-auto"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -460,7 +461,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
           )}
           {carouselItems.length > 1 && (
             <>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               
               <button 
                   onClick={prevImage}
@@ -548,9 +549,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
     if (!lightboxItem) return null;
     const isDemo = lightboxItem.type === 'demo';
     return (
-      <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-6">
+      <div className="fixed inset-0 z-200 bg-black/80 flex items-center justify-center p-6">
         <div
-          className={`relative w-full max-w-[min(1100px,calc(100%_-_48px))] ${isDemo ? 'max-h-[85vh] h-auto' : 'h-[clamp(320px,80vh,720px)]'}`}
+          className={`relative w-full max-w-[min(1100px,calc(100%-48px))] ${isDemo ? 'max-h-[85vh] h-auto' : 'h-[clamp(320px,80vh,720px)]'}`}
         >
           <button
             onClick={() => setLightboxItem(null)}
@@ -559,7 +560,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
           >
             <X size={18} />
           </button>
-          <div className={`w-full ${isDemo ? 'max-h-[85vh]' : 'h-full'} rounded-[1.5rem] overflow-hidden bg-node-bg border border-node-border shadow-2xl`}>
+          <div className={`w-full ${isDemo ? 'max-h-[85vh]' : 'h-full'} rounded-3xl overflow-hidden bg-node-bg border border-node-border shadow-2xl`}>
             {renderPlayer(lightboxItem)}
           </div>
         </div>
@@ -569,6 +570,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
 
   // Special renderer for hub types (Experience Hub / Project Hub)
   const isHub = data.type === 'experience-hub' || data.type === 'project-hub';
+  const isAbout = data.id === 'about';
   
   return (
     <div 
@@ -582,7 +584,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                     {data.id}
                 </span>
                 <span className="text-secondary text-sm hidden md:inline-block">/</span>
-                <span className="font-mono text-primary text-sm font-medium truncate max-w-[150px] md:max-w-md">
+                <span className="font-mono text-primary text-sm font-medium truncate max-w-37.5 md:max-w-md">
                     {data.title}
                 </span>
             </div>
@@ -601,7 +603,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
         {/* Content Area */}
         <div 
             ref={contentRef}
-            className={`flex-1 overflow-y-auto custom-scroll transition-opacity duration-300 delay-75 ${isClosing ? 'opacity-0' : 'opacity-100'} ${isHub ? 'p-0' : 'p-4 md:p-12'}`}
+            className={`relative flex-1 overflow-y-auto custom-scroll transition-opacity duration-300 delay-75 ${isClosing ? 'opacity-0' : 'opacity-100'} ${isHub ? 'p-0' : 'p-4 md:p-12'}`}
         >
             {/* Render Hub Views directly if applicable */}
             {data.type === 'experience-hub' && <ExperienceList />}
@@ -609,7 +611,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
 
             {/* Render Standard Content if NOT a hub */}
             {!isHub && (
-            <div className="max-w-[1200px] w-full mx-auto pb-20">
+            <div className={`relative z-10 max-w-300 w-full mx-auto ${isAbout ? 'pb-12 md:pb-16' : 'pb-20'}`}>
                     {/* Meta Header */}
                     <div className="mb-6 md:mb-8 flex flex-col gap-3 text-sm font-mono text-secondary">
                         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -618,7 +620,7 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                 <span>Updated recently</span>
                             </div>
                             {data.type === 'project' && (
-                                <div className="flex-shrink-0">
+                                <div className="shrink-0">
                                     <ProjectActions projectId={data.id} projectTitle={data.title} className="text-xs" initialLikes={data.likes ?? 0} />
                                 </div>
                             )}
@@ -626,9 +628,9 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                         {(displayTags.length > 0) || hasInlineLinks ? (
                           <div className="flex items-center justify-between gap-3 flex-wrap">
                             {displayTags.length > 0 && (
-                              <div className="relative overflow-hidden flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 py-1">
-                                      <div className="flex gap-2 whitespace-nowrap min-w-0">
+                              <div className="relative flex-1 min-w-0">
+                                  <div className="flex items-center overflow-x-auto no-scrollbar py-1 [mask-[linear-gradient(to_right,transparent,black_20px,black_calc(100%-20px),transparent)]">
+                                      <div className="flex gap-2 whitespace-nowrap px-5">
                                           {displayTags.map(tag => {
                                               const isActive = tag.includes('●');
                                               return (
@@ -647,13 +649,11 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                           })}
                                       </div>
                                   </div>
-                                  <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-canvas-bg/40 via-canvas-bg/20 to-transparent" />
-                                  <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-canvas-bg/40 via-canvas-bg/20 to-transparent" />
                               </div>
                             )}
-                            {data.type === 'project' && hasInlineLinks && (
+                            {((data.type === 'project' && hasInlineLinks) || isAbout) && (
                               <div className="flex items-center gap-2 flex-wrap justify-end">
-                                {projectLinks.map(link => (
+                                {data.type === 'project' && projectLinks.map(link => (
                                   <div key={link.label} className="inline-flex items-center gap-2">
                                     <a
                                       href={link.url}
@@ -666,6 +666,20 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
                                     </a>
                                   </div>
                                 ))}
+                                {isAbout && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowResume(true)}
+                                    className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)] transition hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+                                    style={{
+                                      background: 'linear-gradient(135deg, rgba(16,185,129,0.95), rgba(16,185,129,0.8))',
+                                      filter: 'drop-shadow(0 0 8px rgba(16,185,129,0.2))'
+                                    }}
+                                    aria-label="View resume"
+                                  >
+                                    View Resume
+                                  </button>
+                                )}
                               </div>
                             )}
                           </div>
@@ -783,6 +797,42 @@ const FullScreenView: React.FC<FullScreenViewProps> = ({ data, initialRect, onRe
             )}
         </div>
         {renderLightbox()}
+        {showResume && (
+          <div className="fixed inset-0 z-320 bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 py-8">
+            <div className="relative w-full max-w-5xl h-[80vh] bg-node-bg border border-node-border rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-node-border bg-node-header">
+                <div className="flex items-center gap-2 text-secondary font-mono text-xs uppercase tracking-[0.25em]">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" />
+                  <span>resume.pdf</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="/resume.pdf"
+                    download
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-node-border text-secondary hover:text-primary hover:border-accent transition-colors text-[12px] font-semibold"
+                  >
+                    <Download size={14} />
+                    Download
+                  </a>
+                  <button
+                    onClick={() => setShowResume(false)}
+                    className="p-2 rounded-md hover:bg-red-500/10 text-secondary hover:text-red-500 transition-colors"
+                    aria-label="Close resume"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 bg-black/5">
+                <iframe
+                  src="/resume.pdf#view=FitH"
+                  title="Resume PDF"
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };

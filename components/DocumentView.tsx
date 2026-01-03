@@ -13,6 +13,7 @@ interface DocumentViewProps {
   viewMode: 'spatial' | 'document';
   isReady?: boolean; // New prop to coordinate with Preloader
   onProjectRoute?: (id: string) => void;
+  onAboutRoute?: () => void;
 }
 
 // Reusable FadeIn Component for Scroll Animations
@@ -99,7 +100,7 @@ const FadeIn: React.FC<FadeInProps> = ({ children, id, className = "", delay = 0
     );
 };
 
-const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, isReady = true, onProjectRoute }) => {
+const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, isReady = true, onProjectRoute, onAboutRoute }) => {
   const scrollRootRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const [heroVisible, setHeroVisible] = useState(false);
@@ -155,6 +156,8 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
   const heroNode = nodes.find(n => n.id === 'hero');
   const skillsNode = nodes.find(n => n.id === 'skills');
   const contactNode = nodes.find(n => n.id === 'contact');
+  const aboutLabel = 'LEX FERGUSON';
+  const heroTags = heroNode?.tags?.filter(tag => tag.toLowerCase() !== 'lex ferguson') || [];
   
   // Parse skills content into categories
   const skillCategories = skillsNode ? skillsNode.content.split('\n\n').map(group => {
@@ -166,6 +169,9 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
   }) : [];
 
   const selectedNodeData = projectOverlayNode ?? baseOverlayNode;
+  const handleAboutOpen = () => {
+    if (onAboutRoute) onAboutRoute();
+  };
 
   // Custom renderer for Hero with Staggered Animation
   const renderHeroContent = () => {
@@ -198,11 +204,22 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
 
              {/* Staggered load for Tags */}
             <div className={`flex flex-wrap items-center gap-2 md:gap-3 mt-8 md:mt-12 transition-all duration-1000 delay-500 ease-out transform ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-                {heroNode.tags?.map(tag => (
-                    <span key={tag} className="px-2.5 py-1.5 border border-node-border rounded text-[10px] md:text-xs font-mono text-secondary uppercase tracking-widest bg-black/5 dark:bg-white/5">
-                        {tag}
-                    </span>
+                {heroTags.map(tag => (
+                  <span key={tag} className="px-2.5 py-1.5 border border-node-border rounded text-[10px] md:text-xs font-mono text-secondary uppercase tracking-widest bg-black/5 dark:bg-white/5">
+                    {tag}
+                  </span>
                 ))}
+                <button
+                  onClick={handleAboutOpen}
+                  className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)] transition hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(16,185,129,0.95), rgba(16,185,129,0.8))',
+                    filter: 'drop-shadow(0 0 8px rgba(16,185,129,0.2))'
+                  }}
+                  aria-label="Open about"
+                >
+                  {aboutLabel}
+                </button>
                 <button
                   onClick={() => setShowResume(true)}
                   className="px-3 py-1.5 rounded border border-emerald-400 text-[10px] md:text-xs font-mono uppercase tracking-widest bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)] transition hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
@@ -298,11 +315,11 @@ const DocumentView: React.FC<DocumentViewProps> = ({ nodes, targetId, viewMode, 
                 <span className="text-secondary font-mono text-sm hidden md:block">Index 02</span>
             </div>
 
-            <div className="relative border-l border-node-border ml-2 md:ml-6 space-y-16 md:space-y-20 pb-4">
+            <div className="relative border-l border-node-border ml-4 md:ml-6 space-y-16 md:space-y-20 pb-4">
                 {EXPERIENCE_LIST.map((item, i) => (
-                    <FadeIn key={item.id} delay={i * 100} className="relative pl-6 md:pl-16">
+                    <FadeIn key={item.id} delay={i * 100} className="relative pl-8 md:pl-16">
                         {/* Timeline Dot */}
-                        <div className="absolute -left-5px md:-left-[6.5px] top-3 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-canvas-bg border-2 border-accent z-10 shadow-[0_0_0_4px_rgba(var(--bg-canvas))]" />
+                        <div className="absolute left-0 -translate-x-1/4 top-3 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-canvas-bg border-2 border-accent z-10 shadow-[0_0_0_4px_rgba(var(--bg-canvas))]" />
                         
                         <div className="flex flex-col gap-4 md:gap-6">
                             {/* Header */}

@@ -275,6 +275,7 @@ const Node: React.FC<NodeProps> = ({
   return (
     <div 
       ref={nodeRef}
+      data-node-id={data.id}
       className={`absolute flex flex-col bg-node-bg/95 backdrop-blur-sm border ${borderColorClass()} rounded-lg transition-all ${transitionClass} overflow-hidden node-container ${disableInteraction ? 'select-none' : ''}`}
       style={{
         width: data.width || 400,

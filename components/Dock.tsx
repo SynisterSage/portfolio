@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { User, Layers, Terminal, Cpu, Hash, Sun, Moon, LayoutGrid, FileText } from 'lucide-react';
+import { User, Layers, Terminal, Cpu, Hash, Sun, Moon, LayoutGrid, FileText, LayoutDashboard } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface DockProps {
@@ -9,6 +9,7 @@ interface DockProps {
   onNavigate: (id: string) => void;
   viewMode: 'spatial' | 'document';
   onToggleView: () => void;
+  onAutoLayout?: () => void;
   isVisible?: boolean;
 }
 
@@ -17,10 +18,16 @@ const DockIconButton: React.FC<{
   icon: React.ReactNode;
   label: string;
   onClick: () => void;
-}> = ({ icon, label, onClick }) => {
+  resetSignal?: string | number;
+}> = ({ icon, label, onClick, resetSignal }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    setIsHovered(false);
+    setPos(null);
+  }, [resetSignal]);
 
   useEffect(() => {
     if (!isHovered) return;
@@ -91,7 +98,7 @@ const DockIconButton: React.FC<{
   );
 };
 
-const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleView, isVisible = true }) => {
+const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleView, onAutoLayout, isVisible = true }) => {
   const { theme, toggleTheme } = useTheme();
   const [localActive, setLocalActive] = useState<string | null>(null);
 
@@ -110,50 +117,87 @@ const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleVie
     { id: 'contact', label: 'Contact', icon: <Hash size={14} /> },
   ];
 
+  const showNav = viewMode === 'document';
+  const tooltipReset = `${viewMode}-${isVisible}`;
+
   return (
     <div
       className={`fixed inset-x-0 bottom-4 md:bottom-6 z-40 transition-all duration-1000 delay-300 ease-out flex justify-center px-3 ${
         isVisible ? 'translate-y-0 opacity-100 pointer-events-none' : 'translate-y-24 opacity-0 pointer-events-none'
       }`}
     >
-      <div className="bg-node-bg/90 backdrop-blur-md border border-node-border p-1.5 rounded-xl flex items-center gap-1 shadow-2xl overflow-x-auto no-scrollbar ring-1 ring-black/5 dark:ring-white/5 max-w-[95vw] md:max-w-max pointer-events-auto">
-        {navItems.map(item => {
-          const isActive = (activeId ?? localActive) === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                setLocalActive(item.id);
-                onNavigate(item.id);
-              }}
-              onMouseUp={(e) => (e.currentTarget as HTMLButtonElement).blur()}
-              onTouchEnd={(e) => (e.currentTarget as HTMLButtonElement).blur()}
-              aria-current={isActive ? 'page' : undefined}
-            className={`relative overflow-visible flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg active:scale-95 whitespace-nowrap border focus:outline-none focus-visible:outline-none focus-visible:ring-0 ${
-                isActive
-                  ? 'bg-black/10 dark:bg-white/10 text-primary font-semibold border-transparent'
-                  : 'border-transparent text-secondary'
-              }`}
-              style={{ WebkitTapHighlightColor: 'transparent' }}
-            >
-              {/* No glow for active state; keep clean gray card */}
-              <span className="relative z-10 flex items-center gap-2">
-                {item.icon}
-                {/* On very small screens, hide labels if needed, but flex-shrink might handle it. Using text-[10px] for mobile. */}
-                <span className="font-mono text-[10px] md:text-xs font-medium hidden sm:block">{item.label}</span>
-              </span>
-            </button>
-          );
-        })}
+      <div className="bg-node-bg/90 backdrop-blur-md border border-node-border p-1.5 rounded-xl flex items-center gap-1 shadow-2xl overflow-hidden no-scrollbar ring-1 ring-black/5 dark:ring-white/5 max-w-[95vw] md:max-w-max pointer-events-auto">
+        <div
+          className="flex items-center gap-1 overflow-hidden"
+          style={{
+            maxWidth: showNav ? '600px' : '0px',
+            transitionProperty: 'max-width',
+            transitionDuration: '300ms',
+            transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            transitionDelay: showNav ? '0ms' : '120ms'
+          }}
+          aria-hidden={!showNav}
+        >
+          <div
+            className={`flex items-center gap-1 transition-[opacity,transform] duration-300 ease-out ${
+              showNav ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+            }`}
+            style={{ transitionDelay: showNav ? '120ms' : '0ms' }}
+          >
+            {navItems.map(item => {
+              const isActive = (activeId ?? localActive) === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setLocalActive(item.id);
+                    onNavigate(item.id);
+                  }}
+                  onMouseUp={(e) => (e.currentTarget as HTMLButtonElement).blur()}
+                  onTouchEnd={(e) => (e.currentTarget as HTMLButtonElement).blur()}
+                  aria-current={isActive ? 'page' : undefined}
+                className={`relative overflow-visible flex items-center gap-2 px-2 py-2 md:px-3 rounded-lg active:scale-95 whitespace-nowrap border focus:outline-none focus-visible:outline-none focus-visible:ring-0 ${
+                    isActive
+                      ? 'bg-black/10 dark:bg-white/10 text-primary font-semibold border-transparent'
+                      : 'border-transparent text-secondary'
+                  }`}
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
+                >
+                  {/* No glow for active state; keep clean gray card */}
+                  <span className="relative z-10 flex items-center gap-2">
+                    {item.icon}
+                    {/* On very small screens, hide labels if needed, but flex-shrink might handle it. Using text-[10px] for mobile. */}
+                    <span className="font-mono text-[10px] md:text-xs font-medium hidden sm:block">{item.label}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-node-border mx-1 opacity-50 shrink-0" />
+        <div
+          className={`w-px h-5 mx-1 shrink-0 transition-all duration-300 ease-out bg-black/30 dark:bg-white/25 ${
+            showNav ? 'opacity-70 scale-100' : 'opacity-70 scale-75'
+          }`}
+          style={{ transitionDelay: showNav ? '120ms' : '0ms' }}
+          aria-hidden={!showNav}
+        />
+
+        {viewMode === 'spatial' && onAutoLayout && (
+          <DockIconButton
+            icon={<LayoutDashboard size={14} />}
+            label="Auto Layout"
+            onClick={onAutoLayout}
+            resetSignal={tooltipReset}
+          />
+        )}
 
         {/* View Toggle */}
         <DockIconButton 
             icon={viewMode === 'spatial' ? <FileText size={14} /> : <LayoutGrid size={14} />}
             label={viewMode === 'spatial' ? 'Document View' : 'Spatial View'}
             onClick={onToggleView}
+            resetSignal={tooltipReset}
         />
 
         {/* Theme Toggle */}
@@ -161,6 +205,7 @@ const Dock: React.FC<DockProps> = ({ activeId, onNavigate, viewMode, onToggleVie
             icon={theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
             label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
             onClick={toggleTheme}
+            resetSignal={tooltipReset}
         />
       </div>
     </div>

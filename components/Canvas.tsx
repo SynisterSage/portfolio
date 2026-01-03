@@ -11,9 +11,10 @@ interface CanvasProps {
   shouldPlayIntro: boolean;
   onIntroComplete: () => void;
   onProjectRoute?: (id: string) => void;
+  autoLayoutTick?: number;
 }
 
-const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, shouldPlayIntro, onIntroComplete, onProjectRoute }) => {
+const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, shouldPlayIntro, onIntroComplete, onProjectRoute, autoLayoutTick = 0 }) => {
   // Camera State
   const [camera, setCamera] = useState<CanvasState>({ x: 0, y: 0, scale: 1 });
   
@@ -77,6 +78,67 @@ const Canvas: React.FC<CanvasProps> = ({ nodes, activeNodeId, onNavigate, should
   
   const containerRef = useRef<HTMLDivElement>(null);
   const initialMount = useRef(true);
+
+  const estimateNodeSize = useCallback((node: NodeData) => {
+    const scale = cameraRef.current.scale || 1;
+    const el = containerRef.current?.querySelector(`[data-node-id="${node.id}"]`) as HTMLElement | null;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      return {
+        width: rect.width / scale,
+        height: rect.height / scale
+      };
+    }
+    const width = node.width || 400;
+    let height = 420;
+    if (node.type === 'project-hub' || node.type === 'experience-hub') height = 500;
+    if (node.type === 'bio') height = 560;
+    if (node.type === 'project') height = 520;
+    return { width, height };
+  }, []);
+
+  const handleAutoLayout = useCallback(() => {
+    if (bootState === 'scanning' || maximizedNode) return;
+    const targets = nodes.filter(n => !n.hidden || openNodes.includes(n.id));
+    if (!targets.length) return;
+
+    const scale = cameraRef.current.scale || 1;
+    const padding = 80;
+    const gap = 36;
+    const viewportWidth = window.innerWidth / scale;
+    const viewportHeight = window.innerHeight / scale;
+    const maxRowWidth = Math.max(viewportWidth - padding * 2, 520);
+    const centerX = (window.innerWidth / 2 - cameraRef.current.x) / scale;
+    const centerY = (window.innerHeight / 2 - cameraRef.current.y) / scale;
+    const startX = centerX - (maxRowWidth / 2);
+    let x = startX;
+    let y = centerY - (viewportHeight / 2) + padding;
+    let rowHeight = 0;
+
+    const nextPositions: Record<string, { x: number; y: number }> = {};
+    targets.forEach(node => {
+      const size = estimateNodeSize(node);
+      const nextX = x + size.width;
+      if (nextX > startX + maxRowWidth && x !== startX) {
+        x = startX;
+        y += rowHeight + gap;
+        rowHeight = 0;
+      }
+      nextPositions[node.id] = { x, y };
+      x += size.width + gap;
+      rowHeight = Math.max(rowHeight, size.height);
+    });
+
+    setNodePositions(prev => ({
+      ...prev,
+      ...nextPositions
+    }));
+  }, [bootState, maximizedNode, nodes, openNodes, estimateNodeSize]);
+
+  useEffect(() => {
+    if (!autoLayoutTick) return;
+    handleAutoLayout();
+  }, [autoLayoutTick, handleAutoLayout]);
 
   // Initialize & Boot Sequence
   useEffect(() => {

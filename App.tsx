@@ -45,6 +45,7 @@ const App: React.FC = () => {
   const [showPolicy, setShowPolicy] = useState(false); // New state for policy view
   const [routeProjectId, setRouteProjectId] = useState<string | null>(null);
   const [routeAboutOpen, setRouteAboutOpen] = useState(false);
+  const [autoLayoutTick, setAutoLayoutTick] = useState(0);
   const lastDocumentPathRef = useRef<string>('/');
   const [notFound, setNotFound] = useState(false);
   const [spatialOverlay, setSpatialOverlay] = useState<{ id: string; rect: DOMRect } | null>(null);
@@ -186,6 +187,10 @@ const App: React.FC = () => {
     navigate('/about');
   };
 
+  const handleAutoLayout = () => {
+    setAutoLayoutTick(prev => prev + 1);
+  };
+
   // Fire GA page_view/config on internal navigation (SPA)
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -295,6 +300,7 @@ const App: React.FC = () => {
               onNavigate={handleNavigate}
               shouldPlayIntro={!hasIntroPlayed}
               onIntroComplete={handleIntroComplete}
+              autoLayoutTick={autoLayoutTick}
             />
           ) : (
             <DocumentView 
@@ -313,6 +319,7 @@ const App: React.FC = () => {
         onNavigate={handleNavigate}
         viewMode={viewMode}
         onToggleView={handleToggleView}
+        onAutoLayout={handleAutoLayout}
         isVisible={!isLoading && !notFound}
       />
 

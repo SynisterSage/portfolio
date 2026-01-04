@@ -95,7 +95,7 @@ At its core is a Hz mic pickup written in JavaScript using the Web Audio API tha
     tools: ['Figma', 'Design System', 'Color Tokens', 'Iconography', 'React Native'],
     likes: 0,
     figmaEmbeds: [
-      'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=346-2808&p=f&scaling=scale-down&content-scaling=fixed&page-id=211%3A847&embed-host=share',
+      'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=319-824&embed-host=share',
       'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=203-1111&p=f&scaling=scale-down&content-scaling=fixed&page-id=203%3A2&starting-point-node-id=203%3A1102&embed-host=share'
     ],
     link: 'https://embed.figma.com/proto/0DtNFQehR40PBvAKV7wGmv/Final-Project-GD3?node-id=203-1111&p=f&scaling=scale-down&content-scaling=fixed&page-id=203%3A2&starting-point-node-id=203%3A1102&embed-host=share',
